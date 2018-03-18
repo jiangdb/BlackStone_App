@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import StackNavigators from './StackNavigators'
