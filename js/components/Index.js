@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Message} from './Message';
+import {Message} from './Templates';
 
 class Index extends Component {
   static navigationOptions = {
@@ -33,7 +33,9 @@ class Reader extends Component {
           <Text style={styles.reader}>200</Text>
           <Text style={styles.readerTitle}>注水总量(g)</Text>
           <Text style={styles.reader}>200</Text>
-          <Text style={styles.btnClear} onPress={() => {Alert.alert('pressed');}}>归零</Text>
+          {/*<Text style={styles.btnClear} onPress={() => {Alert.alert('pressed');}}>归零</Text>*/}
+          <Button title="归零" color='#6A6A6A' onPress={() => {Alert.alert('pressed');}} />
+
         </View>
       </View>
     );
@@ -44,24 +46,24 @@ class Setting extends Component {
   render() {
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
-        <SingleSetting name='咖啡豆' value='曼特宁' url={require('../../images/icon_brand.png')}/>
+        <SingleSetting name='咖啡豆' value='曼特宁' img={require('../../images/icon_brand.png')}/>
 
         <View style={styles.flexrow}>
           <View style={styles.flexrow}>
-            <SingleSetting name='粉重' value='20g' url={require('../../images/icon_beanweight.png')}/>
+            <SingleSetting name='粉重' value='20g' img={require('../../images/icon_beanweight.png')}/>
             <Text>读秤</Text>
           </View>
-          <SingleSetting name='萃取量' value='240g' url={require('../../images/icon_waterweight.png')}/>
+          <SingleSetting name='萃取量' value='240g' img={require('../../images/icon_waterweight.png')}/>
         </View>
 
         <View style={styles.flexrow}>
-          <SingleSetting name='粉液比' value='1:12' url={require('../../images/icon_proportion.png')}/>
-          <SingleSetting name='温度' value='92℃' url={require('../../images/icon_temp.png')}/>
+          <SingleSetting name='粉液比' value='1:12' img={require('../../images/icon_proportion.png')}/>
+          <SingleSetting name='温度' value='92℃' img={require('../../images/icon_temp.png')}/>
         </View>
 
         <View style={styles.flexrow}>
-          <SingleSetting name='研磨度' value='3.5' url={require('../../images/icon_grandsize.png')}/>
-          <SingleSetting name='预计时间' value='02:30' url={require('../../images/icon_time.png')}/>
+          <SingleSetting name='研磨度' value='3.5' img={require('../../images/icon_grandsize.png')}/>
+          <SingleSetting name='预计时间' value='02:30' img={require('../../images/icon_time.png')}/>
         </View>
 
         <View style={styles.flexrow}>
@@ -77,7 +79,7 @@ class SingleSetting extends Component {
   render() {
     return (
       <View style={[styles.flexrow,styles.fullwidth]}>
-        <Image style={styles.settingIcon} source={this.props.url} />
+        <Image style={styles.settingIcon} source={this.props.img} />
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
       </View>
