@@ -41,8 +41,6 @@ class Reader extends Component {
           <View style={styles.btnClear}>
             <Text style={styles.btnClearText} onPress={() => {Alert.alert('pressed');}}>归零</Text>
           </View>
-          {/*<Button title="归零" color='#6A6A6A' onPress={() => {Alert.alert('pressed');}} />*/}
-
         </View>
       </View>
     );
@@ -74,6 +72,7 @@ export class Details extends Component {
   }
 }
 
+// single coffee detail component
 class SingleDetail extends Component {
   render() {
     return (
@@ -82,6 +81,7 @@ class SingleDetail extends Component {
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
         <Text style={{marginLeft:20, fontSize:26, color:'#53B2F0'}} onPress={() => {Alert.alert('pressed');}}>{this.props.text}</Text>
+        {/*-- text for things like '读秤' --*/}
       </View>
     );
   }
