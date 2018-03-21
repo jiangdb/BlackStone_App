@@ -3,8 +3,18 @@ import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Index from './Index';
 import About from './About';
-import Mine from './Mine.js';
+import Mine from './Mine';
 import Details from './Details';
+
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Details!</Text>
+      </View>
+    );
+  }
+}
 
 const HomeStack = StackNavigator({
   Home: { screen: Index },

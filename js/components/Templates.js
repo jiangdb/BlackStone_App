@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export class Message extends Component {
@@ -9,6 +9,23 @@ export class Message extends Component {
         <Ionicons name="ios-alert" size={23} color='tomato'/>
         <Text style={styles.message}>当前蓝牙不可用，请检查你的蓝牙设置</Text>
       </View>
+    );
+  }
+}
+
+export class ChoiceBar extends Component {
+  constructor(props){
+    super(props)
+  }
+  render() {
+    return (
+      <TouchableOpacity style={[styles.choiceBar]} onPress={this.props.onPress}>
+        <Text style={styles.choiceTitle}>{this.props.title}</Text>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
+          <Text style={styles.choiceValue}>{this.props.value}</Text>
+          <Image style={styles.more} source={this.props.icon} />
+        </View>
+      </TouchableOpacity>
     );
   }
 }
@@ -25,5 +42,26 @@ const styles = StyleSheet.create({
   message: {
     color:'#6f5153',
     fontSize:30,
+  },
+  choiceBar: {
+    height: 110,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    marginLeft:37,
+  },
+  choiceTitle: {
+    fontSize:34,
+    color:'#232323',
+    marginLeft:28,
+  },
+  choiceValue: {
+    marginRight:14,
+    fontSize:34,
+    color:'#878787',
+  },
+  more: {
+    marginRight:28,
   },
 });
