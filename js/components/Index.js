@@ -81,7 +81,7 @@ class SingleDetail extends Component {
         <Image style={styles.settingIcon} source={this.props.img} />
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
-        <Text style={{marginLeft:20, fontSize:26, color:'#53B2F0'}}>{this.props.text}</Text>
+        <Text style={{marginLeft:20, fontSize:26, color:'#53B2F0'}} onPress={() => {Alert.alert('pressed');}}>{this.props.text}</Text>
       </View>
     );
   }
