@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 class Index extends React.Component {
   static navigationOptions = {
-    title: 'Home',
+    title: 'TIMEMORE Labs',
   };
 
   render() {
