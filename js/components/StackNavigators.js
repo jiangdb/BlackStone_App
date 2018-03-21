@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Index from './Index';
 import Mine from './Mine';
+import About from './About';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -21,6 +22,7 @@ const HomeStack = StackNavigator({
 
 const MineStack = StackNavigator({
   Mine: { screen: Mine },
+  About: { screen: About }
 });
 
 module.exports = {
