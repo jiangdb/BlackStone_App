@@ -15,12 +15,12 @@ export default class Mine extends React.Component {
         		<Text style={styles.userName}>用户名</Text>
 	      	</View>
   	  		<View style={{backgroundColor:'#fff', marginBottom: 25}}>
-		      	<ChoiceBar title='连接设备' value='未连接' icon={require('../../images/more.png')}/>
+		      	<ChoiceBar title='连接设备' value='未连接' icon='more'/>
 	      	</View>
 	      	<View style={{backgroundColor:'#fff', flexDirection: 'column'}}>
-		      	<ChoiceBar title='冲煮记录' icon={require('../../images/more.png')} />
-		      	<ChoiceBar title='机器设置' icon={require('../../images/more.png')}/>
-		      	<ChoiceBar title='关于我们' icon={require('../../images/more.png')} onPress={() => this.props.navigation.navigate('About')}/>
+		      	<ChoiceBar title='冲煮记录' icon='more' />
+		      	<ChoiceBar title='机器设置' icon='more' onPress={() => this.props.navigation.navigate('DeviceSetting')}/>
+		      	<ChoiceBar title='关于我们' icon='more' onPress={() => this.props.navigation.navigate('About')}/>
 	      	</View>
       	</View>
     );
