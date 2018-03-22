@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Switch,} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // message component on the top
@@ -20,6 +20,21 @@ export class ChoiceBar extends Component {
   constructor(props){
     super(props)
   }
+
+  getIcon = () => {
+    switch (this.props.icon) {
+      case 'more':
+        return <Image style={styles.icon} source={require('../../images/more.png')} />;
+      break;
+      case 'switch':
+        return <Switch />;
+      break;
+      default:
+        return;
+      break;
+    }
+  }
+
   render() {
     return (
       <TouchableOpacity style={[styles.choiceBar]} onPress={this.props.onPress}>
@@ -27,8 +42,8 @@ export class ChoiceBar extends Component {
         <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
           <Text style={styles.choiceValue}>{this.props.value}</Text>
           {/*-- value next to icon, eg:'未连接' --*/}
-          <Image style={styles.more} source={this.props.icon} />
-          {/*-- icon here can be 'more', 'check', or none --*/}
+          {this.getIcon()}
+          {/*-- icon value can be 'more', 'check','switch' or none --*/}
         </View>
       </TouchableOpacity>
     );
@@ -55,6 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginLeft:37,
+    paddingRight: 32,
   },
   choiceTitle: {
     fontSize:34,
@@ -62,11 +78,10 @@ const styles = StyleSheet.create({
     marginLeft:28,
   },
   choiceValue: {
-    marginRight:14,
     fontSize:34,
     color:'#878787',
   },
-  more: {
-    marginRight:28,
+  icon: {
+    marginLeft:14,
   },
 });
