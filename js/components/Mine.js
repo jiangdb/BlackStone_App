@@ -2,12 +2,10 @@ import React from 'react';
 import { StyleSheet, Button, Text, View , Image } from 'react-native';
 import { ChoiceBar } from './Templates';
 
-
 export default class Mine extends React.Component {
   static navigationOptions = {
     title: 'Mine',
   };
-
 
   render() {
     return (
