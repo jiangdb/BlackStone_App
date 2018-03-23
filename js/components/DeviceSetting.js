@@ -20,7 +20,7 @@ export default class DeviceSetting extends React.Component {
 	      	<ChoiceBar title='按键振动' icon='switch' switchValue='true' />
       	</View>
       	<View style={{backgroundColor:'#fff'}}>
-	      	<ChoiceBar title='关于机器'/>
+	      	<ChoiceBar title='关于机器' onPress={() => this.props.navigation.navigate('DeviceInfo')}/>
       	</View>
       </View>
 

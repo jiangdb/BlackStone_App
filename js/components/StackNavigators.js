@@ -6,6 +6,7 @@ import About from './About';
 import Mine from './Mine';
 import Details from './Details';
 import DeviceSetting from './DeviceSetting';
+import DeviceInfo from './DeviceInfo';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -26,6 +27,7 @@ const MineStack = StackNavigator({
   Mine: { screen: Mine},
   About: { screen: About },
   DeviceSetting: { screen: DeviceSetting },
+  DeviceInfo: { screen: DeviceInfo },
 });
 
 module.exports = {
