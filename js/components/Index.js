@@ -17,7 +17,7 @@ export default class Index extends Component {
         <Details/>
         <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center'}}>
           <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
-          <Text style={styles.settingContent} onPress={() => this.props.navigation.navigate('Details')}>设置参数</Text>
+          <Text style={styles.settingContent} onPress={() => this.props.navigation.navigate('CoffeeSettings')}>设置参数</Text>
         </View>
         <View>
           <Button title="开始冲煮" color='#6A6A6A' onPress={() => {Alert.alert('pressed');}} />
