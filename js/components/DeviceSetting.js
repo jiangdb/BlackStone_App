@@ -15,9 +15,9 @@ export default class DeviceSetting extends React.Component {
 	      	<ChoiceBar title='无线连接' value='蓝牙未连接'/>
       	</View>
       	<View style={{flexDirection: 'column', backgroundColor:'#fff', marginBottom: 25}}>
-	      	<ChoiceBar title='报警提示' icon='switch'/>
-	      	<ChoiceBar title='按键声音' icon='switch'/>
-	      	<ChoiceBar title='按键振动' icon='switch'/>
+	      	<ChoiceBar title='报警提示' icon='switch' switchValue='' />
+	      	<ChoiceBar title='按键声音' icon='switch' switchValue='' />
+	      	<ChoiceBar title='按键振动' icon='switch' switchValue='true' />
       	</View>
       	<View style={{backgroundColor:'#fff'}}>
 	      	<ChoiceBar title='关于机器'/>

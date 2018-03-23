@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Switch,} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, Switch,} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // message component on the top
@@ -18,7 +18,14 @@ export class Message extends Component {
 // single choice-bar component for whole app
 export class ChoiceBar extends Component {
   constructor(props){
-    super(props)
+    super(props);
+    this.state = {
+      switchValue: this.props.switchValue,
+    }
+  }
+
+  toggleSwitch = () => {
+    this.setState({switchValue: !this.state.switchValue});
   }
 
   getIcon = () => {
@@ -27,7 +34,7 @@ export class ChoiceBar extends Component {
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
       break;
       case 'switch':
-        return <Switch />;
+        return <Switch onValueChange={this.toggleSwitch} value={this.state.switchValue} />;
       break;
       default:
         return;
@@ -37,15 +44,17 @@ export class ChoiceBar extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={[styles.choiceBar]} onPress={this.props.onPress}>
-        <Text style={styles.choiceTitle}>{this.props.title}</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
-          <Text style={styles.choiceValue}>{this.props.value}</Text>
-          {/*-- value next to icon, eg:'未连接' --*/}
-          {this.getIcon()}
-          {/*-- icon value can be 'more', 'check','switch' or none --*/}
+      <TouchableWithoutFeedback onPress={this.props.onPress}>
+        <View style={[styles.choiceBar]}>
+          <Text style={styles.choiceTitle}>{this.props.title}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
+            <Text style={styles.choiceValue}>{this.props.value}</Text>
+            {/*-- value next to icon, eg:'未连接' --*/}
+            {this.getIcon()}
+            {/*-- icon value can be 'more', 'check','switch' or none --*/}
+          </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   }
 }
