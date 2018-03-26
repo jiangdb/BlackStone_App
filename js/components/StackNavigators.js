@@ -4,8 +4,10 @@ import { StackNavigator } from 'react-navigation';
 import Index from './Index';
 import About from './About';
 import Mine from './Mine';
-import Details from './Details';
-import DeviceSetting from './DeviceSetting';
+import CoffeeSettings from './CoffeeSettings';
+import DeviceSetting from './Device/DeviceSetting';
+import DeviceInfo from './Device/DeviceInfo';
+import BeanCategory from './BeanCategory';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -19,13 +21,15 @@ class DetailsScreen extends React.Component {
 
 const HomeStack = StackNavigator({
   Home: { screen: Index },
-  Details: { screen: Details },
+  CoffeeSettings: { screen: CoffeeSettings },
+  BeanCategory: { screen: BeanCategory },
 });
 
 const MineStack = StackNavigator({
   Mine: { screen: Mine},
   About: { screen: About },
   DeviceSetting: { screen: DeviceSetting },
+  DeviceInfo: { screen: DeviceInfo },
 });
 
 module.exports = {

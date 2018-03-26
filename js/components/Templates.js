@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Switch,} from 'react-native';
+import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableWithoutFeedback} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // message component on the top
@@ -15,10 +15,27 @@ export class Message extends Component {
   }
 }
 
+// divider
+export class Divider extends Component {
+  render() {
+    return (
+      <View style={styles.divider}>
+      </View>
+    );
+  }
+}
+
 // single choice-bar component for whole app
 export class ChoiceBar extends Component {
   constructor(props){
-    super(props)
+    super(props);
+    this.state = {
+      switchValue: this.props.switchValue,
+    }
+  }
+
+  toggleSwitch = () => {
+    this.setState({switchValue: !this.state.switchValue});
   }
 
   getIcon = () => {
@@ -27,7 +44,7 @@ export class ChoiceBar extends Component {
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
       break;
       case 'switch':
-        return <Switch />;
+        return <Switch onValueChange={this.toggleSwitch} value={this.state.switchValue} />;
       break;
       default:
         return;
@@ -37,51 +54,60 @@ export class ChoiceBar extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={[styles.choiceBar]} onPress={this.props.onPress}>
-        <Text style={styles.choiceTitle}>{this.props.title}</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
-          <Text style={styles.choiceValue}>{this.props.value}</Text>
-          {/*-- value next to icon, eg:'未连接' --*/}
-          {this.getIcon()}
-          {/*-- icon value can be 'more', 'check','switch' or none --*/}
+      <TouchableWithoutFeedback onPress={this.props.onPress}>
+        <View style={[styles.choiceBar]}>
+          <Text style={styles.choiceTitle}>{this.props.title}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
+            <Text style={styles.choiceValue}>{this.props.value}</Text>
+            {/*-- value next to icon, eg:'未连接' --*/}
+            {this.getIcon()}
+            {/*-- icon value can be 'more', 'check','switch' or none --*/}
+          </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  divider: {
+    height:1,
+    borderTopColor: '#E0DEDE',
+    borderStyle: 'solid',
+    borderTopWidth: 0.5,
+    marginLeft: 18,
+  },
   messageContainer: {
-    height: 100,
-    flex: 0.3,
+    height: 50,
     flexDirection:'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#ffdfe0',
+    paddingLeft: 15,
   },
   message: {
     color:'#6f5153',
-    fontSize:30,
+    fontSize:15,
+    marginLeft: 15,
   },
   choiceBar: {
-    height: 110,
+    height: 55,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:37,
-    paddingRight: 32,
+    marginLeft:18,
+    paddingRight: 16,
   },
   choiceTitle: {
-    fontSize:34,
+    fontSize:17,
     color:'#232323',
-    marginLeft:28,
+    marginLeft:14,
   },
   choiceValue: {
-    fontSize:34,
+    fontSize:17,
     color:'#878787',
   },
   icon: {
-    marginLeft:14,
+    marginLeft:7,
   },
 });
