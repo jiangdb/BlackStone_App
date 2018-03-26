@@ -5,8 +5,8 @@ import Index from './Index';
 import About from './About';
 import Mine from './Mine';
 import CoffeeSettings from './CoffeeSettings';
-import DeviceSetting from './DeviceSetting';
-import DeviceInfo from './DeviceInfo';
+import DeviceSetting from './Device/DeviceSetting';
+import DeviceInfo from './Device/DeviceInfo';
 import BeanCategory from './BeanCategory';
 
 class DetailsScreen extends React.Component {

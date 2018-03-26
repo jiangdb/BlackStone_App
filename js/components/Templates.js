@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, Switch, TextInput} from 'react-native';
+import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableWithoutFeedback} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // message component on the top
@@ -15,11 +15,11 @@ export class Message extends Component {
   }
 }
 
-// devider
-export class Devider extends Component {
+// divider
+export class Divider extends Component {
   render() {
     return (
-      <View style={styles.devider}>
+      <View style={styles.divider}>
       </View>
     );
   }
@@ -69,106 +69,45 @@ export class ChoiceBar extends Component {
   }
 }
 
-// single input field component for coffee setting page
-export class CoffeeSetting extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { input: 'setting value' };
-  }
-
-  getComponent = () => {
-    switch (this.props.component) {
-      case 'input':
-        return <TextInput
-                style={styles.settingInput}
-                onChangeText={(input) => this.setState({input})}
-                value={this.state.input}/>;
-      break;
-      case 'choiceBar':
-        return (
-          <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('DeviceSetting')}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={styles.settingInput}>曼特宁</Text>
-              <Image style={styles.icon} source={require('../../images/more.png')} />
-            </View>
-          </TouchableWithoutFeedback>
-        );
-      break;
-      default:
-        return;
-      break;
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.settingContainer}>
-        <Text style={styles.settingTitle}>{this.props.title}</Text>
-        {this.getComponent()}
-        {/*-- icon value can be 'input', 'choiceBar','datePicker' or 'ratio' --*/}
-        <Devider/>
-      </View>
-    );
-  }
-}
-
 const styles = StyleSheet.create({
-  devider: {
-    height:2,
+  divider: {
+    height:1,
     borderTopColor: '#E0DEDE',
     borderStyle: 'solid',
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
+    marginLeft: 18,
   },
   messageContainer: {
-    height: 100,
-    flex: 0.3,
+    height: 50,
     flexDirection:'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#ffdfe0',
+    paddingLeft: 15,
   },
   message: {
     color:'#6f5153',
-    fontSize:30,
+    fontSize:15,
+    marginLeft: 15,
   },
   choiceBar: {
-    height: 110,
+    height: 55,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:37,
-    paddingRight: 32,
+    marginLeft:18,
+    paddingRight: 16,
   },
   choiceTitle: {
-    fontSize:34,
+    fontSize:17,
     color:'#232323',
-    marginLeft:28,
+    marginLeft:14,
   },
   choiceValue: {
-    fontSize:34,
+    fontSize:17,
     color:'#878787',
   },
   icon: {
-    marginLeft:14,
+    marginLeft:7,
   },
-  settingContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    paddingLeft:42,
-    backgroundColor: '#fff',
-  },
-  settingTitle: {
-    lineHeight:37,
-    marginTop: 19,
-    fontSize:26,
-    color:'#5B5B5B',
-  },
-  settingInput: {
-    lineHeight:67,
-    marginTop:9,
-    marginBottom:18,
-    fontSize:48,
-    color:'#232323',
-  }
 });

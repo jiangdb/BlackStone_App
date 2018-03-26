@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { CoffeeSetting, Devider } from './Templates';
+import { CoffeeSetting, Divider } from './Templates';
 
 export default class BeanCategory extends React.Component {
   static navigationOptions = {

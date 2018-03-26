@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Message} from './Templates';
 
@@ -19,8 +19,12 @@ export default class Index extends Component {
           <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
           <Text style={styles.settingContent} onPress={() => this.props.navigation.navigate('CoffeeSettings')}>设置参数</Text>
         </View>
-        <View>
-          <Button title="开始冲煮" color='#6A6A6A' onPress={() => {Alert.alert('pressed');}} />
+        <View style={{flexDirection: 'row',justifyContent:'center'}}  >
+          <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}} disabled={true}>
+            <View style={styles.btnStart}>
+              <Text style={styles.btnStartText}>开始冲煮</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       </View>
     );
@@ -31,10 +35,10 @@ export default class Index extends Component {
 class Reader extends Component {
   render() {
     return (
-      <View style={{flex:2, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#dcdcdc', alignItems: 'center'}}>
+      <View style={styles.topReader}>
         <Image source={require('../../images/cover.png')} style={styles.coverImg} />
-        <View style={styles.flexColumn}>
-          <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
+        <View style={[styles.flexColumn]}>
+          <Text style={[styles.readerTitle],{marginTop:32}}>咖啡萃取量(g)</Text>
           <Text style={styles.reader}>200</Text>
           <Text style={styles.readerTitle}>注水总量(g)</Text>
           <Text style={styles.reader}>200</Text>
@@ -80,7 +84,7 @@ class SingleDetail extends Component {
         <Image style={styles.settingIcon} source={this.props.img} />
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
-        <Text style={{marginLeft:20, fontSize:26, color:'#53B2F0'}} onPress={() => {Alert.alert('pressed');}}>{this.props.text}</Text>
+        <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}} onPress={() => {Alert.alert('pressed');}}>{this.props.text}</Text>
         {/*-- text for things like '读秤' --*/}
       </View>
     );
@@ -101,70 +105,89 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection:'column',
   },
+  topReader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#dcdcdc',
+    alignItems: 'center',
+    height: 283,
+  },
   coverImg: {
     resizeMode: 'contain',
-    marginTop: 60,
-    marginBottom: 60,
-    marginLeft: 25,
-    marginRight: 25,
+    marginTop: 30,
+    marginBottom: 30,
+    marginLeft: 12,
+    marginRight: 12,
     flex: 1,
   },
   readerTitle: {
     color: '#5B5B5B',
-    fontSize: 26,
-    marginTop: 33,
+    fontSize: 13,
+    marginTop: 17,
   },
   reader: {
     fontWeight: 'bold',
     color: '#232323',
-    fontSize: 90,
-    height: 104,
+    fontSize: 45,
+    height: 52,
   },
   btnClear: {
     display:'flex',
     justifyContent:'center',
     alignItems:'center',
-    borderRadius: 52,
+    borderRadius: 26,
     borderColor: '#B78A49',
     borderStyle: 'solid',
-    borderWidth: 2,
-    marginTop: 37,
-    width: 102,
-    height: 102,
+    borderWidth: 1,
+    marginTop: 18,
+    width: 51,
+    height: 51,
   },
   btnClearText: {
     color: '#BF9253',
-    fontSize: 30,
+    fontSize: 15,
   },
   settingIcon: {
-    width: 40,
-    height: 44,
-    marginTop:10,
-    marginLeft:40,
+    width: 20,
+    height: 22,
+    marginTop:5,
+    marginLeft:20,
   },
   settingName: {
     color: '#5B5B5B',
-    marginLeft: 15,
-    lineHeight:65,
-    fontSize:30,
+    marginLeft: 7,
+    lineHeight:32,
+    fontSize:15,
   },
   settingValue: {
     fontWeight: 'bold',
     color: '#232323',
     overflow: 'hidden',
-    marginLeft:19,
-    lineHeight:65,
-    fontSize:30,
+    marginLeft:10,
+    lineHeight:32,
+    fontSize:15,
   },
   settingImg: {
-    height:20,
-    width:26,
+    height:10,
+    width:13,
   },
   settingContent: {
-    lineHeight:50,
-    marginLeft:11,
-    fontSize:30,
+    lineHeight:25,
+    marginLeft:5,
+    fontSize:15,
     color:'#53B2F0',
+  },
+  btnStart: {
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius: 26,
+    width:252,
+    height:50,
+  },
+  btnStartText: {
+    color:'#6A6A6A',
+    fontSize: 20,
   },
 
 });
