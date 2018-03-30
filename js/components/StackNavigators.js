@@ -2,16 +2,8 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import IndexContainer from './Index';
-
-class MineScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Mine!</Text>
-      </View>
-    );
-  }
-}
+import About from './About';
+import Mine from './Mine.js';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -25,11 +17,11 @@ class DetailsScreen extends React.Component {
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
-  Details: { screen: DetailsScreen },
 });
 
 const MineStack = StackNavigator({
-  Mine: { screen: MineScreen },
+  Mine: { screen: Mine},
+  About: { screen: About }
 });
  
 module.exports = {

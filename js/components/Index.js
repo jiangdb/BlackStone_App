@@ -5,7 +5,7 @@ import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class Index extends React.Component {
   static navigationOptions = {
-    title: 'Home',
+    title: 'TIMEMORE Labs',
   };
 
   render() {
