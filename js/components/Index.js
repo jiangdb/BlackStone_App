@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { connect } from 'react-redux'
+import { StyleSheet, Button, Text, View } from 'react-native';
+import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class Index extends React.Component {
   static navigationOptions = {
@@ -9,9 +11,17 @@ class Index extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
+        <Text>category: {this.props.coffeeSettings.category}</Text>
+        <Text>ratioWater: {this.props.coffeeSettings.ratioWater}</Text>
+        <Text>beanWeight: {this.props.coffeeSettings.beanWeight}</Text>
+        <Text>waterWeight: {this.props.coffeeSettings.waterWeight}</Text>
+        <Text>temperature: {this.props.coffeeSettings.temperature}</Text>
+        <Text>grandSize: {this.props.coffeeSettings.grandSize}</Text>
+        <Button
+            title='saveCoffeeSettings'
+            onPress={this.props.onSaveCoffeeSetting}
+        >save settings
+        </Button>
       </View>
     );
   }
@@ -26,5 +36,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Index
+const mapStateToProps = state => {
+  return {
+    coffeeSettings: state.coffeeSettings
+  }
+}
 
+const mapDispatchToProps = dispatch => {
+  return {
+    onSaveCoffeeSetting: settings => {
+      dispatch(saveCoffeeSettings({
+        category: 'new one',
+        beanWeight: 100
+      }))
+    }
+  }
+}
+
+const IndexContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Index)
+
+export default IndexContainer

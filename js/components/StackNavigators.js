@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import Index from './Index';
+import IndexContainer from './Index';
 
 class MineScreen extends React.Component {
   render() {
@@ -24,7 +24,7 @@ class DetailsScreen extends React.Component {
 }
 
 const HomeStack = StackNavigator({
-  Home: { screen: Index },
+  Home: { screen: IndexContainer },
   Details: { screen: DetailsScreen },
 });
 
