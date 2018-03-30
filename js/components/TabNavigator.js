@@ -5,25 +5,30 @@ import StackNavigators from './StackNavigators'
 
 export default TabNavigator(
   {
-    Home: { screen: StackNavigators.Home },
-    Settings: { screen: StackNavigators.Mine },
+    Home: {
+      screen: StackNavigators.Home,
+      navigationOptions: {
+        title: 'Home',
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ focused, tintColor}) => {
+          const iconName = `ios-information-circle${focused ? '' : '-outline'}`;
+          return <Ionicons name={iconName} size={25} color={tintColor} />;
+        }
+      }
+    },
+    Mine: {
+      screen: StackNavigators.Mine,
+      navigationOptions: {
+        title: 'Mine',
+        tabBarLabel: 'Mine',
+        tabBarIcon: ({ focused, tintColor}) => {
+          const iconName = `ios-options${focused ? '' : '-outline'}`;
+          return <Ionicons name={iconName} size={25} color={tintColor} />;
+        }
+      }
+    },
   },
   {
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
-        if (routeName === 'Home') {
-          iconName = `ios-information-circle${focused ? '' : '-outline'}`;
-        } else if (routeName === 'Settings') {
-          iconName = `ios-options${focused ? '' : '-outline'}`;
-        }
-
-        // You can return any component that you like here! We usually use an
-        // icon component from react-native-vector-icons
-        return <Ionicons name={iconName} size={25} color={tintColor} />;
-      },
-    }),
     tabBarOptions: {
       activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
