@@ -5,7 +5,9 @@ const initialState = {
     waterWeight: 240,
     temperature: 92,
     grandSize: "3.5",
-    time: 150
+    time: 150,
+    beanWeightReader: 200,
+    waterWeightReader: 200,
 }
  
 import type { Action } from "../actions/types";
@@ -17,6 +19,7 @@ function coffeeSettings(state, action) {
  
   switch (action.type) {
     case "SAVE_COFFEE_SETTINGS":
+      console.log(Object.assign({}, state, action.settings))
       return Object.assign({}, state, action.settings)
 
     default:

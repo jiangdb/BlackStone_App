@@ -8,13 +8,32 @@ class Index extends React.Component {
     title: 'TIMEMORE Labs',
   };
 
+  readerReset = () => {
+    this.props.onSaveCoffeeSetting({
+      beanWeightReader: 0,
+      waterWeightReader: 0,
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         {/*<Message/>*/}
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
-          <Reader/>
+          <View style={[styles.flexColumn, this.props.style]}>
+            <View style={{flexDirection:'column'}}>
+              <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
+              <Text style={styles.reader}>{this.props.coffeeSettings.beanWeightReader}</Text>
+            </View>
+            <View style={styles.flexColumn}>
+              <Text style={styles.readerTitle}>注水总量(g)</Text>
+              <Text style={styles.reader}>{this.props.coffeeSettings.waterWeightReader}</Text>
+            </View>
+            <View style={styles.btnClear}>
+              <Text style={styles.btnClearText} onPress={this.readerReset}>归零</Text>
+            </View>
+          </View>
         </View>
 
         <View style={{flexDirection: 'column', alignItems:'center',marginTop:8.5}}>
@@ -43,37 +62,13 @@ class Index extends React.Component {
           <Text style={styles.settingContent} onPress={() => this.props.navigation.navigate('CoffeeSettings')}>设置参数</Text>
         </View>
         <View style={{flexDirection: 'row',justifyContent:'center'}}  >
-          <TouchableWithoutFeedback  onPress={this.props.onSaveCoffeeSetting}>
+          <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
             <View style={styles.btnStart}>
               <Text style={styles.btnStartText}>开始冲煮</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
-    );
-  }
-}
-
-export class Reader extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  render() {
-    return (
-        <View style={[styles.flexColumn, this.props.style]}>
-          <View style={{flexDirection:'column'}}>
-            <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
-            <Text style={styles.reader}>200</Text>
-          </View>
-          <View style={styles.flexColumn}>
-            <Text style={styles.readerTitle}>注水总量(g)</Text>
-            <Text style={styles.reader}>200</Text>
-          </View>
-          <View style={styles.btnClear}>
-            <Text style={styles.btnClearText} onPress={() => {Alert.alert('pressed');}}>归零</Text>
-          </View>
-        </View>
     );
   }
 }
@@ -211,10 +206,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSaveCoffeeSetting: settings => {
-      dispatch(saveCoffeeSettings({
-        category: 'new one',
-        beanWeight: 100
-      }))
+      dispatch(saveCoffeeSettings(settings))
     }
   }
 }

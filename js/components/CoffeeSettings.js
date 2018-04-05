@@ -1,110 +1,114 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, } from 'react-native';
+import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView} from 'react-native';
 import {Divider} from './Templates';
+import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
     title: '设置参数',
   };
 
-  state = {
-    beanName: '曼特宁',
-    beanWeight: '20',
-    sliderValue: 12,
-    temperature:'92',
-    grandsize:'3.5',
-    time:'02:30'
+  save = () => {
+    this.props.onSaveCoffeeSetting({
+      waterWeight:this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight
+    });
+    this.props.navigation.goBack();
   };
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
-        <View style={{ flexDirection: 'column' }}>
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>咖啡豆</Text>
-            <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('BeanCategory')}>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-                <Text style={styles.settingInput}>{this.state.beanName}</Text>
-                <Image style={styles.icon} source={require('../../images/more.png')} />
-              </View>
-            </TouchableWithoutFeedback>
-            <Divider/>
-          </View>
-
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>粉重（g）</Text>
-
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <TextInput
-                style={styles.settingInput}
-                value={this.state.beanWeight}
-                onChangeText={ beanWeight => this.setState({beanWeight})}
-              />
-              <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
-                <View style={styles.btnReadWeight}>
-                  <Text style={styles.btnReadWeightText}>读秤</Text>
+      <ScrollView style={{ flex: 1, }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
+          <View style={{ flexDirection: 'column' }}>
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>咖啡豆</Text>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('BeanCategory')}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
+                  <Image style={styles.icon} source={require('../../images/more.png')} />
                 </View>
               </TouchableWithoutFeedback>
+              <Divider/>
             </View>
-            <Divider/>
-          </View>
 
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>粉液比（1：N）</Text>
-            <View style={styles.slider}>
-              <View style={styles.sliderText}>
-                <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.state.sliderValue}</Text>
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>粉重（g）</Text>
+
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <TextInput
+                  style={styles.settingInput}
+                  value={this.props.coffeeSettings.beanWeight.toString()}
+                  onChangeText={ beanWeight => { this.props.onSaveCoffeeSetting({beanWeight: beanWeight})}}
+                  underlineColorAndroid='transparent'
+                />
+                <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
+                  <View style={styles.btnReadWeight}>
+                    <Text style={styles.btnReadWeightText}>读秤</Text>
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-              <Slider minimumTrackTintColor='#C29F6C' maximumValue={24} step={1}
-                value={this.state.sliderValue}
-                onValueChange={sliderValue => this.setState({ sliderValue })}
+              <Divider/>
+            </View>
+
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>粉液比（1：N）</Text>
+              <View style={styles.slider}>
+                <View style={styles.sliderText}>
+                  <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.props.coffeeSettings.ratioWater}</Text>
+                </View>
+                <Slider minimumTrackTintColor='#C29F6C' maximumValue={24} step={1}
+                  value={this.props.coffeeSettings.ratioWater}
+                  onValueChange={ratioWater => this.props.onSaveCoffeeSetting({ ratioWater:ratioWater })}
+                />
+              </View>
+            </View>
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>萃取量（g）</Text>
+              <TextInput
+                style={styles.settingInput}
+                value={(this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight).toString()}
+                editable={false}
+                underlineColorAndroid='transparent'
               />
+              <Divider/>
+            </View>
+
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
+              <Divider/>
+            </View>
+
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>水温（℃）</Text>
+              <TextInput
+                style={styles.settingInput}
+                value={this.props.coffeeSettings.temperature.toString()}
+                onChangeText={ temperature => this.props.onSaveCoffeeSetting({temperature:temperature})}
+                underlineColorAndroid='transparent'
+              />
+              <Divider/>
+            </View>
+
+            <View style={styles.settingContainer}>
+              <Text style={styles.settingTitle}>研磨度</Text>
+              <TextInput
+                style={styles.settingInput}
+                value={this.props.coffeeSettings.grandSize}
+                onChangeText={ grandSize => this.props.onSaveCoffeeSetting({grandSize:grandSize})}
+                underlineColorAndroid='transparent'
+              />
+              <Divider/>
             </View>
           </View>
 
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>萃取量（g）</Text>
-            <TextInput
-              style={styles.settingInput}
-              value={(this.state.sliderValue*this.state.beanWeight).toString()}
-              editable={false}
-            />
-            <Divider/>
-          </View>
-
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
-            <Divider/>
-          </View>
-
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>水温（℃）</Text>
-            <TextInput
-              style={styles.settingInput}
-              value={this.state.temperature}
-              onChangeText={ temperature => this.setState({temperature})}
-            />
-            <Divider/>
-          </View>
-
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingTitle}>研磨度</Text>
-            <TextInput
-              style={styles.settingInput}
-              value={this.state.grandsize}
-              onChangeText={ grandsize => this.setState({grandsize})}
-            />
-            <Divider/>
-          </View>
+          <TouchableWithoutFeedback onPress={this.save}>
+            <View style={styles.btnSave}>
+              <Text style={styles.btnSaveText}>确认</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-
-        <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}}>
-          <View style={styles.btnSave}>
-            <Text style={styles.btnSaveText}>确认</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -186,10 +190,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onSaveCoffeeSetting: settings => {
-      dispatch(saveCoffeeSettings({
-        category: 'new one',
-        beanWeight: 100
-      }))
+      dispatch(saveCoffeeSettings(settings))
     }
   }
 }

@@ -4,7 +4,8 @@ import { StackNavigator } from 'react-navigation';
 import IndexContainer from './Index';
 import About from './About';
 import Mine from './Mine.js';
-import CoffeeSettingsContainer from './CoffeeSettings.js';
+import CoffeeSettingsContainer from './CoffeeSettings';
+import BeanCategoryContainer from './BeanCategory';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -19,6 +20,7 @@ class DetailsScreen extends React.Component {
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
+  BeanCategory: { screen: BeanCategoryContainer },
 });
 
 const MineStack = StackNavigator({
