@@ -8,7 +8,7 @@ class Index extends React.Component {
     title: 'TIMEMORE Labs',
   };
 
-  readerReset = () => {
+  _readerReset = () => {
     this.props.onSaveCoffeeSetting({
       beanWeightReader: 0,
       waterWeightReader: 0,
@@ -31,7 +31,7 @@ class Index extends React.Component {
               <Text style={styles.reader}>{this.props.coffeeSettings.waterWeightReader}</Text>
             </View>
             <View style={styles.btnClear}>
-              <Text style={styles.btnClearText} onPress={this.readerReset}>归零</Text>
+              <Text style={styles.btnClearText} onPress={this._readerReset}>归零</Text>
             </View>
           </View>
         </View>

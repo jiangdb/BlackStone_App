@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView} from 'react-native';
+import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
 import {Divider} from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
@@ -9,7 +9,7 @@ class CoffeeSettings extends React.Component {
     title: '设置参数',
   };
 
-  save = () => {
+  _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
       waterWeight:this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight
     });
@@ -20,7 +20,8 @@ class CoffeeSettings extends React.Component {
     return (
       <ScrollView style={{ flex: 1, }}>
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
-          <View style={{ flexDirection: 'column' }}>
+            <KeyboardAvoidingView behavior="padding" style={{flex: 1}}>
+
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
               <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('BeanCategory')}>
@@ -41,6 +42,7 @@ class CoffeeSettings extends React.Component {
                   value={this.props.coffeeSettings.beanWeight.toString()}
                   onChangeText={ beanWeight => { this.props.onSaveCoffeeSetting({beanWeight: beanWeight})}}
                   underlineColorAndroid='transparent'
+                  keyboardType='numeric'
                 />
                 <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
                   <View style={styles.btnReadWeight}>
@@ -57,10 +59,11 @@ class CoffeeSettings extends React.Component {
                 <View style={styles.sliderText}>
                   <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.props.coffeeSettings.ratioWater}</Text>
                 </View>
-                <Slider minimumTrackTintColor='#C29F6C' maximumValue={24} step={1}
+                <Slider minimumTrackTintColor='#C29F6C' minimumValue={1} maximumValue={24} step={1 }
                   value={this.props.coffeeSettings.ratioWater}
                   onValueChange={ratioWater => this.props.onSaveCoffeeSetting({ ratioWater:ratioWater })}
                 />
+                <RatioMark/>
               </View>
             </View>
             <View style={styles.settingContainer}>
@@ -76,6 +79,13 @@ class CoffeeSettings extends React.Component {
 
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
+              <TextInput
+                style={styles.settingInput}
+                value={this.props.coffeeSettings.time.toString()}
+                onChangeText={ time => this.props.onSaveCoffeeSetting({time:time})}
+                underlineColorAndroid='transparent'
+                keyboardType='numeric'
+              />
               <Divider/>
             </View>
 
@@ -86,6 +96,7 @@ class CoffeeSettings extends React.Component {
                 value={this.props.coffeeSettings.temperature.toString()}
                 onChangeText={ temperature => this.props.onSaveCoffeeSetting({temperature:temperature})}
                 underlineColorAndroid='transparent'
+                keyboardType='numeric'
               />
               <Divider/>
             </View>
@@ -97,18 +108,61 @@ class CoffeeSettings extends React.Component {
                 value={this.props.coffeeSettings.grandSize}
                 onChangeText={ grandSize => this.props.onSaveCoffeeSetting({grandSize:grandSize})}
                 underlineColorAndroid='transparent'
+                keyboardType='numeric'
               />
               <Divider/>
             </View>
-          </View>
+      </KeyboardAvoidingView>
 
-          <TouchableWithoutFeedback onPress={this.save}>
+          <TouchableWithoutFeedback onPress={this._saveSetting}>
             <View style={styles.btnSave}>
               <Text style={styles.btnSaveText}>确认</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
       </ScrollView>
+    );
+  }
+}
+
+class RatioMark extends React.Component {
+  render() {
+    return (
+      <View style={{flexDirection:'column', marginRight:8, marginLeft:8,}}>
+        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+          <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={styles.ratioMark}></View>
+          <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
+        </View>
+        <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
+            <Text style={[styles.markText,styles.markTextFirst]}>1</Text>
+            <Text style={[styles.markText,styles.markTextMiddle]}>6</Text>
+            <Text style={[styles.markText,styles.markTextMiddle]}>12</Text>
+            <Text style={[styles.markText,styles.markTextMiddle]}>18</Text>
+            <Text style={styles.markText}>24</Text>
+        </View>
+      </View>
     );
   }
 }
@@ -177,7 +231,26 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     justifyContent:'center',
     marginTop:7,
-  }
+  },
+  ratioMark: {
+    width: 0.5,
+    height:13,
+    backgroundColor: '#E0DEDE',
+  },
+  ratioMarkLong: {
+    height:18,
+  },
+  markText: {
+    lineHeight:14,
+    fontSize:12,
+    color:'#D9D9D9',
+  },
+  // markTextFirst: {
+  //   width:72,
+  // },
+  // markTextMiddle: {
+  //   width:86.5,
+  // }
 });
 
 

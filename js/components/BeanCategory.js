@@ -9,10 +9,10 @@ class BeanCategory extends React.Component {
     title: '请选择咖啡豆种类',
   };
 
-  onPressItem = ({item}) => {
-    // this.props.onSaveCoffeeSetting({
-    //   category: item.key
-    // });
+  _onPressItem = (key) => {
+    this.props.onSaveCoffeeSetting({
+      category: key
+    });
     this.props.navigation.goBack();
   };
 
@@ -38,7 +38,6 @@ class BeanCategory extends React.Component {
       	<View style={{backgroundColor: 'white',height:60 }}>
       		<TextInput
             style={styles.beanInput}
-            value={this.props.coffeeSettings.category}
             onChangeText={category => this.props.onSaveCoffeeSetting({category:category})}
             placeholder='请输入咖啡豆种类'
             underlineColorAndroid='transparent'
@@ -51,7 +50,7 @@ class BeanCategory extends React.Component {
           style={{backgroundColor: '#fff',flex: 1}}
           data={this.data}
           ItemSeparatorComponent={() => <Divider/> }
-          renderItem={({item}) => <Text style={styles.categoryList} onPress={this.onPressItem()}>{item.key}</Text>}
+          renderItem={({item}) => <Text style={styles.categoryList} onPress={this._onPressItem.bind(this, item.key)}>{item.key}</Text>}
         />
       </View>
     );

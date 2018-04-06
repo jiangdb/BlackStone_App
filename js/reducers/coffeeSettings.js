@@ -6,6 +6,8 @@ const initialState = {
     temperature: 92,
     grandSize: "3.5",
     time: 150,
+    timeMintue:30,
+    timeSecond:22,
     beanWeightReader: 200,
     waterWeightReader: 200,
 }
