@@ -39,6 +39,7 @@ class BeanCategory extends React.Component {
       		<TextInput
             style={styles.beanInput}
             onChangeText={category => this.props.onSaveCoffeeSetting({category:category})}
+            onSubmitEditing={() => this.props.navigation.goBack()}
             placeholder='请输入咖啡豆种类'
             underlineColorAndroid='transparent'
           />
