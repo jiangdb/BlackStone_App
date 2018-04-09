@@ -1,14 +1,4 @@
 const initialState = {
-    category: '曼特宁',
-    ratioWater: 12,
-    beanWeight: 20,
-    waterWeight: 240,
-    temperature: 92,
-    grandSize: "3.5",
-    timeMintue:30,
-    timeSecond:22,
-    beanWeightReader: 200,
-    waterWeightReader: 200,
     beanCategoryData: [
       {key: '曼特宁'},
       {key: '危地马拉'},

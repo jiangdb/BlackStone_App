@@ -9,6 +9,8 @@ class CoffeeSettings extends React.Component {
     title: '设置参数',
   };
 
+  state = { beanWeight: this.props.coffeeSettings.beanWeight.toString() };
+
   _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
       waterWeight:this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight
@@ -16,10 +18,15 @@ class CoffeeSettings extends React.Component {
     this.props.navigation.goBack();
   };
 
-  _submitEditing = (name) => {
-    if (event.nativeEvent.text!='') {
-      this.props.onSaveCoffeeSetting({name: event.nativeEvent.text });
+  _submitEditing = () => {
+    console.log(this.state.beanWeight);
+    if (this.state.beanWeight!='') {
+      this.props.onSaveCoffeeSetting({beanWeight: this.state.beanWeight });
+    } else {
+      this.state.beanWeight = this.props.coffeeSettings.beanWeight;
     }
+    console.log(this.state.beanWeight);
+
   };
 
   render() {
@@ -44,8 +51,9 @@ class CoffeeSettings extends React.Component {
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <TextInput
                   style={styles.settingInput}
-                  value={this.props.coffeeSettings.beanWeight.toString()}
-                  onChangeText={ beanWeight => { this.props.onSaveCoffeeSetting({beanWeight: beanWeight})}}
+                  value={this.state.beanWeight}
+                  onChangeText={(text) => this.setState({beanWeight: text})}
+                  onSubmitEditing={this._submitEditing}
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
@@ -84,9 +92,9 @@ class CoffeeSettings extends React.Component {
 
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
-              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View>
+              <View style={styles.pickerContainer}>
                 <Picker
+                  style={styles.picker}
                   mode='dialog'
                   selectedValue={this.props.coffeeSettings.timeMintue}
                   onValueChange={timeMintue => this.props.onSaveCoffeeSetting({timeMintue: timeMintue})}>
@@ -97,9 +105,8 @@ class CoffeeSettings extends React.Component {
                   <Picker.Item label="04" value="04" />
                   <Picker.Item label="05" value="05" />
                 </Picker>
-              </View>
-              <View>
                 <Picker
+                  style={styles.picker}
                   mode='dialog'
                   selectedValue={this.props.coffeeSettings.timeSecond}
                   onValueChange={timeSecond => this.props.onSaveCoffeeSetting({timeSecond: timeSecond})}>
@@ -110,7 +117,6 @@ class CoffeeSettings extends React.Component {
                   <Picker.Item label="04" value="04" />
                   <Picker.Item label="05" value="05" />
                 </Picker>
-              </View>
 
               </View>
 
@@ -219,6 +225,16 @@ const styles = StyleSheet.create({
     marginLeft:21,
     color:'#232323',
     width: 250,
+  },
+  pickerContainer:{
+    flexDirection: 'row',
+    marginTop:4.5,
+    marginBottom:2,
+    marginLeft:21,
+  },
+  picker: {
+    height:34,
+    width: 160,
   },
   icon: {
     marginLeft:7,

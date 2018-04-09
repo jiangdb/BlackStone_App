@@ -16,7 +16,7 @@ class BeanCategory extends React.Component {
     this.props.navigation.goBack();
   };
 
-  _submitEditing = () => {
+  _submitEditing = (event) => {
     if (event.nativeEvent.text!='') {
       this.props.coffeeSettings.beanCategoryData.push({key: event.nativeEvent.text});
       this.props.onSaveCoffeeSetting({category: event.nativeEvent.text });

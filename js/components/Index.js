@@ -47,13 +47,13 @@ class Index extends React.Component {
           </View>
 
           <View style={styles.flexRow}>
-            <SingleDetail name='粉液比' value={this.props.coffeeSettings.ratioWater} img={require('../../images/icon_proportion.png')}/>
+            <SingleDetail name='粉液比' value={'1:'+this.props.coffeeSettings.ratioWater} img={require('../../images/icon_proportion.png')}/>
             <SingleDetail name='温度' value={this.props.coffeeSettings.temperature} img={require('../../images/icon_temp.png')}/>
           </View>
 
           <View style={styles.flexRow}>
             <SingleDetail name='研磨度' value={this.props.coffeeSettings.grandSize} img={require('../../images/icon_grandsize.png')}/>
-            <SingleDetail name='预计时间' value={this.props.coffeeSettings.time} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='预计时间' value={this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond} img={require('../../images/icon_time.png')}/>
           </View>
         </View>
 
