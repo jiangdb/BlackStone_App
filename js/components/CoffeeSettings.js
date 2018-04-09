@@ -16,6 +16,12 @@ class CoffeeSettings extends React.Component {
     this.props.navigation.goBack();
   };
 
+  _submitEditing = (name) => {
+    if (event.nativeEvent.text!='') {
+      this.props.onSaveCoffeeSetting({name: event.nativeEvent.text });
+    }
+  };
+
   render() {
     return (
       <ScrollView style={{ flex: 1, }}>
@@ -68,7 +74,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
-                style={styles.settingInput}
+                style={[styles.settingInput,styles.settingInputGray]}
                 value={(this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight).toString()}
                 editable={false}
                 underlineColorAndroid='transparent'
@@ -78,13 +84,36 @@ class CoffeeSettings extends React.Component {
 
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
-              <TextInput
-                style={styles.settingInput}
-                value={this.props.coffeeSettings.time.toString()}
-                onChangeText={ time => this.props.onSaveCoffeeSetting({time:time})}
-                underlineColorAndroid='transparent'
-                keyboardType='numeric'
-              />
+              <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View>
+                <Picker
+                  mode='dialog'
+                  selectedValue={this.props.coffeeSettings.timeMintue}
+                  onValueChange={timeMintue => this.props.onSaveCoffeeSetting({timeMintue: timeMintue})}>
+                  <Picker.Item label="00" value="00" />
+                  <Picker.Item label="01" value="01" />
+                  <Picker.Item label="02" value="02" />
+                  <Picker.Item label="03" value="03" />
+                  <Picker.Item label="04" value="04" />
+                  <Picker.Item label="05" value="05" />
+                </Picker>
+              </View>
+              <View>
+                <Picker
+                  mode='dialog'
+                  selectedValue={this.props.coffeeSettings.timeSecond}
+                  onValueChange={timeSecond => this.props.onSaveCoffeeSetting({timeSecond: timeSecond})}>
+                  <Picker.Item label="00" value="00" />
+                  <Picker.Item label="01" value="01" />
+                  <Picker.Item label="02" value="02" />
+                  <Picker.Item label="03" value="03" />
+                  <Picker.Item label="04" value="04" />
+                  <Picker.Item label="05" value="05" />
+                </Picker>
+              </View>
+
+              </View>
+
               <Divider/>
             </View>
 
@@ -172,13 +201,18 @@ const styles = StyleSheet.create({
   },
   settingTitle: {
     lineHeight:19,
+    height:19,
     marginTop: 10,
     fontSize:13,
     color:'#5B5B5B',
     marginLeft:21,
   },
+  settingInputGray: {
+    color:'#999999',
+  },
   settingInput: {
     lineHeight:34,
+    height:34,
     marginTop:4.5,
     marginBottom:2,
     fontSize:24,
@@ -240,6 +274,7 @@ const styles = StyleSheet.create({
   },
   markText: {
     lineHeight:14,
+    height:14,
     fontSize:12,
     color:'#D9D9D9',
   },

@@ -16,21 +16,13 @@ class BeanCategory extends React.Component {
     this.props.navigation.goBack();
   };
 
-  data = [
-    {key: '曼特宁'},
-    {key: '危地马拉'},
-    {key: '巴西'},
-    {key: '哥伦比亚'},
-    {key: '耶加雪菲'},
-    {key: '西达摩'},
-    {key: '墨西哥'},
-    {key: '云南'},
-    {key: '帕卡马拉'},
-    {key: '肯尼亚'},
-    {key: '蓝山'},
-    {key: '瑰夏'},
-    {key: '可娜'},
-  ]
+  _submitEditing = () => {
+    if (event.nativeEvent.text!='') {
+      this.props.coffeeSettings.beanCategoryData.push({key: event.nativeEvent.text});
+      this.props.onSaveCoffeeSetting({category: event.nativeEvent.text });
+    }
+    this.props.navigation.goBack();
+  };
 
   render() {
     return (
@@ -38,8 +30,7 @@ class BeanCategory extends React.Component {
       	<View style={{backgroundColor: 'white',height:60 }}>
       		<TextInput
             style={styles.beanInput}
-            onChangeText={category => this.props.onSaveCoffeeSetting({category:category})}
-            onSubmitEditing={() => this.props.navigation.goBack()}
+            onSubmitEditing={this._submitEditing}
             placeholder='请输入咖啡豆种类'
             underlineColorAndroid='transparent'
           />
@@ -49,7 +40,7 @@ class BeanCategory extends React.Component {
       	</View>
         <FlatList
           style={{backgroundColor: '#fff',flex: 1}}
-          data={this.data}
+          data={this.props.coffeeSettings.beanCategoryData}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={({item}) => <Text style={styles.categoryList} onPress={this._onPressItem.bind(this, item.key)}>{item.key}</Text>}
         />
