@@ -55,7 +55,7 @@ export class ChoiceBar extends Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress}>
-        <View style={[styles.choiceBar]}>
+        <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
           <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
             <Text style={styles.choiceValue}>{this.props.value}</Text>
@@ -109,5 +109,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft:7,
+    width:8,
+    height:13,
   },
+
 });

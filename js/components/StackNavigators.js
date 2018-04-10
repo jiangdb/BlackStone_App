@@ -1,13 +1,11 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import Index from './Index';
+import IndexContainer from './Index';
 import About from './About';
-import Mine from './Mine';
-import CoffeeSettings from './CoffeeSettings';
-import DeviceSetting from './Device/DeviceSetting';
-import DeviceInfo from './Device/DeviceInfo';
-import BeanCategory from './BeanCategory';
+import Mine from './Mine.js';
+import CoffeeSettingsContainer from './CoffeeSettings';
+import BeanCategoryContainer from './BeanCategory';
 
 class DetailsScreen extends React.Component {
   render() {
@@ -20,16 +18,14 @@ class DetailsScreen extends React.Component {
 }
 
 const HomeStack = StackNavigator({
-  Home: { screen: Index },
-  CoffeeSettings: { screen: CoffeeSettings },
-  BeanCategory: { screen: BeanCategory },
+  Home: { screen: IndexContainer },
+  CoffeeSettings: { screen: CoffeeSettingsContainer },
+  BeanCategory: { screen: BeanCategoryContainer },
 });
 
 const MineStack = StackNavigator({
   Mine: { screen: Mine},
-  About: { screen: About },
-  DeviceSetting: { screen: DeviceSetting },
-  DeviceInfo: { screen: DeviceInfo },
+  About: { screen: About }
 });
 
 module.exports = {
