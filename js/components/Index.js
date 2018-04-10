@@ -1,23 +1,21 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class Index extends React.Component {
   static navigationOptions = {
     title: 'TIMEMORE Labs',
+    headerTitleStyle: {
+      flex: 1,
+      textAlign: 'center',
+      alignSelf: 'center'
+    },
   };
-
-  _readerReset = () => {
-    this.props.onSaveCoffeeSetting({
-      beanWeightReader: 0,
-      waterWeightReader: 0,
-    });
-  }
 
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         {/*<Message/>*/}
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
@@ -31,7 +29,7 @@ class Index extends React.Component {
               <Text style={styles.reader}>{this.props.coffeeSettings.waterWeightReader}</Text>
             </View>
             <View style={styles.btnClear}>
-              <Text style={styles.btnClearText} onPress={this._readerReset}>归零</Text>
+              <Text style={styles.btnClearText} onPress={() => {Alert.alert('pressed');}}>归零</Text>
             </View>
           </View>
         </View>
@@ -57,10 +55,12 @@ class Index extends React.Component {
           </View>
         </View>
 
-        <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
-          <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
-          <Text style={styles.settingContent} onPress={() => this.props.navigation.navigate('CoffeeSettings')}>设置参数</Text>
-        </View>
+        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('CoffeeSettings')}>
+          <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
+            <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
+            <Text style={styles.settingContent}>设置参数</Text>
+          </View>
+        </TouchableWithoutFeedback>
         <View style={{flexDirection: 'row',justifyContent:'center'}}  >
           <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
             <View style={styles.btnStart}>
@@ -68,7 +68,7 @@ class Index extends React.Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

@@ -4,7 +4,7 @@ const initialState = {
     beanWeight: 20,
     waterWeight: 240,
     temperature: 92,
-    grandSize: "3.5",
+    grandSize: 3.5,
     timeMintue:30,
     timeSecond:22,
     beanWeightReader: 200,
@@ -36,6 +36,14 @@ function coffeeSettings(state, action) {
   switch (action.type) {
     case "SAVE_COFFEE_SETTINGS":
       return Object.assign({}, state, action.settings)
+
+    case "SAVE_BEAN_CATEGORY":
+      return Object.assign({}, state, {
+        beanCategoryData: [
+          ...state.beanCategoryData,
+          action.category
+        ]
+      })
 
     default:
       return state;

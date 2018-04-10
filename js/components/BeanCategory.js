@@ -3,22 +3,22 @@ import { connect } from 'react-redux'
 import { Text, View,StyleSheet,TextInput, FlatList,Alert } from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
+import { saveBeanCategory } from '../actions/coffeeSettings.js'
 
 class BeanCategory extends React.Component {
   static navigationOptions = {
     title: '请选择咖啡豆种类',
+    tabBarVisible: false,
   };
 
   _onPressItem = (key) => {
-    this.props.onSaveCoffeeSetting({
-      category: key
-    });
+    this.props.onSaveCoffeeSetting({category: key});
     this.props.navigation.goBack();
   };
 
   _submitEditing = (event) => {
     if (event.nativeEvent.text!='') {
-      this.props.coffeeSettings.beanCategoryData.push({key: event.nativeEvent.text});
+      this.props.onSaveBeanCategory({key: event.nativeEvent.text});
       this.props.onSaveCoffeeSetting({category: event.nativeEvent.text });
     }
     this.props.navigation.goBack();
@@ -78,6 +78,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveCoffeeSetting: settings => {
       dispatch(saveCoffeeSettings(settings))
+    },
+    onSaveBeanCategory: category => {
+      dispatch(saveBeanCategory(category))
     }
   }
 }

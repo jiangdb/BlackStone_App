@@ -7,36 +7,58 @@ import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
     title: '设置参数',
+    tabBarVisible: false,
   };
 
-  state = { beanWeight: this.props.coffeeSettings.beanWeight.toString() };
+  state = {
+    beanWeight: this.props.coffeeSettings.beanWeight.toString(),
+    ratioWater: this.props.coffeeSettings.ratioWater,
+    timeMintue: this.props.coffeeSettings.timeMintue,
+    timeSecond: this.props.coffeeSettings.timeSecond,
+    temperature: this.props.coffeeSettings.temperature.toString(),
+    grandSize: this.props.coffeeSettings.grandSize.toString()
+  };
 
   _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
-      waterWeight:this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight
+      beanWeight: this.state.beanWeight,
+      ratioWater: this.state.ratioWater,
+      waterWeight: this.state.ratioWater*this.state.beanWeight,
+      timeMintue: this.state.timeMintue,
+      timeSecond: this.state.timeSecond,
+      temperature: this.state.temperature,
+      grandSize: this.state.grandSize,
     });
     this.props.navigation.goBack();
   };
 
-  _submitEditing = () => {
-    console.log(this.state.beanWeight);
-    if (this.state.beanWeight!='') {
-      this.props.onSaveCoffeeSetting({beanWeight: this.state.beanWeight });
-    } else {
-      this.state.beanWeight = this.props.coffeeSettings.beanWeight;
+  _submitBeanWeight = () => {
+    if (this.state.beanWeight.length <= 0) {
+      this.setState({beanWeight:this.props.coffeeSettings.beanWeight.toString()});
     }
-    console.log(this.state.beanWeight);
+  };
 
+  _submitTemperature = () => {
+    if (this.state.temperature.length <= 0) {
+      this.setState({temperature:this.props.coffeeSettings.temperature.toString()});
+    }
+  };
+
+  _submitGrandSize = () => {
+    if (this.state.grandSize.length <= 0) {
+      this.setState({grandSize:this.props.coffeeSettings.grandSize.toString()});
+    }
   };
 
   render() {
     return (
       <ScrollView style={{ flex: 1, }}>
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
-
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('BeanCategory')}>
+              <TouchableHighlight
+                underlayColor='#f2f2f2'
+                onPress={() => this.props.navigation.navigate('BeanCategory')}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
                   <Image style={styles.icon} source={require('../../images/more.png')} />
@@ -47,13 +69,13 @@ class CoffeeSettings extends React.Component {
 
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>粉重（g）</Text>
-
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <TextInput
                   style={styles.settingInput}
                   value={this.state.beanWeight}
                   onChangeText={(text) => this.setState({beanWeight: text})}
-                  onSubmitEditing={this._submitEditing}
+                  onSubmitEditing={this._submitBeanWeight}
+                  onBlur={this._submitBeanWeight}
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
@@ -73,8 +95,8 @@ class CoffeeSettings extends React.Component {
                   <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.props.coffeeSettings.ratioWater}</Text>
                 </View>
                 <Slider minimumTrackTintColor='#C29F6C' minimumValue={1} maximumValue={24} step={1 }
-                  value={this.props.coffeeSettings.ratioWater}
-                  onValueChange={ratioWater => this.props.onSaveCoffeeSetting({ ratioWater:ratioWater })}
+                  value={this.state.ratioWater}
+                  onValueChange={(value) => this.setState({ratioWater: value})}
                 />
                 <RatioMark/>
               </View>
@@ -83,7 +105,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
                 style={[styles.settingInput,styles.settingInputGray]}
-                value={(this.props.coffeeSettings.ratioWater*this.props.coffeeSettings.beanWeight).toString()}
+                value={(this.state.ratioWater*this.state.beanWeight).toString()}
                 editable={false}
                 underlineColorAndroid='transparent'
               />
@@ -96,8 +118,8 @@ class CoffeeSettings extends React.Component {
                 <Picker
                   style={styles.picker}
                   mode='dialog'
-                  selectedValue={this.props.coffeeSettings.timeMintue}
-                  onValueChange={timeMintue => this.props.onSaveCoffeeSetting({timeMintue: timeMintue})}>
+                  selectedValue={this.state.timeMintue}
+                  onValueChange={(value) => this.setState({timeMintue: value})}>
                   <Picker.Item label="00" value="00" />
                   <Picker.Item label="01" value="01" />
                   <Picker.Item label="02" value="02" />
@@ -108,8 +130,8 @@ class CoffeeSettings extends React.Component {
                 <Picker
                   style={styles.picker}
                   mode='dialog'
-                  selectedValue={this.props.coffeeSettings.timeSecond}
-                  onValueChange={timeSecond => this.props.onSaveCoffeeSetting({timeSecond: timeSecond})}>
+                  selectedValue={this.state.timeSecond}
+                  onValueChange={(value) => this.setState({timeSecond: value})}>
                   <Picker.Item label="00" value="00" />
                   <Picker.Item label="01" value="01" />
                   <Picker.Item label="02" value="02" />
@@ -117,9 +139,7 @@ class CoffeeSettings extends React.Component {
                   <Picker.Item label="04" value="04" />
                   <Picker.Item label="05" value="05" />
                 </Picker>
-
               </View>
-
               <Divider/>
             </View>
 
@@ -127,8 +147,11 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>水温（℃）</Text>
               <TextInput
                 style={styles.settingInput}
-                value={this.props.coffeeSettings.temperature.toString()}
-                onChangeText={ temperature => this.props.onSaveCoffeeSetting({temperature:temperature})}
+                value={this.state.temperature.toString()}
+                onChangeText={ (text) => this.setState({temperature: text})}
+                onSubmitEditing={this._submitTemperature}
+                onBlur={this._submitTemperature}
+                onFocus={(event: Event) => {}}
                 underlineColorAndroid='transparent'
                 keyboardType='numeric'
               />
@@ -139,8 +162,10 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>研磨度</Text>
               <TextInput
                 style={styles.settingInput}
-                value={this.props.coffeeSettings.grandSize}
-                onChangeText={ grandSize => this.props.onSaveCoffeeSetting({grandSize:grandSize})}
+                value={this.state.grandSize}
+                onChangeText={ (text) => this.setState({grandSize: text})}
+                onSubmitEditing={this._submitGrandSize}
+                onBlur={this._submitGrandSize}
                 underlineColorAndroid='transparent'
                 keyboardType='numeric'
               />
