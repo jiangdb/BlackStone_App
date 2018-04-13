@@ -94,7 +94,12 @@ class CoffeeSettings extends React.Component {
                 <View style={styles.sliderText}>
                   <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.props.coffeeSettings.ratioWater}</Text>
                 </View>
-                <Slider minimumTrackTintColor='#C29F6C' minimumValue={1} maximumValue={24} step={1 }
+                <Slider
+                  minimumTrackTintColor='#C29F6C'
+                  maximumTrackTintColor='#d7d7d7'
+                  minimumValue={1}
+                  maximumValue={24}
+                  step={1}
                   value={this.state.ratioWater}
                   onValueChange={(value) => this.setState({ratioWater: value})}
                 />
