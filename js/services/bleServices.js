@@ -91,25 +91,28 @@ function deviceConnect(device) {
   device.connect()
     .then((device) => {
       console.log('connected')
+      //we get connected
       connectedDevice.id = device.id
       dispatch(bleActions.bleOnConnectionStateChange('connected', device))
       dispatch(bleActions.bleOnDeviceInfoChange({ name: device.localName?device.localName:device.name }))
+      //register onDisconnected
       let onDisconnected = device.onDisconnected((error,device) => {
         console.log(device.id + ' disconnected')
         dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
         onDisconnected.remove()
       })
       console.log('discover services and characteristics')
+      //discover services and characteristics
       device.discoverAllServicesAndCharacteristics()
         .then((device) => {
-          // Do work on device with services and characteristics
-          console.log('get services')
           device.services()
             .then((services) => {
               console.log('services')
+              //loop services for characteristics
               services.map((service, i)=>{
                 console.log(service.uuid)
                 if (service.uuid.toUpperCase().indexOf(UUIDS.SERVICE_WEIGHT) != -1) {
+                  //read weight service
                   connectedDevice.weightService.id = service.uuid
                   service.characteristics().then((characteristics) => {
                     console.log('weight service characteristics:')
@@ -145,6 +148,7 @@ function deviceConnect(device) {
                     })
                   })
                 }else if (service.uuid.toUpperCase().indexOf(UUIDS.SERVICE_DEVICE_INFORMATION) != -1) {
+                  //read device info service
                   connectedDevice.deviceInfoService.id = service.uuid
                   service.characteristics().then((characteristics) => {
                     console.log('device info service characteristics:')
