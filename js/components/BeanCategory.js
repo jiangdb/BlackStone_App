@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     lineHeight:24,
     fontSize:17,
     color:'#232323',
-	},
+  },
   categoryList: {
     lineHeight:53,
     paddingLeft:44,
