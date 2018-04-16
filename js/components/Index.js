@@ -14,7 +14,7 @@ class Index extends React.Component {
   };
 
   state = {
-    startBilding: this.props.coffeeSettings.startBilding,
+    startBuilding: this.props.coffeeSettings.startBuilding,
   };
 
   render() {
@@ -69,8 +69,8 @@ class Index extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {Alert.alert('pressed');}}
           >
-            <ImageBackground style={styles.btnStart} source={this.state.startBilding ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
-              <Text style={this.state.startBilding ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
+            <ImageBackground style={styles.btnStart} source={this.state.startBuilding ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
+              <Text style={this.state.startBuilding ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
             </ImageBackground>
           </TouchableWithoutFeedback>
         </View>

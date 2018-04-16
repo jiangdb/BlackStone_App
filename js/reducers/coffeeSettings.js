@@ -24,7 +24,7 @@ const initialState = {
       {key: '瑰夏'},
       {key: '可娜'},
     ],
-    startBilding: false
+    startBuilding: false
 }
  
 import type { Action } from "../actions/types";
