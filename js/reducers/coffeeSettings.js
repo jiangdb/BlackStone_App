@@ -5,8 +5,8 @@ const initialState = {
     waterWeight: 240,
     temperature: 92,
     grandSize: 3.5,
-    timeMintue:30,
-    timeSecond:22,
+    timeMintue:'30',
+    timeSecond:'22',
     beanWeightReader: 200,
     waterWeightReader: 200,
     beanCategoryData: [
@@ -23,7 +23,8 @@ const initialState = {
       {key: '蓝山'},
       {key: '瑰夏'},
       {key: '可娜'},
-    ]
+    ],
+    startBilding: false
 }
  
 import type { Action } from "../actions/types";

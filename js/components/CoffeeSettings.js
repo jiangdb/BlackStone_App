@@ -16,7 +16,15 @@ class CoffeeSettings extends React.Component {
     timeMintue: this.props.coffeeSettings.timeMintue,
     timeSecond: this.props.coffeeSettings.timeSecond,
     temperature: this.props.coffeeSettings.temperature.toString(),
-    grandSize: this.props.coffeeSettings.grandSize.toString()
+    grandSize: this.props.coffeeSettings.grandSize.toString(),
+    timeArray: [
+        '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
+        '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
+        '20', '21', '22', '23', '24', '25', '26', '27', '28', '29',
+        '30', '31', '32', '33', '34', '35', '36', '37', '38', '39',
+        '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
+        '50', '51', '52', '53', '54', '55', '56', '57', '58', '59',
+      ],
   };
 
   _saveSetting = () => {
@@ -102,6 +110,8 @@ class CoffeeSettings extends React.Component {
                   step={1}
                   value={this.state.ratioWater}
                   onValueChange={(value) => this.setState({ratioWater: value})}
+                  thumbImage={require('../../images/user-head.jpg')}
+                  style={{marginLeft: -10,marginRight: -10,}}
                 />
                 <RatioMark/>
               </View>
@@ -125,24 +135,18 @@ class CoffeeSettings extends React.Component {
                   mode='dialog'
                   selectedValue={this.state.timeMintue}
                   onValueChange={(value) => this.setState({timeMintue: value})}>
-                  <Picker.Item label="00" value="00" />
-                  <Picker.Item label="01" value="01" />
-                  <Picker.Item label="02" value="02" />
-                  <Picker.Item label="03" value="03" />
-                  <Picker.Item label="04" value="04" />
-                  <Picker.Item label="05" value="05" />
+                  { this.state.timeArray.map((item)=>(
+                    <Picker.Item key={item} label={item} value={item} />
+                   )) }
                 </Picker>
                 <Picker
                   style={styles.picker}
                   mode='dialog'
                   selectedValue={this.state.timeSecond}
                   onValueChange={(value) => this.setState({timeSecond: value})}>
-                  <Picker.Item label="00" value="00" />
-                  <Picker.Item label="01" value="01" />
-                  <Picker.Item label="02" value="02" />
-                  <Picker.Item label="03" value="03" />
-                  <Picker.Item label="04" value="04" />
-                  <Picker.Item label="05" value="05" />
+                  { this.state.timeArray.map((item)=>(
+                    <Picker.Item key={item} label={item} value={item} />
+                   )) }
                 </Picker>
               </View>
               <Divider/>
