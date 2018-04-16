@@ -223,11 +223,11 @@ class RatioMark extends React.Component {
           <View style={[styles.ratioMark,styles.ratioMarkLong]}></View>
         </View>
         <View style={{flexDirection:'row', justifyContent: 'space-between'}}>
-            <Text style={[styles.markText,styles.markTextFirst]}>1</Text>
-            <Text style={[styles.markText,styles.markTextMiddle]}>6</Text>
-            <Text style={[styles.markText,styles.markTextMiddle]}>12</Text>
-            <Text style={[styles.markText,styles.markTextMiddle]}>18</Text>
-            <Text style={styles.markText}>24</Text>
+          <Text style={[styles.markText,styles.markTextFirst]}>1</Text>
+          <Text style={[styles.markText,styles.markTextMiddle]}>6</Text>
+          <Text style={[styles.markText,styles.markTextMiddle]}>12</Text>
+          <Text style={[styles.markText,styles.markTextMiddle]}>18</Text>
+          <Text style={styles.markText}>24</Text>
         </View>
       </View>
     );
@@ -328,12 +328,6 @@ const styles = StyleSheet.create({
     fontSize:12,
     color:'#D9D9D9',
   },
-  // markTextFirst: {
-  //   width:72,
-  // },
-  // markTextMiddle: {
-  //   width:86.5,
-  // }
 });
 
 
