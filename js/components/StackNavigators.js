@@ -6,16 +6,7 @@ import About from './About';
 import Mine from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
-
-class DetailsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Details!</Text>
-      </View>
-    );
-  }
-}
+import DeviceScanContainer from './DeviceScan';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -25,7 +16,8 @@ const HomeStack = StackNavigator({
 
 const MineStack = StackNavigator({
   Mine: { screen: Mine},
-  About: { screen: About }
+  About: { screen: About },
+  DeviceScan: { screen: DeviceScanContainer },
 });
 
 module.exports = {
