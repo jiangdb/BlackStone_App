@@ -100,7 +100,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>粉液比（1：N）</Text>
               <View style={styles.slider}>
                 <View style={styles.sliderText}>
-                  <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.props.coffeeSettings.ratioWater}</Text>
+                  <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.state.ratioWater}</Text>
                 </View>
                 <Slider
                   minimumTrackTintColor='#C29F6C'
