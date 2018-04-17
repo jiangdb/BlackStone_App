@@ -1,17 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, FlatList } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ActivityIndicator, } from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
 import { selectDevice, unselectDevice } from '../actions/device.js'
 
 class DeviceScan extends React.Component {
+  state = {
+    switchValue: true,
+    loading: true
+  };
+
   static navigationOptions = {
     title: '连接设备',
     tabBarVisible: false,
-  };
-
-  state = {
-    switchValue: true
+    headerRight:
+      <ActivityIndicator
+        style={{marginRight: 175}}
+        animating={false}
+        size='small'
+        color="#fff"
+      />
   };
 
   // render device list item
@@ -25,18 +33,25 @@ class DeviceScan extends React.Component {
       }
   };
 
+
+
   // function when press on the device item
   _onPressItem = (key, deviceName) => {
-    this.props.onSelectDevice({key,deviceName});
+    let selectedDevicekey = this.props.deviceScan.selectedDevice.deviceKey;
+    let selectedDeviceName = this.props.deviceScan.selectedDevice.deviceName;
+    if(selectedDevicekey!==null) {
+      this.props.onUnselectDevice({selectedDevicekey,selectedDeviceName});
+      this.props.onSelectDevice({key,deviceName});
+    } else {
+      this.props.onSelectDevice({key,deviceName});
+    }
   };
 
   //function user turn off the switch
   _onSwitchOff = () => {
-    this.props.onUnselectDevice({
-        deviceName: '',
-        connectState: '未连接',
-        switchIcon: '',
-    });
+    let selectedDevicekey = this.props.deviceScan.selectedDevice.deviceKey;
+    let selectedDeviceName = this.props.deviceScan.selectedDevice.deviceName;
+    this.props.onUnselectDevice({selectedDevicekey,selectedDeviceName});
   };
 
   render() {

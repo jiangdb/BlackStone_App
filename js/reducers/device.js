@@ -3,20 +3,18 @@ const initialState = {
       {
         key: 1,
         deviceName: 'name1',
-        deviceConnect: false,
       },
       {
         key: 2,
         deviceName: 'name2',
-        deviceConnect: true,
       },
       {
         key: 3,
         deviceName: 'name3',
-        deviceConnect: false,
       }
     ],
     selectedDevice: {
+      deviceKey: null,
       deviceName: '',
       connectState: '未连接',
       switchIcon: '',
@@ -35,19 +33,9 @@ function deviceScan(state, action) {
         console.log(action.selectDevice);
 
       return Object.assign({}, state, {
-        devices: state.devices.map((device) => {
-          if (device.key === action.selectDevice.key) {
-            return Object.assign({}, device, {
-              deviceConnect: !device.deviceConnect
-            })
-          } else {
-            return Object.assign({}, device, {
-              deviceConnect: false
-            })
-          }
-          return device
-        }),
+        devices:state.devices.filter((device) => device.key !== action.selectDevice.key),
         selectedDevice:{
+          deviceKey: action.selectDevice.key,
           deviceName: action.selectDevice.deviceName,
           connectState: '已连接',
           switchIcon: 'switch',
@@ -56,15 +44,20 @@ function deviceScan(state, action) {
 
     case "UNSELECT_DEVICE":
       return Object.assign({}, state, {
-        selectedDevice: action.unselectDevice,
-        devices: state.devices.map((device) => {
-          if (device.deviceConnect) {
-            return Object.assign({}, device, {
-              deviceConnect: !device.deviceConnect
-            })
+        devices: [
+          ...state.devices,
+          {
+            key: action.unselectDevice.selectedDevicekey,
+            deviceName: action.unselectDevice.selectedDeviceName,
           }
-            return device
-          })
+        ],
+        selectedDevice: {
+          deviceKey: null,
+          deviceName: '',
+          connectState: '未连接',
+          switchIcon: '',
+        },
+
       });
 
     default:
