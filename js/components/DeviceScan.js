@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
-import { selectDevice, unselectDevice } from '../actions/deviceScan.js'
+import { selectDevice, unselectDevice } from '../actions/device.js'
 
 class DeviceScan extends React.Component {
   static navigationOptions = {
@@ -10,33 +10,32 @@ class DeviceScan extends React.Component {
     tabBarVisible: false,
   };
 
+  state = {
+    switchValue: true
+  };
+
   // render device list item
   _renderItem = ({item}) => {
-    if (!item.deviceConnect) {
-      return (
-        <Text style={styles.deviceList} onPress={this._onPressItem.bind(this)}>{item.deviceName}</Text>
-      );
-    }
+      if (!item.deviceConnect) {
+        return (
+          <Text style={styles.deviceList} onPress={this._onPressItem.bind(this, item.key, item.deviceName)}>{item.deviceName}</Text>
+        );
+      } else {
+        return null;
+      }
   };
 
   // function when press on the device item
-  _onPressItem = ({item}) => {
-    this.props.onSelectDevice({
-      selectedDevice: {
-        deviceName: item.deviceName,
-        connectState: '已连接',
-      },
-    });
-
+  _onPressItem = (key, deviceName) => {
+    this.props.onSelectDevice({key,deviceName});
   };
 
   //function user turn off the switch
   _onSwitchOff = () => {
     this.props.onUnselectDevice({
-      selectedDevice: {
         deviceName: '',
         connectState: '未连接',
-      },
+        switchIcon: '',
     });
   };
 
@@ -44,17 +43,22 @@ class DeviceScan extends React.Component {
     return (
       <View style={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
-  	      	{/*<ChoiceBar title={this.props.deviceScan.selectedDevice.connectState} value={this.props.deviceScan.selectedDevice.deviceName} icon='switch'/>*/}
+	      	<ChoiceBar
+            title={this.props.deviceScan.selectedDevice.connectState}
+            value={this.props.deviceScan.selectedDevice.deviceName}
+            icon={this.props.deviceScan.selectedDevice.switchIcon}
+            switchValue={this.state.switchValue}
+            toggleSwitch={this._onSwitchOff}
+          />
         </View>
         <Text style={styles.listTitle}>可连接设备</Text>
         <Text style={styles.warnMessage}>如果设备已经与其它手机相连，请在另一台手机小程序中断开或者退出小程序</Text>
-        {/*<FlatList
+        <FlatList
           style={{backgroundColor: '#fff'}}
-          data={this.props.deviceScan.device}
+          data={this.props.deviceScan.devices}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem.bind(this)}
-        />*/}
-        {console.log(this.props.deviceScan)}
+        />
       </View>
 
     );
@@ -92,11 +96,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectDevice: deviceItem => {
-      dispatch(selectDeivce(deviceItem))
+    onSelectDevice: device => {
+      dispatch(selectDevice(device))
     },
-    onUnselectDevice: deviceItem => {
-      dispatch(unselectDeivce(deviceItem))
+    onUnselectDevice: device => {
+      dispatch(unselectDevice(device))
     }
   }
 }
