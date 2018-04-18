@@ -7,7 +7,6 @@ import { selectDevice, unselectDevice } from '../actions/device.js'
 class DeviceScan extends React.Component {
   state = {
     switchValue: true,
-    devices: this.props.deviceScan.devices,
     loading: true
   };
 
@@ -25,15 +24,11 @@ class DeviceScan extends React.Component {
   //lifecycle method
   componentDidMount = () => {
     this.props.navigation.setParams({ loading: true });
-    this.timer = setTimeout(() => {
-      this.setState({devices: this.props.deviceScan.devices});
-    }, 1500);
   };
 
   //lifecycle method
   componentWillUnmount = () => {
     this.props.navigation.setParams({ loading: false });
-    clearTimeout(this.timer);
   };
 
   // render device list item
