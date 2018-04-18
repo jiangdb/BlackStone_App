@@ -5,4 +5,5 @@ export type Action =
   | { type: "BLE_ON_DEVICE_INFO_CHANGE", info: Object }
   | { type: "BLE_START_SCAN" }
   | { type: "BLE_STOP_SCAN" }
-  | { type: "SAVE_COFFEE_SETTINGS", settings: Object };
+  | { type: "SAVE_COFFEE_SETTINGS", settings: Object }
+  | { type: "SAVE_BEAN_CATEGORY", category: Object };
