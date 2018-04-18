@@ -3,6 +3,7 @@ const initialState = {
   connectionState: 'disconnected',
   device: null,
   deviceInfo: {},
+  deviceReady: false,
   scan: false,
   deviceScanned: [],
 }
@@ -31,7 +32,8 @@ function ble(state, action) {
       return {
         ...state,
         connectionState: action.state,
-        device: action.device
+        device: action.device,
+        deviceReady: false
       }
 
     case "BLE_ON_DEVICE_INFO_CHANGE":
@@ -41,6 +43,12 @@ function ble(state, action) {
             ...state.deviceInfo,
             ...action.info
           }
+      }
+
+    case "BLE_DEVICE_READY":
+      return {
+        ...state,
+        deviceReady: true
       }
 
     case "BLE_START_SCAN":
