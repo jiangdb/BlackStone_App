@@ -18,7 +18,8 @@ const initialState = {
       deviceName: '',
       connectState: '未连接',
       switchIcon: '',
-    }
+    },
+    navigationLoading: true,
 }
  
 import type { Action } from "../actions/types";

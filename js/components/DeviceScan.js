@@ -7,33 +7,48 @@ import { selectDevice, unselectDevice } from '../actions/device.js'
 class DeviceScan extends React.Component {
   state = {
     switchValue: true,
+    devices: this.props.deviceScan.devices,
     loading: true
   };
 
   static navigationOptions = {
     title: '连接设备',
     tabBarVisible: false,
-    headerRight:
-      <ActivityIndicator
-        style={{marginRight: 175}}
-        animating={false}
-        size='small'
-        color="#fff"
-      />
+    headerRight: <ActivityIndicator
+              style={{marginRight: 175}}
+              animating={true}
+              size='small'
+              color="#fff"
+            />
+  };
+
+  //lifecycle method
+  componentDidMount = () => {
+    this.props.navigation.setParams({ loading: true });
+    this.timer = setTimeout(() => {
+      this.setState({devices: this.props.deviceScan.devices});
+    }, 1500);
+  };
+
+  //lifecycle method
+  componentWillUnmount = () => {
+    this.props.navigation.setParams({ loading: false });
+    clearTimeout(this.timer);
   };
 
   // render device list item
   _renderItem = ({item}) => {
-      if (!item.deviceConnect) {
-        return (
-          <Text style={styles.deviceList} onPress={this._onPressItem.bind(this, item.key, item.deviceName)}>{item.deviceName}</Text>
-        );
-      } else {
-        return null;
-      }
+    if (!item.deviceConnect) {
+      return (
+        <Text
+          style={styles.deviceList}
+          onPress={this._onPressItem.bind(this, item.key, item.deviceName)}
+        >{item.deviceName}</Text>
+      );
+    } else {
+      return null;
+    }
   };
-
-
 
   // function when press on the device item
   _onPressItem = (key, deviceName) => {
@@ -73,6 +88,7 @@ class DeviceScan extends React.Component {
           data={this.props.deviceScan.devices}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem.bind(this)}
+          refreshing={true}
         />
       </View>
 
