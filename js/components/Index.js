@@ -2,7 +2,6 @@ import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
-import bleService from '../services/bleServices.js'
 
 class Index extends React.Component {
   static navigationOptions = {
