@@ -5,6 +5,12 @@
 import * as bleActions from '../actions/ble.js'
 
 let dispatch = null
+let weightNotifyInterval = null
+let deviceConnected = true;
+let weight = {
+  extract: 0,
+  total: 0,
+}
 
 function init(store) {
   dispatch = store.dispatch
@@ -51,17 +57,47 @@ function deviceConnect(device) {
     deviceInfo.localName = 'test'
     deviceInfo.name = 'test'
     dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
+    deviceConnected = true;
   }, 2000)
 }
 
 function deviceDisconnect(device) {
   console.log('device cancelConnection')
+  dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
+    deviceConnected = false;
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)
 }
 
 function deviceControl(opt) {
+}
+
+function enableWeightNotify(enable) {
+  if (!deviceConnected) return
+
+  if (enable) {
+    if (weightNotifyInterval == null ) {
+      weightNotifyInterval = setInterval( ()=> {
+        weight.extract += 0.1
+        weight.total += 0.1
+        dispatch(bleActions.bleOnWeightChange(weight))
+      }, 1000)
+    }
+  } else {
+    if (weightNotifyInterval != null ) {
+      clearInterval(weightNotifyInterval)
+      weightNotifyInterval = null
+    }
+  }
+}
+
+function scaleSetZero() {
+  if (!deviceConnected) return
+
+  weight.extract = 0
+  weight.total = 0
+  dispatch(bleActions.bleOnWeightChange(weight))
 }
 
 module.exports = {
@@ -71,5 +107,7 @@ module.exports = {
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
-  deviceControl: deviceControl
+  deviceControl: deviceControl,
+  enableWeightNotify: enableWeightNotify,
+  scaleSetZero: scaleSetZero
 }

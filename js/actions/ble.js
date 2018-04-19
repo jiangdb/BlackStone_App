@@ -16,7 +16,10 @@ const bleOnDeviceInfoChange = info => ({
   type: "BLE_ON_DEVICE_INFO_CHANGE",
   info
 })
-
+const bleOnWeightChange = weight => ({
+  type: "BLE_ON_WEIGHT_CHANGE",
+  weight
+})
 const bleStartScan = () => ({ type: "BLE_START_SCAN"})
 const bleStopScan = () => ({ type: "BLE_STOP_SCAN"})
 
@@ -26,6 +29,7 @@ module.exports = {
   bleOnBtStateChange,
   bleOnConnectionStateChange,
   bleOnDeviceInfoChange,
+  bleOnWeightChange,
   bleStartScan,
   bleStopScan,
 };
