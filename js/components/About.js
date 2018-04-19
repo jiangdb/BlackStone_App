@@ -4,15 +4,16 @@ import { Text, View, Image, StyleSheet } from 'react-native';
 export default class About extends React.Component {
   static navigationOptions = {
     title: '关于我们',
+    tabBarVisible: false,
   };
 
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent:'space-between',}}>
-        <Image source={require('../../images/banner.png')}  style={{ flex: 1, resizeMode: 'contain',}}/>
+        <Image source={require('../../images/banner.png')}  style={{ width:375,height:255,}}/>
         <View style={{ flex: 1, flexDirection: 'column'}}>
           <View style={{flexDirection: 'row', justifyContent:'flex-start', marginLeft:25}}>
-            <Image source={require('../../images/quote_left.png')}/>
+            <Image source={require('../../images/quote_left.png')} style={{ width:17.5,height:15,}}/>
           </View>
           <View style={{flexDirection: 'column', alignItems: 'center'}}>
             <Text style={styles.content}>TIMEMORE泰摩是专注于手制咖啡器具</Text>
@@ -22,7 +23,7 @@ export default class About extends React.Component {
             <Text style={styles.content}>把咖啡的魅力带给更多人</Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent:'flex-end', marginRight:25}}>
-            <Image source={require('../../images/quote_right.png')} />
+            <Image source={require('../../images/quote_right.png')} style={{ width:17.5,height:15,}}/>
           </View>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent:'flex-end'}}>

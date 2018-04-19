@@ -28,15 +28,15 @@ class BeanCategory extends React.Component {
     return (
       <View style={{flexDirection: 'column',paddingTop: 15, flex: 1 }}>
       	<View style={{backgroundColor: 'white',height:60 }}>
-      		<TextInput
-            style={styles.beanInput}
-            onSubmitEditing={this._submitEditing}
-            placeholder='请输入咖啡豆种类'
-            underlineColorAndroid='transparent'
-          />
+        <TextInput
+          style={styles.beanInput}
+          onSubmitEditing={this._submitEditing}
+          placeholder='请输入咖啡豆种类'
+          underlineColorAndroid='transparent'
+        />
       	</View>
       	<View style={{flexDirection:'row',justifyContent: 'center' }}>
-      		<Text style={{lineHeight:41.5,fontSize: 12,color:'#8f8f8f'}}>或选择已有种类</Text>
+          <Text style={{lineHeight:41.5,fontSize: 12,color:'#8f8f8f'}}>或选择已有种类</Text>
       	</View>
         <FlatList
           style={{backgroundColor: '#fff',flex: 1}}
@@ -50,16 +50,16 @@ class BeanCategory extends React.Component {
 }
 
 const styles = StyleSheet.create({
-	beanInput: {
-		height:24,
-		marginTop:16.5,
-		marginRight:22,
-		marginBottom:19.5,
-		marginLeft:22,
-		lineHeight:24,
-		fontSize:17,
-		color:'#232323',
-	},
+  beanInput: {
+    height:24,
+    marginTop:16.5,
+    marginRight:22,
+    marginBottom:19.5,
+    marginLeft:22,
+    lineHeight:24,
+    fontSize:17,
+    color:'#232323',
+  },
   categoryList: {
     lineHeight:53,
     paddingLeft:44,

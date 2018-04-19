@@ -34,9 +34,9 @@ export class ChoiceBar extends Component {
     }
   }
 
-  toggleSwitch = () => {
-    this.setState({switchValue: !this.state.switchValue});
-  }
+  // toggleSwitch = () => {
+  //   this.setState({switchValue: !this.state.switchValue});
+  // }
 
   getIcon = () => {
     switch (this.props.icon) {
@@ -44,7 +44,7 @@ export class ChoiceBar extends Component {
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
       break;
       case 'switch':
-        return <Switch onValueChange={this.toggleSwitch} value={this.state.switchValue} />;
+        return <Switch onValueChange={this.props.toggleSwitch} value={this.state.switchValue} />;
       break;
       default:
         return;

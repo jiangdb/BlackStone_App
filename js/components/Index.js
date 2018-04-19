@@ -1,6 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class Index extends React.Component {
@@ -9,8 +9,13 @@ class Index extends React.Component {
     headerTitleStyle: {
       flex: 1,
       textAlign: 'center',
-      alignSelf: 'center'
+      alignSelf: 'center',
+      fontWeight: 'normal',
     },
+  };
+
+  state = {
+    startBuilding: this.props.coffeeSettings.startBuilding,
   };
 
   render() {
@@ -61,11 +66,13 @@ class Index extends React.Component {
             <Text style={styles.settingContent}>设置参数</Text>
           </View>
         </TouchableWithoutFeedback>
-        <View style={{flexDirection: 'row',justifyContent:'center'}}  >
-          <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
-            <View style={styles.btnStart}>
-              <Text style={styles.btnStartText}>开始冲煮</Text>
-            </View>
+        <View style={{flexDirection: 'row',justifyContent:'center'}}>
+          <TouchableWithoutFeedback
+            onPress={() => {Alert.alert('pressed');}}
+          >
+            <ImageBackground style={styles.btnStart} source={this.props.ble.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
+              <Text style={this.props.ble.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
+            </ImageBackground>
           </TouchableWithoutFeedback>
         </View>
       </ScrollView>
@@ -192,6 +199,10 @@ const styles = StyleSheet.create({
     height:50,
   },
   btnStartText: {
+    color:'#fff',
+    fontSize: 20,
+  },
+  disabledBtnStartText: {
     color:'#6A6A6A',
     fontSize: 20,
   },
@@ -199,7 +210,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    coffeeSettings: state.coffeeSettings
+    coffeeSettings: state.coffeeSettings,
+    ble: state.ble
   }
 }
 
