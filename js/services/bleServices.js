@@ -2,7 +2,6 @@
  * ble service
  */
 
-import { Buffer } from 'buffer';
 import * as bleActions from '../actions/ble.js'
 
 let UUIDS = {
@@ -87,21 +86,21 @@ function deviceScanStart() {
   setTimeout(()=>{
     let device = {
       id: 1,
-      localName: 'test1',
+      localName: 'localtest1',
       name: 'test1'
     }
     dispatch(bleActions.bleFindDevice(device))
     setTimeout(()=>{
       let device = {
         id: 2,
-        localName: 'test2',
+        localName: 'localtest2',
         name: 'test2'
       }
       dispatch(bleActions.bleFindDevice(device))
       setTimeout(()=>{
         let device = {
           id: 3,
-          localName: 'test3',
+          localName: 'localtest3',
           name: 'test3'
         }
         dispatch(bleActions.bleFindDevice(device))
