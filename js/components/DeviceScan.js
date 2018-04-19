@@ -2,13 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, StyleSheet, FlatList, ActivityIndicator, } from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
-import { selectDevice, unselectDevice } from '../actions/device.js'
 import bleService from '../services/bleServiceFaker.js'
 
 class DeviceScan extends React.Component {
   state = {
     refreshing: true,
-    switchValue: this.props.ble.connectionState ==='connected'? true : false,
+    switchValue: true,
   };
 
   static navigationOptions = {
@@ -73,13 +72,6 @@ class DeviceScan extends React.Component {
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
           keyExtractor={item => item.id}
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={this.state.isRefreshing}
-          //     onRefresh={this._onRefresh}
-          //   />
-          // }
-          // onRefresh={this._onRefresh}
         />
       </View>
 
