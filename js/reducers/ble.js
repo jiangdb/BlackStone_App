@@ -6,6 +6,10 @@ const initialState = {
   deviceReady: false,
   scan: false,
   deviceScanned: [],
+  weight: {
+    extract: 0,
+    total: 0
+  }
 }
  
 import type { Action } from "../actions/types";
@@ -53,6 +57,12 @@ function ble(state, action) {
             ...state.deviceInfo,
             ...action.info
           }
+      }
+
+    case "BLE_ON_WEIGHT_CHANGE":
+      return {
+        ...state,
+        weight: action.weight
       }
 
     case "BLE_DEVICE_READY":
