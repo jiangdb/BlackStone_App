@@ -23,6 +23,7 @@ class DeviceScan extends React.Component {
 
   //lifecycle method
   componentWillUnmount = () => {
+    bleService.deviceScanStop();
   };
 
   // render device list item
@@ -46,7 +47,7 @@ class DeviceScan extends React.Component {
   //function user turn off the switch
   _onSwitchOff = (device) => {
     this.setState({
-      switchValue: !this.state.switchValue
+      switchValue: false
     });
     bleService.deviceDisconnect(device);
   };
