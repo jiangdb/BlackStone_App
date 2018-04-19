@@ -57,6 +57,7 @@ function deviceConnect(device) {
 
 function deviceDisconnect(device) {
   console.log('device cancelConnection')
+  dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)
