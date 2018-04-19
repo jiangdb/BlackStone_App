@@ -58,7 +58,8 @@ function deviceConnect(device) {
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
     deviceInfo.localName = 'test'
     deviceInfo.name = 'test'
-    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
+    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo));
+    console.log(device);
   }, 2000)
 }
 

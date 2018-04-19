@@ -3,14 +3,12 @@ import { connect } from 'react-redux'
 import { Text, View, StyleSheet, FlatList, ActivityIndicator, } from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
 import { selectDevice, unselectDevice } from '../actions/device.js'
-import bleService from '../services/bleServices.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class DeviceScan extends React.Component {
   state = {
-    switchValue: true,
     refreshing: true,
-    connectState: '未连接',
-    switchIcon:'',
+    switchValue: this.props.ble.connectionState ==='connected'? true : false,
   };
 
   static navigationOptions = {
@@ -32,28 +30,25 @@ class DeviceScan extends React.Component {
     return (
       <Text
         style={styles.deviceList}
-        onPress={this._onPressItem(item)}
+        onPress={this._onPressItem.bind(this, item)}
       >{ item.localName }</Text>
     );
-    console.log(item);
   };
 
   // function when press on the device item
-  _onPressItem = ({item}) => {
-    // console.log({item});
-    // bleService.deviceConnect(item);
+  _onPressItem = (device) => {
+    bleService.deviceConnect(device);
     this.setState({
-      connectState: '已连接',
-      switchIcon:'switch',
+      switchValue: true
     });
-    console.log(this.props.ble.deviceInfo);
   };
 
   //function user turn off the switch
-  _onSwitchOff = () => {
-    let selectedDevicekey = this.props.deviceScan.selectedDevice.deviceKey;
-    let selectedDeviceName = this.props.deviceScan.selectedDevice.deviceName;
-    this.props.onUnselectDevice({selectedDevicekey,selectedDeviceName});
+  _onSwitchOff = (device) => {
+    this.setState({
+      switchValue: !this.state.switchValue
+    });
+    bleService.deviceDisconnect(device);
   };
 
   render() {
@@ -61,9 +56,9 @@ class DeviceScan extends React.Component {
       <View style={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
 	      	<ChoiceBar
-            title={this.state.connectState}
-            value={this.props.ble.deviceInfo.localName}
-            icon={this.state.switchIcon}
+            title={this.props.ble.connectionState ==='connected'? '已连接' : '未连接'}
+            value={this.props.ble.connectionState ==='connected'? this.props.ble.device.localName: ''}
+            icon={this.props.ble.connectionState ==='connected'? 'switch' : ''}
             switchValue={this.state.switchValue}
             toggleSwitch={this._onSwitchOff}
           />
@@ -77,6 +72,12 @@ class DeviceScan extends React.Component {
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
           keyExtractor={item => item.id}
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={this.state.isRefreshing}
+          //     onRefresh={this._onRefresh}
+          //   />
+          // }
           // onRefresh={this._onRefresh}
         />
       </View>
@@ -117,12 +118,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSelectDevice: device => {
-      dispatch(selectDevice(device))
-    },
-    onUnselectDevice: device => {
-      dispatch(unselectDevice(device))
-    }
   }
 }
 

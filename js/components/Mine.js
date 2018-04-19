@@ -24,17 +24,29 @@ class Mine extends React.Component {
         <View style={{backgroundColor:'#fff', marginBottom: 12}}>
           <ChoiceBar
             title='连接设备'
-            value={this.props.deviceScan.selectedDevice.connectState=='未连接'? this.props.deviceScan.selectedDevice.connectState : this.props.deviceScan.selectedDevice.deviceName}
+            value={this.props.ble.connectionState ==='connected'? this.props.ble.device.localName : '未连接'}
             icon='more'
             onPress={() => this.props.navigation.navigate('DeviceScan')}
           />
         </View>
         <View style={{backgroundColor:'#fff', flexDirection: 'column'}}>
-          <ChoiceBar title='冲煮记录' icon='more' onPress={() => this.props.navigation.navigate('History')}/>
+          <ChoiceBar
+            title='冲煮记录'
+            icon='more'
+            onPress={() => this.props.navigation.navigate('History')}
+          />
           <Divider/>
-          <ChoiceBar title='机器设置' icon='more' onPress={() => this.props.navigation.navigate('DeviceSetting')}/>
+          <ChoiceBar
+            title='机器设置'
+            icon='more'
+            onPress={() => this.props.navigation.navigate('DeviceSetting')}
+          />
           <Divider/>
-          <ChoiceBar title='关于我们' icon='more' onPress={() => this.props.navigation.navigate('About')}/>
+          <ChoiceBar
+            title='关于我们'
+            icon='more'
+            onPress={() => this.props.navigation.navigate('About')}
+          />
         </View>
       </View>
     );
@@ -72,7 +84,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    deviceScan: state.deviceScan
+    deviceScan: state.deviceScan,
+    ble: state.ble,
   }
 }
 
