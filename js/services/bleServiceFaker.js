@@ -21,26 +21,18 @@ function deviceScanStart() {
   dispatch(bleActions.bleStartScan())
   setTimeout(()=>{
     let device = {
-      id: 1,
-      localName: 'test1',
-      name: 'test1'
+      id: 2,
+      localName: 'test2',
+      name: 'test2'
     }
     dispatch(bleActions.bleFindDevice(device))
     setTimeout(()=>{
       let device = {
-        id: 2,
-        localName: 'test2',
-        name: 'test2'
+        id: 3,
+        localName: 'test3',
+        name: 'test3'
       }
       dispatch(bleActions.bleFindDevice(device))
-      setTimeout(()=>{
-        let device = {
-          id: 3,
-          localName: 'test3',
-          name: 'test3'
-        }
-        dispatch(bleActions.bleFindDevice(device))
-      },1000)
     },1000)
   },1000)
 }
@@ -65,7 +57,7 @@ function deviceConnect(device) {
 function deviceDisconnect(device) {
   console.log('device cancelConnection')
   setTimeout(()=>{
-    dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+    dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)
 }
 
