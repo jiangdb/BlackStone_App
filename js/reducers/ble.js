@@ -29,6 +29,16 @@ function ble(state, action) {
       }
 
     case "BLE_ON_CONNECTION_STATE_CHANGE":
+      if (action.state == 'connected') {
+        let deviceScanned = state.deviceScanned.filter( device => device.id !== action.device.id )
+        return {
+          ...state,
+          connectionState: action.state,
+          device: action.device,
+          deviceReady: false,
+          deviceScanned: deviceScanned
+        }
+      }
       return {
         ...state,
         connectionState: action.state,
