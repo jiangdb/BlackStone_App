@@ -6,6 +6,10 @@ const initialState = {
   deviceReady: false,
   scan: false,
   deviceScanned: [],
+  weight: {
+    extract: 0,
+    total: 0
+  }
 }
  
 import type { Action } from "../actions/types";
@@ -29,6 +33,16 @@ function ble(state, action) {
       }
 
     case "BLE_ON_CONNECTION_STATE_CHANGE":
+      if (action.state == 'connected') {
+        let deviceScanned = state.deviceScanned.filter( device => device.id !== action.device.id )
+        return {
+          ...state,
+          connectionState: action.state,
+          device: action.device,
+          deviceReady: false,
+          deviceScanned: deviceScanned
+        }
+      }
       return {
         ...state,
         connectionState: action.state,
@@ -43,6 +57,12 @@ function ble(state, action) {
             ...state.deviceInfo,
             ...action.info
           }
+      }
+
+    case "BLE_ON_WEIGHT_CHANGE":
+      return {
+        ...state,
+        weight: action.weight
       }
 
     case "BLE_DEVICE_READY":
