@@ -10,7 +10,8 @@ class Index extends React.Component {
     headerTitleStyle: {
       flex: 1,
       textAlign: 'center',
-      alignSelf: 'center'
+      alignSelf: 'center',
+      fontWeight: 'normal',
     },
   };
 
