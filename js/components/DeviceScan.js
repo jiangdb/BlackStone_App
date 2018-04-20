@@ -71,7 +71,6 @@ class DeviceScan extends React.Component {
           keyExtractor={item => item.id}
         />
       </View>
-
     );
   }
 }

@@ -14,7 +14,7 @@ const HomeStack = StackNavigator({
   BeanCategory: { screen: BeanCategoryContainer },
 },{
   navigationOptions: {
-	headerStyle: {
+  	headerStyle: {
 	  backgroundColor: '#000',
 	},
 	headerTintColor: '#fff',
@@ -31,7 +31,7 @@ const MineStack = StackNavigator({
   DeviceScan: { screen: DeviceScanContainer },
 },{
   navigationOptions: {
-	headerStyle: {
+  	headerStyle: {
 	  backgroundColor: '#000',
 	},
 	headerTintColor: '#fff',
