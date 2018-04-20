@@ -5,7 +5,7 @@
 import * as bleActions from '../actions/ble.js'
 
 let dispatch = null
-let weightNotifyInterval = null
+let weightNotifyInterval = 'null'
 let deviceConnected = true;
 let normalBuildData = null
 let weight = {
@@ -90,7 +90,7 @@ function generateBuildData() {
 
   // next 16 seconds keep inscrease
   for (var i = 20; i < 180; i++) {
-    rtn[0][i] = Math.random() * 1 + 0.1 + rtn[0][i-1]; // add random 1～3g to previous weight 
+    rtn[0][i] = Math.random() * 1 + 0.1 + rtn[0][i-1]; // add random 1～3g to previous weight
     rtn[1][i] = Math.random() * 20 + 30 + rtn[0][i];   // add random 30～50g to extract weight
   }
 

@@ -38,9 +38,6 @@ class DeviceScan extends React.Component {
   // function when press on the device item
   _onPressItem = (device) => {
     bleService.deviceConnect(device);
-    this.setState({
-      switchValue: true
-    });
   };
 
   //function user turn off the switch
@@ -55,11 +52,11 @@ class DeviceScan extends React.Component {
     return (
       <View style={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
-	      	<ChoiceBar
+          <ChoiceBar
             title={this.props.ble.connectionState ==='connected'? '已连接' : '未连接'}
-            value={this.props.ble.connectionState ==='connected'? this.props.ble.device.localName: ''}
+            value={this.props.ble.connectionState ==='connected'? this.props.ble.device.name: ''}
             icon={this.props.ble.connectionState ==='connected'? 'switch' : ''}
-            switchValue={this.state.switchValue}
+            switchValue={this.props.ble.connectionState ==='connected'? true : false}
             toggleSwitch={this._onSwitchOff}
           />
         </View>
