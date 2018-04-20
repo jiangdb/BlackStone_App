@@ -1,11 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 'react-native';
 import { Divider } from './Templates';
-import { Reader } from './Index';
+import bleService from '../services/bleServiceFaker.js'
 
-export default class CoffeeBuilder extends React.Component {
+class CoffeeBuilder extends React.Component {
   static navigationOptions = {
     title: '开始冲煮',
+    tabBarVisible: false,
   };
 
   state = {
@@ -20,13 +22,19 @@ export default class CoffeeBuilder extends React.Component {
         this.setState({
           mode: 'mode_standBy',
         });
+        // bleService.enableWeightNotify(true)
       }else{
+        // bleService.enableWeightNotify(false)
         this.setState({
           timerCount: this.state.timerCount - 1,
         });
       }
     },1000);
   };
+
+  componentWillUnmount() {
+    // bleService.enableWeightNotify(false)
+  }
 
   _getBuilderComponent = () => {
     switch (this.state.mode) {
@@ -49,7 +57,7 @@ export default class CoffeeBuilder extends React.Component {
           <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
             <View style={styles.target}>
               <View style={styles.targetContainer}>
-              <Text style={styles.targetValue}>02:03</Text>
+              <Text style={styles.targetValue}>{this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond}</Text>
                 <View style={{flexDirection:'row',alignItems: 'center'}}>
                   <Image style={styles.targetIcon} source={require('../../images/icon_time.png')} />
                 <Text style={styles.targetName}>目标时间</Text>
@@ -57,7 +65,7 @@ export default class CoffeeBuilder extends React.Component {
               </View>
               <View style={styles.divider}></View>
               <View style={{flexDirection:'column',height:46.5, width:187.5,alignItems:'center'}}>
-              <Text style={styles.targetValue}>240g</Text>
+              <Text style={styles.targetValue}>{this.props.coffeeSettings.waterWeight}</Text>
                 <View style={{flexDirection:'row',alignItems: 'center'}}>
                   <Image style={styles.targetIcon} source={require('../../images/icon_waterweight.png')} />
                 <Text style={styles.targetName}>目标萃取量</Text>
@@ -105,23 +113,64 @@ export default class CoffeeBuilder extends React.Component {
   render() {
     return (
       <ScrollView style={{ flexDirection: 'column' }}>
-        <Reader style={styles.reader}/>
+        <View style={styles.readerContainer}>
+          <View style={{flexDirection:'column'}}>
+            <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
+            <Text style={styles.reader}>{this.props.ble.weight.extract.toFixed(1)}</Text>
+          </View>
+          <View style={{flexDirection:'column'}}>
+            <Text style={styles.readerTitle}>注水总量(g)</Text>
+            <Text style={styles.reader}>{this.props.ble.weight.total.toFixed(1)}</Text>
+          </View>
+          <View style={styles.btnClear}>
+            <Text style={styles.btnClearText} onPress={ bleService.scaleSetZero }>归零</Text>
+          </View>
+        </View>
         {this._getBuilderComponent()}
       </ScrollView>
-
     );
   }
 }
 
 const styles = StyleSheet.create({
+  readerContainer: {
+    flexDirection: 'row' ,
+    justifyContent:'space-between',
+    alignItems: 'center',
+    height:121.5,
+    backgroundColor:'#ebedee',
+  },
+  readerTitle: {
+    color: '#5B5B5B',
+    fontSize: 13,
+    marginTop: 17,
+    marginLeft: 35,
+  },
   reader: {
-  flexDirection: 'row' ,
-  justifyContent:'space-between',
-  alignItems: 'center',
-  paddingLeft: 35,
-  paddingRight: 30,
-  height:121.5,
-  backgroundColor:'#ebedee',
+    fontWeight: 'bold',
+    color: '#232323',
+    fontSize: 45,
+    marginLeft: 35,
+    marginBottom: 22.5,
+  },
+  btnClear: {
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius: 30,
+    borderColor: '#232323',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    width: 58,
+    height: 58,
+    marginTop:31.5,
+    marginRight:30,
+    marginBottom:32,
+    marginLeft:30,
+  },
+  btnClearText: {
+    color: '#232323',
+    fontSize: 15,
   },
   target: {
     flexDirection:'row',
@@ -217,4 +266,23 @@ const styles = StyleSheet.create({
   fontSize:17,
   color:'#232323',
   }
-})
+});
+
+const mapStateToProps = state => {
+  return {
+    coffeeSettings: state.coffeeSettings,
+    ble: state.ble
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+const CoffeeBuilderContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CoffeeBuilder)
+
+export default CoffeeBuilderContainer

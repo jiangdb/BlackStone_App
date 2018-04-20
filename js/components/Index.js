@@ -15,11 +15,11 @@ class Index extends React.Component {
   };
 
   componentDidMount() {
-    bleService.enableWeightNotify(true)
+    // bleService.enableWeightNotify(true)
   }
 
   componentWillUnmount() {
-    bleService.enableWeightNotify(false)
+    // bleService.enableWeightNotify(false)
   }
 
   render() {
@@ -28,7 +28,7 @@ class Index extends React.Component {
         {/*<Message/>*/}
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
-          <View style={[styles.flexColumn, this.props.style]}>
+          <View style={styles.flexColumn}>
             <View style={{flexDirection:'column'}}>
               <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
               <Text style={styles.reader}>{this.props.ble.weight.extract.toFixed(1)}</Text>
@@ -72,9 +72,11 @@ class Index extends React.Component {
         </TouchableWithoutFeedback>
         <View style={{flexDirection: 'row',justifyContent:'center'}}>
           <TouchableWithoutFeedback
-            onPress={() => {Alert.alert('pressed');}}
+            onPress={() => this.props.navigation.navigate('CoffeeBuilder')}
           >
-            <ImageBackground style={styles.btnStart} source={this.props.ble.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
+            <ImageBackground
+              style={styles.btnStart}
+              source={this.props.ble.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
               <Text style={this.props.ble.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
             </ImageBackground>
           </TouchableWithoutFeedback>
