@@ -2,6 +2,7 @@ import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class Index extends React.Component {
   static navigationOptions = {
@@ -14,9 +15,13 @@ class Index extends React.Component {
     },
   };
 
-  state = {
-    startBuilding: this.props.coffeeSettings.startBuilding,
-  };
+  componentDidMount() {
+    bleService.enableWeightNotify(true)
+  }
+
+  componentWillUnmount() {
+    bleService.enableWeightNotify(false)
+  }
 
   render() {
     return (
@@ -27,14 +32,14 @@ class Index extends React.Component {
           <View style={[styles.flexColumn, this.props.style]}>
             <View style={{flexDirection:'column'}}>
               <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
-              <Text style={styles.reader}>{this.props.coffeeSettings.beanWeightReader}</Text>
+              <Text style={styles.reader}>{this.props.ble.weight.extract.toFixed(1)}</Text>
             </View>
             <View style={styles.flexColumn}>
               <Text style={styles.readerTitle}>注水总量(g)</Text>
-              <Text style={styles.reader}>{this.props.coffeeSettings.waterWeightReader}</Text>
+              <Text style={styles.reader}>{this.props.ble.weight.total.toFixed(1)}</Text>
             </View>
             <View style={styles.btnClear}>
-              <Text style={styles.btnClearText} onPress={() => {Alert.alert('pressed');}}>归零</Text>
+              <Text style={styles.btnClearText} onPress={ bleService.scaleSetZero }>归零</Text>
             </View>
           </View>
         </View>

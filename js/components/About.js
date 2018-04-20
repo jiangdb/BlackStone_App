@@ -27,7 +27,7 @@ export default class About extends React.Component {
           </View>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent:'flex-end'}}>
-            <Text style={styles.version}>v1.0</Text>
+          <Text style={styles.version}>v1.0</Text>
         </View>
       </View>
     );

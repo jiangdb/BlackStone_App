@@ -14,14 +14,14 @@ const HomeStack = StackNavigator({
   BeanCategory: { screen: BeanCategoryContainer },
 },{
   navigationOptions: {
-	headerStyle: {
-	  backgroundColor: '#000',
-	},
-	headerTintColor: '#fff',
-	headerTitleStyle: {
-	  fontWeight: 'normal',
-	  color: 'white',
-	},
+    headerStyle: {
+      backgroundColor: '#000',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'normal',
+      color: 'white',
+    },
   },
 });
 
@@ -31,14 +31,14 @@ const MineStack = StackNavigator({
   DeviceScan: { screen: DeviceScanContainer },
 },{
   navigationOptions: {
-	headerStyle: {
-	  backgroundColor: '#000',
-	},
-	headerTintColor: '#fff',
-	headerTitleStyle: {
-	  fontWeight: 'normal',
-	  color: 'white',
-	},
+    headerStyle: {
+      backgroundColor: '#000',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'normal',
+      color: 'white',
+    },
   },
 });
 
@@ -46,3 +46,4 @@ module.exports = {
   Home: HomeStack,
   Mine: MineStack,
 };
+

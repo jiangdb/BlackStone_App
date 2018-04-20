@@ -5,12 +5,20 @@
 import * as bleActions from '../actions/ble.js'
 
 let dispatch = null
+let weightNotifyInterval = 'null'
+let deviceConnected = true;
+let normalBuildData = null
+let weight = {
+  extract: 0,
+  total: 0,
+}
 
 function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   dispatch(bleActions.bleOnConnectionStateChange('connected', {id: 1, localName:'test', name:'test'}))
   dispatch(bleActions.bleDeviceReady())
+  normalBuildData = generateBuildData()
 }
 
 function deInit() {
@@ -50,8 +58,8 @@ function deviceConnect(device) {
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
     deviceInfo.localName = 'test'
     deviceInfo.name = 'test'
-    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo));
-    console.log(device);
+    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
+    deviceConnected = true;
   }, 2000)
 }
 
@@ -59,11 +67,73 @@ function deviceDisconnect(device) {
   console.log('device cancelConnection')
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
+    deviceConnected = false;
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)
 }
 
 function deviceControl(opt) {
+}
+
+function generateBuildData() {
+  //two channel, 0 for extract, 1 for total, 29 seconds data.
+  var rtn = [
+    [],
+    []
+  ];
+
+  // first 2 seconds reamin 0
+  for (var i=0; i<20; i++) {
+    rtn[0][i] = 0;
+    rtn[1][i] = 0
+  }
+
+  // next 16 seconds keep inscrease
+  for (var i = 20; i < 180; i++) {
+    rtn[0][i] = Math.random() * 1 + 0.1 + rtn[0][i-1]; // add random 1～3g to previous weight
+    rtn[1][i] = Math.random() * 20 + 30 + rtn[0][i];   // add random 30～50g to extract weight
+  }
+
+  // last 11 seconds set 0
+  for (var i = 180; i < 290; i++) {
+    rtn[0][i] = 0;
+    rtn[1][i] = 0;
+  }
+  return rtn;
+}
+
+function enableWeightNotify(enable, build = false) {
+  if (!deviceConnected) return
+
+  if (enable) {
+    if (weightNotifyInterval == null ) {
+      let dataIndex = 0
+      weightNotifyInterval = setInterval( ()=> {
+        if (build) {
+          weight.extract = normalBuildData[0][dataIndex++]
+          weight.total = normalBuildData[1][dataIndex++]
+          if (dataIndex >= normalBuildData[1].length) dataIndex = 0
+        } else {
+          weight.extract += 0.1
+          weight.total += 0.1
+        }
+        dispatch(bleActions.bleOnWeightChange(weight))
+      }, 100)
+    }
+  } else {
+    if (weightNotifyInterval != null ) {
+      clearInterval(weightNotifyInterval)
+      weightNotifyInterval = null
+    }
+  }
+}
+
+function scaleSetZero() {
+  if (!deviceConnected) return
+
+  weight.extract = 0
+  weight.total = 0
+  dispatch(bleActions.bleOnWeightChange(weight))
 }
 
 module.exports = {
@@ -73,5 +143,7 @@ module.exports = {
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
-  deviceControl: deviceControl
+  deviceControl: deviceControl,
+  enableWeightNotify: enableWeightNotify,
+  scaleSetZero: scaleSetZero
 }
