@@ -5,7 +5,7 @@
 import * as bleActions from '../actions/ble.js'
 
 let dispatch = null
-let weightNotifyInterval = 'null'
+let weightNotifyInterval = null
 let deviceConnected = true;
 let normalBuildData = null
 let weight = {
