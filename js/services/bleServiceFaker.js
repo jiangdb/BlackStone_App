@@ -16,7 +16,6 @@ let weight = {
 function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
-  dispatch(bleActions.bleOnConnectionStateChange('connected', {id: 1, localName:'test', name:'test'}))
   normalBuildData = generateBuildData()
 }
 
@@ -28,18 +27,26 @@ function deviceScanStart() {
   dispatch(bleActions.bleStartScan())
   setTimeout(()=>{
     let device = {
-      id: 2,
-      localName: 'test2',
-      name: 'test2'
+      id: 1,
+      localName: 'test1',
+      name: 'test1'
     }
     dispatch(bleActions.bleFindDevice(device))
     setTimeout(()=>{
       let device = {
-        id: 3,
-        localName: 'test3',
-        name: 'test3'
+        id: 2,
+        localName: 'test2',
+        name: 'test2'
       }
       dispatch(bleActions.bleFindDevice(device))
+      setTimeout(()=>{
+        let device = {
+          id: 3,
+          localName: 'test3',
+          name: 'test3'
+        }
+        dispatch(bleActions.bleFindDevice(device))
+      },1000)
     },1000)
   },1000)
 }
@@ -76,6 +83,7 @@ function deviceDisconnect(device) {
   console.log('device cancelConnection')
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
+    enableWeightNotify(false)
     deviceConnected = false;
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)
