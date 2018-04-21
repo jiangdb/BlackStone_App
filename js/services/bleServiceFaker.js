@@ -17,7 +17,18 @@ function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   dispatch(bleActions.bleOnConnectionStateChange('connected', {id: 1, localName:'test', name:'test'}))
-  dispatch(bleActions.bleDeviceReady())
+  dispatch(bleActions.bleDeviceReady(
+    {
+      displayName = 'Timemore',
+      manufacturerName = 'Timemore',
+      modelNum: 'TES04PL',
+      serialNum: '30AEA41A2200',
+      fwVersion: '0.80.20'
+      batteryLevel: 10000,
+      wifiStatus: 'connected',
+      wifiSSID: 'test'
+    }
+  ))
   normalBuildData = generateBuildData()
 }
 
