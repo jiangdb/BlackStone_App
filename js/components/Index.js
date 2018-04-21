@@ -2,6 +2,7 @@ import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
+import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
 
 class Index extends React.Component {
@@ -15,18 +16,6 @@ class Index extends React.Component {
     },
   };
 
-  componentDidMount() {
-    bleService.enableWeightNotify(true)
-  }
-
-  componentWillUnmount() {
-    bleService.enableWeightNotify(false)
-  }
-
-  componentDidMount() {
-    console.log('index ==> componentDidMount');
-  }
-
   render() {
     return (
       <ScrollView style={styles.container}>
@@ -34,14 +23,8 @@ class Index extends React.Component {
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
           <View style={[styles.flexColumn, this.props.style]}>
-            <View style={{flexDirection:'column'}}>
-              <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
-              <Text style={styles.reader}>{this.props.ble.weight.extract.toFixed(1)}</Text>
-            </View>
-            <View style={styles.flexColumn}>
-              <Text style={styles.readerTitle}>注水总量(g)</Text>
-              <Text style={styles.reader}>{this.props.ble.weight.total.toFixed(1)}</Text>
-            </View>
+            <WeightReadingContainer type='extract'/>
+            <WeightReadingContainer type='total'/>
             <View style={styles.btnClear}>
               <Text style={styles.btnClearText} onPress={ bleService.scaleSetZero }>归零</Text>
             </View>
@@ -79,8 +62,8 @@ class Index extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {Alert.alert('pressed');}}
           >
-            <ImageBackground style={styles.btnStart} source={this.props.ble.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
-              <Text style={this.props.ble.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
+            <ImageBackground style={styles.btnStart} source={this.props.bleStatus.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
+              <Text style={this.props.bleStatus.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
             </ImageBackground>
           </TouchableWithoutFeedback>
         </View>
@@ -227,7 +210,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    ble: state.ble,
+    bleStatus: state.bleStatus,
     coffeeSettings: state.coffeeSettings
   }
 }

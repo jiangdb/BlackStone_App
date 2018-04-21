@@ -16,8 +16,6 @@ let weight = {
 function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
-  dispatch(bleActions.bleOnConnectionStateChange('connected', {id: 1, localName:'test', name:'test'}))
-  dispatch(bleActions.bleDeviceReady())
   normalBuildData = generateBuildData()
 }
 
@@ -29,18 +27,26 @@ function deviceScanStart() {
   dispatch(bleActions.bleStartScan())
   setTimeout(()=>{
     let device = {
-      id: 2,
-      localName: 'test2',
-      name: 'test2'
+      id: 1,
+      localName: 'test1',
+      name: 'test1'
     }
     dispatch(bleActions.bleFindDevice(device))
     setTimeout(()=>{
       let device = {
-        id: 3,
-        localName: 'test3',
-        name: 'test3'
+        id: 2,
+        localName: 'test2',
+        name: 'test2'
       }
       dispatch(bleActions.bleFindDevice(device))
+      setTimeout(()=>{
+        let device = {
+          id: 3,
+          localName: 'test3',
+          name: 'test3'
+        }
+        dispatch(bleActions.bleFindDevice(device))
+      },1000)
     },1000)
   },1000)
 }
@@ -56,10 +62,20 @@ function deviceConnect(device) {
   let deviceInfo = {}
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
-    deviceInfo.localName = 'test'
-    deviceInfo.name = 'test'
-    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
     deviceConnected = true;
+    dispatch(bleActions.bleDeviceReady(
+      {
+        displayName: 'Timemore',
+        manufacturerName: 'Timemore',
+        modelNum: 'TES04PL',
+        serialNum: '30AEA41A2200',
+        fwVersion: '0.80.20',
+        batteryLevel: 10000,
+        wifiStatus: 'connected',
+        wifiSSID: 'test'
+      }
+    ))
+    enableWeightNotify(true)
   }, 2000)
 }
 
@@ -67,6 +83,7 @@ function deviceDisconnect(device) {
   console.log('device cancelConnection')
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
+    enableWeightNotify(false)
     deviceConnected = false;
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
   }, 1000)

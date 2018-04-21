@@ -44,7 +44,7 @@ export class ChoiceBar extends Component {
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
       break;
       case 'switch':
-        return <Switch onValueChange={this.props.toggleSwitch} value={this.state.switchValue} />;
+        return <Switch onValueChange={this.props.toggleSwitch} value={this.props.switchValue} />;
       break;
       default:
         return;

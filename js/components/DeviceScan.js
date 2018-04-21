@@ -53,10 +53,10 @@ class DeviceScan extends React.Component {
       <View style={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
-            title={this.props.ble.connectionState ==='connected'? '已连接' : '未连接'}
-            value={this.props.ble.connectionState ==='connected'? this.props.ble.device.name: ''}
-            icon={this.props.ble.connectionState ==='connected'? 'switch' : ''}
-            switchValue={this.props.ble.connectionState ==='connected'? true : false}
+            title={this.props.bleStatus.deviceReady? '已连接' : '未连接'}
+            value={this.props.bleStatus.deviceReady? this.props.bleStatus.deviceInfo.displayName: ''}
+            icon={this.props.bleStatus.deviceReady? 'switch' : ''}
+            switchValue={this.props.bleStatus.deviceReady}
             toggleSwitch={this._onSwitchOff}
           />
         </View>
@@ -64,7 +64,7 @@ class DeviceScan extends React.Component {
         <Text style={styles.warnMessage}>如果设备已经与其它手机相连，请在另一台手机小程序中断开或者退出小程序</Text>
         <FlatList
           style={{backgroundColor: '#fff'}}
-          data={this.props.ble.deviceScanned}
+          data={this.props.bleScan.deviceScanned}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     deviceScan: state.deviceScan,
-    ble: state.ble,
+    bleStatus: state.bleStatus,
+    bleScan: state.bleScan,
   }
 }
 
