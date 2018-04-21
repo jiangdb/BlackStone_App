@@ -1,7 +1,7 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View } from 'react-native';
-import bleService from '../../services/bleServiceFaker.js'
+import bleService from '../../services/bleService.js'
 
 class WeightReading extends Component {
   render() {

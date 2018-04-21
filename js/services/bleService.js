@@ -58,7 +58,8 @@ let SCALE_CONTROL_NOTIFY = {
 
 let bleManager = null
 let dispatch = null
-let connectedDevice = {
+/*
+ * structure of connectedDevice
   id: null,
   weightService: {
     id: null,
@@ -73,7 +74,14 @@ let connectedDevice = {
     charSerialNumberId: null,
     charFWVersionId: null,
   },
-};
+ */
+let connectedDevice = null
+let weightNotifyInterval = null
+let weightMeasureNotify = null
+let weightMeasurement = {
+  extract: 0,
+  total: 0
+}
 
 function init(store) {
   bleManager = new BleManager()
@@ -119,20 +127,23 @@ function deviceConnect(device) {
   console.log('start connect: ' + device.id)
   dispatch(bleActions.bleOnConnectionStateChange('connecting', device))
   let deviceInfo = {}
+  connectedDevice = {}
   device.connect()
     .then((device) => {
       console.log('connected')
       //we get connected
       connectedDevice.id = device.id
       dispatch(bleActions.bleOnConnectionStateChange('connected', device))
-      dispatch(bleActions.bleOnDeviceInfoChange({ name: device.localName?device.localName:device.name }))
+      deviceInfo.displayName = device.localName?device.localName:device.name
+      console.log('displayName:' + deviceInfo.displayName)
       //register onDisconnected
       let onDisconnected = device.onDisconnected((error,device) => {
         console.log(device.id + ' disconnected')
         dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+        connectedDevice = null
         onDisconnected.remove()
       })
-      console.log('discover services and characteristics')
+      //console.log('discover services and characteristics')
       //discover services and characteristics
       device.discoverAllServicesAndCharacteristics()
         .then((device) => {
@@ -140,18 +151,18 @@ function deviceConnect(device) {
         })
         .then((services) => {
           services.forEach(function(service) {
-            console.log(service.uuid);
+            //console.log('service: ' + service.uuid);
             if (service.uuid.toUpperCase().indexOf(UUIDS.SERVICE_WEIGHT) != -1) {
-              connectedDevice.weightService.id = service.uuid
+              connectedDevice.weightService = { id: service.uuid }
             }else if (service.uuid.toUpperCase().indexOf(UUIDS.SERVICE_DEVICE_INFORMATION) != -1) {
-              connectedDevice.deviceInfoService.id = service.uuid
+              connectedDevice.deviceInfoService = { id: service.uuid }
             }
           });
           return bleManager.characteristicsForDevice(connectedDevice.id, connectedDevice.deviceInfoService.id)
         })
         .then((characteristics) => {
           characteristics.forEach(function(characteristic) {
-            console.log(characteristic.uuid);
+            //console.log('char: ' + characteristic.uuid);
             if (characteristic.uuid.toUpperCase().indexOf(UUIDS.CHAR_MANUFACTURER_NAME_UUID) != -1) {
               connectedDevice.deviceInfoService.charManuNameId = characteristic.uuid
             } else if (characteristic.uuid.toUpperCase().indexOf(UUIDS.CHAR_MODEL_NUMBER_UUID) != -1) {
@@ -166,7 +177,7 @@ function deviceConnect(device) {
         })
         .then((characteristics) => {
           characteristics.forEach(function(characteristic) {
-            console.log(characteristic.uuid);
+            //console.log('char:' + characteristic.uuid);
             if (characteristic.uuid.toUpperCase().indexOf(UUIDS.CHAR_WEIGHT_MEASUREMENT) != -1) {
               connectedDevice.weightService.charWeightMeasurementId = characteristic.uuid;
             } else if (characteristic.uuid.toUpperCase().indexOf(UUIDS.CHAR_WEIGHT_CONTROL_POINT_V2) != -1) {
@@ -213,20 +224,15 @@ function deviceConnect(device) {
           deviceInfo.batteryLevel = val[9]
           deviceInfo.wifiStatus = WIFI_STATUS[val[10]]
           deviceInfo.wifiSSID = val.toString('utf8',11)
-          dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
 
           //enable notify
           let weightControlNotify = characteristic.monitor((error,characteristic) => {
-            console.log('weight control notify:')
             if (error && (error.errorCode == 201)) {
               weightControlNotify.remove();
               return;
             }
             let val = new Buffer(characteristic.value, 'base64')
-            console.log(val[0])
             if (val[0] != 2) return
-            console.log(val[1])
-            console.log(val[2])
             if (val[1] == SCALE_CONTROL_NOTIFY.WIFI_STATUS) {
               dispatch(bleActions.bleOnDeviceInfoChange({
                 wifiStatus: WIFI_STATUS[val[2]],
@@ -243,7 +249,13 @@ function deviceConnect(device) {
         }).then((characteristic)=>{
           return deviceControl(SCALE_CONTROL.ALARM_ENABLE, true)
         }).then((characteristic)=>{
-          dispatch(bleActions.bleDeviceReady())
+          weightMeasureNotify = bleManager.monitorCharacteristicForDevice(
+            connectedDevice.id,
+            connectedDevice.weightService.id,
+            connectedDevice.weightService.charWeightMeasurementId,
+            weightNotifyListener
+          )
+          dispatch(bleActions.bleDeviceReady(deviceInfo))
         })
         .catch((error) => {
            // Handle errors
@@ -256,6 +268,7 @@ function deviceConnect(device) {
       console.log('error')
       console.log(error);
       dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+      connectedDevice = null
     });
 }
 
@@ -279,6 +292,12 @@ function strToBuffer(opt, str) {
 
 function deviceControl(opt) {
   console.log("deviceControl: " + opt +' '+arguments[1]);
+
+  if ( !connectedDevice ) {
+    console.error("device not connected");
+    return
+  }
+
   let buffer = null
   let offset = 0;
   switch (opt) {
@@ -367,6 +386,36 @@ function deviceControl(opt) {
   )
 }
 
+function weightNotifyListener( error, characteristic ) {
+  //console.log('weight measurement notify:')
+  if (error && (error.errorCode == 201)) {
+    weightMeasureNotify.remove()
+    weightMeasureNotify = null
+    return;
+  }
+  let val = new Buffer(characteristic.value, 'base64')
+  //console.log('flag: ' + val[0])
+  //console.log("total: " + val.readInt32LE(1));
+  //console.log("extract: " + val.readInt32LE(5));
+  let flag = val[0]
+  let total = val.readInt32LE(1)/10
+  if (total > 3000) total = 3000
+  let extract = null
+  if (flag & 0x10) {
+    extract = val.readInt32LE(5)/10
+    if (extract > 2000) extract = 2000
+  }
+  weightMeasurement = {
+    extract: extract,
+    total: total
+  }
+  dispatch(bleActions.bleOnWeightChange(weightMeasurement))
+}
+
+function scaleSetZero() {
+  return deviceControl(SCALE_CONTROL.SET_ZERO)
+}
+
 module.exports = {
   init: init,
   deInit: deInit,
@@ -374,6 +423,7 @@ module.exports = {
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
-  deviceControl: deviceControl
+  deviceControl: deviceControl,
+  scaleSetZero: scaleSetZero
 }
 
