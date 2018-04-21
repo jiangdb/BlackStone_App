@@ -17,18 +17,6 @@ function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   dispatch(bleActions.bleOnConnectionStateChange('connected', {id: 1, localName:'test', name:'test'}))
-  dispatch(bleActions.bleDeviceReady(
-    {
-      displayName = 'Timemore',
-      manufacturerName = 'Timemore',
-      modelNum: 'TES04PL',
-      serialNum: '30AEA41A2200',
-      fwVersion: '0.80.20'
-      batteryLevel: 10000,
-      wifiStatus: 'connected',
-      wifiSSID: 'test'
-    }
-  ))
   normalBuildData = generateBuildData()
 }
 
@@ -67,10 +55,20 @@ function deviceConnect(device) {
   let deviceInfo = {}
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
-    deviceInfo.localName = 'test'
-    deviceInfo.name = 'test'
-    dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
     deviceConnected = true;
+    dispatch(bleActions.bleDeviceReady(
+      {
+        displayName: 'Timemore',
+        manufacturerName: 'Timemore',
+        modelNum: 'TES04PL',
+        serialNum: '30AEA41A2200',
+        fwVersion: '0.80.20',
+        batteryLevel: 10000,
+        wifiStatus: 'connected',
+        wifiSSID: 'test'
+      }
+    ))
+    enableWeightNotify(true)
   }, 2000)
 }
 
