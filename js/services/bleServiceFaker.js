@@ -4,24 +4,35 @@
 
 import * as bleActions from '../actions/ble.js'
 
-let dispatch = null
-let weightNotifyInterval = null
+let dataIndex = 0
 let deviceConnected = true;
+let dispatch = null
 let normalBuildData = null
+let weightNotifyInterval = null
 let weight = {
   extract: 0,
   total: 0,
 }
 
+/**
+ * Initiate function
+ * @param {Object} redux store object
+ */
 function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   normalBuildData = generateBuildData()
 }
 
+/**
+ * Deinitiate function
+ */
 function deInit() {
 }
 
+/**
+ * Start ble scan
+ */
 function deviceScanStart() {
   console.log('start scan')
   dispatch(bleActions.bleStartScan())
@@ -51,11 +62,18 @@ function deviceScanStart() {
   },1000)
 }
 
+/**
+ * Stop ble scan
+ */
 function deviceScanStop() {
   console.log('stop scan')
   dispatch(bleActions.bleStopScan())
 }
 
+/**
+ * Connect ble device
+ * @param {Object} ble-plx device object
+ */
 function deviceConnect(device) {
   console.log('start connect: ' + device.id)
   dispatch(bleActions.bleOnConnectionStateChange('connecting', device))
@@ -79,6 +97,10 @@ function deviceConnect(device) {
   }, 2000)
 }
 
+/**
+ * Disconnect from device
+ * @param {Object} ble-plx device object
+ */
 function deviceDisconnect(device) {
   console.log('device cancelConnection')
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
@@ -89,9 +111,16 @@ function deviceDisconnect(device) {
   }, 1000)
 }
 
+/**
+ * Write command to scale
+ * @param {number} opt commander
+ */
 function deviceControl(opt) {
 }
 
+/**
+ * Generate a normal build data
+ */
 function generateBuildData() {
   //two channel, 0 for extract, 1 for total, 29 seconds data.
   var rtn = [
@@ -119,21 +148,19 @@ function generateBuildData() {
   return rtn;
 }
 
-function enableWeightNotify(enable, build = false) {
+/**
+ * Enable scale's weight notify
+ * @param {boolean} enable enable or disable notify
+ */
+function enableWeightNotify(enable) {
   if (!deviceConnected) return
 
   if (enable) {
     if (weightNotifyInterval == null ) {
-      let dataIndex = 0
       weightNotifyInterval = setInterval( ()=> {
-        if (build) {
-          weight.extract = normalBuildData[0][dataIndex++]
-          weight.total = normalBuildData[1][dataIndex++]
-          if (dataIndex >= normalBuildData[1].length) dataIndex = 0
-        } else {
-          weight.extract += 0.1
-          weight.total += 0.1
-        }
+        weight.extract = normalBuildData[0][dataIndex++]
+        weight.total = normalBuildData[1][dataIndex++]
+        if (dataIndex >= normalBuildData[1].length) dataIndex = 0
         dispatch(bleActions.bleOnWeightChange(weight))
       }, 100)
     }
@@ -145,12 +172,22 @@ function enableWeightNotify(enable, build = false) {
   }
 }
 
+/**
+ * Read current weight on scale
+ * @returns {object} object with extrat and total,
+ * if extract is null, means scale is in single scale mode
+ */
+function readWeight() {
+  return weight
+}
+
+/**
+ * Set zero on scale
+ */
 function scaleSetZero() {
   if (!deviceConnected) return
 
-  weight.extract = 0
-  weight.total = 0
-  dispatch(bleActions.bleOnWeightChange(weight))
+  dataIndex = 0
 }
 
 module.exports = {
@@ -162,5 +199,6 @@ module.exports = {
   deviceScanStop: deviceScanStop,
   deviceControl: deviceControl,
   enableWeightNotify: enableWeightNotify,
+  readWeight: readWeight,
   scaleSetZero: scaleSetZero
 }
