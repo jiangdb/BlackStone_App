@@ -1,4 +1,4 @@
-const bleDeviceReady = () => ({ type: "BLE_DEVICE_READY"})
+const bleDeviceReady = info => ({ type: "BLE_DEVICE_READY" })
 const bleFindDevice = device => ({
   type: "BLE_FIND_DEVICE",
   device
