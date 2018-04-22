@@ -77,22 +77,20 @@ function deviceScanStop() {
 function deviceConnect(device) {
   console.log('start connect: ' + device.id)
   dispatch(bleActions.bleOnConnectionStateChange('connecting', device))
-  let deviceInfo = {}
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
     deviceConnected = true;
-    dispatch(bleActions.bleDeviceReady(
-      {
-        displayName: 'Timemore',
-        manufacturerName: 'Timemore',
-        modelNum: 'TES04PL',
-        serialNum: '30AEA41A2200',
-        fwVersion: '0.80.20',
-        batteryLevel: 10000,
-        wifiStatus: 'connected',
-        wifiSSID: 'test'
-      }
-    ))
+    dispatch(bleActions.bleOnDeviceInfoChange({
+      displayName: 'Timemore',
+      manufacturerName: 'Timemore',
+      modelNum: 'TES04PL',
+      serialNum: '30AEA41A2200',
+      fwVersion: '0.80.20',
+      batteryLevel: 3,
+      wifiStatus: 'connected',
+      wifiSSID: 'test'
+    }))
+    dispatch(bleActions.bleDeviceReady())
     enableWeightNotify(true)
   }, 2000)
 }
@@ -182,12 +180,131 @@ function readWeight() {
 }
 
 /**
- * Set zero on scale
+ * Set scale alarm enble or disable
+ * @param {boolean} enable enable or disable alarm
+ * @returns {boolean} boolean for success or fail
  */
-function scaleSetZero() {
-  if (!deviceConnected) return
+function setAlarmEnable(enable) {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Set scale alarm weight, exceed this weight, scale will alarm
+ * @param {number} weight weight in coffeesetting
+ * @returns {boolean} boolean for success or fail
+ */
+function setAlarmWeight(weight) {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Set scale alarm time, exceed this time, scale will alarm
+ * @param {number} time time in coffeesetting
+ * @returns {boolean} boolean for success or fail
+ */
+function setAlarmTime(time) {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Set scale key sound enble or disable
+ * @param {boolean} enable enable or disable key sound
+ * @returns {boolean} boolean for success or fail
+ */
+function setKeySound(enable) {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Set scale key vibrate enble or disable
+ * @param {boolean} enable enable or disable key vibrate
+ * @returns {boolean} boolean for success or fail
+ */
+function setKeyVibrate(enable) {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Set scale device name, max length to 20 characters, state will update
+ * @param {string} name
+ */
+function setName(name) {
+  if (!deviceConnected || !name.length || name.length > 20) return
+
+  dispatch(bleActions.bleOnDeviceInfoChange({
+    displayName: name,
+  }))
+}
+
+/**
+ * Set scale wifi ssid, pass, max length to 20 characters, state will update
+ * @param {string} ssid Wifi SSID
+ * @param {string} pass Wifi Pass
+ */
+function setWifi(ssid, pass) {
+  if (!deviceConnected || !ssid.length || ssid.length > 20 || !pass.length || pass.length > 20) return
+
+  dispatch(bleActions.bleOnDeviceInfoChange({
+    wifiSSID: ssid,
+    wifiStatus: 'connecting'
+  }))
+
+  setTimeout( ()=>{
+    dispatch(bleActions.bleOnDeviceInfoChange({
+      wifiStatus: 'connected'
+    }))
+  }, 2000)
+}
+
+/**
+ * Set zero on scale
+ * @returns {boolean} boolean for success or fail
+ */
+function setZero() {
+  if (!deviceConnected) return false
 
   dataIndex = 0
+  return true
+}
+
+/**
+ * Start timer on scale
+ * @returns {boolean} boolean for success or fail
+ */
+function timerStart() {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Pause timer on scale
+ * @returns {boolean} boolean for success or fail
+ */
+function timerPause() {
+  if (!deviceConnected) return false
+
+  return true
+}
+
+/**
+ * Reset timer on scale
+ * @returns {boolean} boolean for success or fail
+ */
+function timerReset() {
+  if (!deviceConnected) return false
+
+  return true
 }
 
 module.exports = {
@@ -198,7 +315,16 @@ module.exports = {
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
   deviceControl: deviceControl,
-  enableWeightNotify: enableWeightNotify,
   readWeight: readWeight,
-  scaleSetZero: scaleSetZero
+  setAlarmEnable: setAlarmEnable,
+  setAlarmWeight: setAlarmWeight,
+  setAlarmTime: setAlarmTime,
+  setKeySound: setKeySound,
+  setKeyVibrate: setKeyVibrate,
+  setName: setName,
+  setWifi: setWifi,
+  setZero: setZero,
+  timerStart: timerStart,
+  timerPause: timerPause,
+  timerReset: timerReset,
 }

@@ -26,7 +26,7 @@ class Index extends React.Component {
             <WeightReadingContainer type='extract'/>
             <WeightReadingContainer type='total'/>
             <View style={styles.btnClear}>
-              <Text style={styles.btnClearText} onPress={ bleService.scaleSetZero }>归零</Text>
+              <Text style={styles.btnClearText} onPress={ bleService.setZero }>归零</Text>
             </View>
           </View>
         </View>
