@@ -6,4 +6,5 @@ export default combineReducers({
     bleStatus: require('./bleStatus.js'),
     bleWeightNotify: require('./bleWeightNotify.js'),
     coffeeSettings: require('./coffeeSettings.js'),
+    beanCategory: require('./beanCategory.js'),
 })

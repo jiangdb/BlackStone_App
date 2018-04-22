@@ -1,6 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground,TouchableHighlight} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
@@ -68,13 +68,13 @@ class Index extends React.Component {
           </View>
         </TouchableWithoutFeedback>
         <View style={{flexDirection: 'row',justifyContent:'center'}}>
-          <TouchableWithoutFeedback
+          <TouchableHighlight
             onPress={() => this.props.navigation.navigate('CoffeeBuilder')}
           >
             <ImageBackground style={styles.btnStart} source={this.props.bleStatus.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
               <Text style={this.props.bleStatus.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
             </ImageBackground>
-          </TouchableWithoutFeedback>
+          </TouchableHighlight>
         </View>
       </ScrollView>
     );

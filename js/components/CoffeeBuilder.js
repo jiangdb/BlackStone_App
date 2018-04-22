@@ -14,6 +14,7 @@ class CoffeeBuilder extends React.Component {
   state = {
     timerCount: 3,
     mode: 'mode_countDown',
+    building: true
   };
 
   componentWillMount() {
@@ -36,6 +37,17 @@ class CoffeeBuilder extends React.Component {
   componentWillUnmount() {
     // bleService.enableWeightNotify(false)
   }
+
+  _getTimer = () => {
+    this.interval = setInterval(() =>{
+      let i = 0;
+      return i+1;
+    },1000);
+  };
+
+  _stopBuilding = () => {
+    this.setState({building: false});
+  };
 
   _getBuilderComponent = () => {
     switch (this.state.mode) {
@@ -75,22 +87,22 @@ class CoffeeBuilder extends React.Component {
             </View>
 
             <View style={{flexDirection:'column', alignItems: 'center'}}>
-              <Text style={styles.stopwatchTimer}>00:00</Text>
+              <Text style={styles.stopwatchTimer}>{this._getTimer}</Text>
               <Text style={styles.textTimer}>分：秒</Text>
             </View>
-            <View style={{flexDirection: 'row',}}>
+            <View style={this.state.building ? {flexDirection: 'row',} : {display: 'none'}}>
               <TouchableHighlight>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
                 </View>
               </TouchableHighlight>
-              <TouchableHighlight>
+              <TouchableHighlight onPress={this._stopBuilding}>
                 <View style={[styles.button,styles.buttonEnd]}>
                   <Text style={{color:'#fff',fontSize:16}}>结束</Text>
                 </View>
               </TouchableHighlight>
             </View>
-            <View style={{flexDirection: 'row',}}>
+            <View style={this.state.building ? {display: 'none'} : {flexDirection: 'row',}}>
               <TouchableHighlight>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
@@ -115,8 +127,16 @@ class CoffeeBuilder extends React.Component {
     return (
       <ScrollView style={{ flexDirection: 'column' }}>
         <View style={styles.readerContainer}>
-          <WeightReadingContainer type='extract'/>
-          <WeightReadingContainer type='total'/>
+          <WeightReadingContainer
+            type='extract'
+            readerStyle={styles.reader}
+            readerTitleStyle={styles.readerTitle}
+          />
+          <WeightReadingContainer
+            type='total'
+            readerStyle={styles.reader}
+            readerTitleStyle={styles.readerTitle}
+          />
           <View style={styles.btnClear}>
             <Text style={styles.btnClearText} onPress={ bleService.setZero }>归零</Text>
           </View>
@@ -178,37 +198,37 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },
   targetValue:{
-  lineHeight:21,
-  fontSize:18,
-  color:'#232323',
+    lineHeight:21,
+    fontSize:18,
+    color:'#232323',
   },
   targetIcon: {
     width:20,
-  height:22,
+    height:22,
   },
   targetName: {
-  lineHeight:24,
-  marginLeft:4.5,
-  fontSize:17,
-  color:'#5B5B5B',
+    lineHeight:24,
+    marginLeft:4.5,
+    fontSize:17,
+    color:'#5B5B5B',
   },
   divider: {
     width:0.5,
-  height:46.5,
-  borderLeftWidth:0.5,
-  borderStyle:'solid',
-  borderLeftColor:'#C7C7C7',
+    height:46.5,
+    borderLeftWidth:0.5,
+    borderStyle:'solid',
+    borderLeftColor:'#C7C7C7',
   },
   stopwatchTimer:{
-  marginTop:14.5,
-  lineHeight:37,
-  fontSize:32,
-  color:'#232323',
+    marginTop:14.5,
+    lineHeight:37,
+    fontSize:32,
+    color:'#232323',
   },
   textTimer:{
-  lineHeight:24,
-  fontSize:17,
-  color:'#A3A3A3',
+    lineHeight:24,
+    fontSize:17,
+    color:'#A3A3A3',
   },
   button: {
     flexDirection: 'row',
@@ -216,11 +236,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width:152.5,
     height:35,
-  marginTop:19.5,
-  marginBottom:46.5,
-  marginLeft: 7,
-  marginRight: 7,
-  borderRadius:5,
+    marginTop:19.5,
+    marginBottom:46.5,
+    marginLeft: 7,
+    marginRight: 7,
+    borderRadius:5,
     borderStyle: 'solid',
     borderWidth:1,
   },
@@ -229,7 +249,7 @@ const styles = StyleSheet.create({
   },
   buttonEnd: {
     borderColor: '#383838',
-  backgroundColor:'#383838',
+    backgroundColor:'#383838',
   },
   countDown: {
     width:250,
@@ -246,20 +266,20 @@ const styles = StyleSheet.create({
   },
   timer: {
     height:175,
-  lineHeight:175,
-  fontSize:144,
-  color:'#75838C',
+    lineHeight:175,
+    fontSize:144,
+    color:'#75838C',
   },
   timerName: {
     height:21,
-  lineHeight:21,
-  fontSize:15,
-  color:'#a3a3a3',
+    lineHeight:21,
+    fontSize:15,
+    color:'#a3a3a3',
   },
   startSoon: {
-  lineHeight:24,
-  fontSize:17,
-  color:'#232323',
+    lineHeight:24,
+    fontSize:17,
+    color:'#232323',
   }
 });
 
