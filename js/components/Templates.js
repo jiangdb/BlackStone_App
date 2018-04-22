@@ -1,19 +1,5 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableWithoutFeedback} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// message component on the top
-export class Message extends Component {
-  render() {
-    return (
-      <View style={styles.messageContainer}>
-        <Ionicons name="ios-alert" size={23} color='tomato'/>
-        <Text style={styles.message}>当前蓝牙不可用，请检查你的蓝牙设置</Text>
-        {/*-- icon and content depends on whether it is 'warn' or 'info' --*/}
-      </View>
-    );
-  }
-}
 
 // divider
 export class Divider extends Component {
@@ -76,18 +62,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderTopWidth: 0.5,
     marginLeft: 18,
-  },
-  messageContainer: {
-    height: 50,
-    flexDirection:'row',
-    alignItems: 'center',
-    backgroundColor: '#ffdfe0',
-    paddingLeft: 15,
-  },
-  message: {
-    color:'#6f5153',
-    fontSize:15,
-    marginLeft: 15,
   },
   choiceBar: {
     height: 55,

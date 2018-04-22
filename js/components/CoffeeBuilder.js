@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 'react-native';
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
+import WeightReadingContainer from './common/WeightReading.js'
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -114,16 +115,10 @@ class CoffeeBuilder extends React.Component {
     return (
       <ScrollView style={{ flexDirection: 'column' }}>
         <View style={styles.readerContainer}>
-          <View style={{flexDirection:'column'}}>
-            <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
-            <Text style={styles.reader}>{this.props.ble.weight.extract.toFixed(1)}</Text>
-          </View>
-          <View style={{flexDirection:'column'}}>
-            <Text style={styles.readerTitle}>注水总量(g)</Text>
-            <Text style={styles.reader}>{this.props.ble.weight.total.toFixed(1)}</Text>
-          </View>
+          <WeightReadingContainer type='extract'/>
+          <WeightReadingContainer type='total'/>
           <View style={styles.btnClear}>
-            <Text style={styles.btnClearText} onPress={ bleService.scaleSetZero }>归零</Text>
+            <Text style={styles.btnClearText} onPress={ bleService.setZero }>归零</Text>
           </View>
         </View>
         {this._getBuilderComponent()}

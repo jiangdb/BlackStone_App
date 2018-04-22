@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWith
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
+import BleMessageContainer from './common/BleWarning.js'
 
 class Index extends React.Component {
   static navigationOptions = {
@@ -27,10 +28,10 @@ class Index extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        {/*<Message/>*/}
+        <BleMessageContainer/>
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
-          <View style={[styles.flexColumn, this.props.style]}>
+          <View style={styles.flexColumn}>
             <WeightReadingContainer type='extract'/>
             <WeightReadingContainer type='total'/>
             <View style={styles.btnClear}>
