@@ -26,7 +26,7 @@ function beanCategory(state, action) {
   switch (action.type) {
     case "SAVE_BEAN_CATEGORY":
       return Object.assign({}, state, {
-        beanCategoryData: [
+        data: [
           ...state.data,
           action.category
         ]

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Button, Text, View , Image } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
+import BleMessageContainer from './common/BleWarning.js'
 
 class Mine extends React.Component {
   static navigationOptions = {
@@ -17,6 +18,7 @@ class Mine extends React.Component {
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
+        <BleMessageContainer/>
         <View style={styles.userContainer}>
           <Image style={styles.userHeader} source={require('../../images/user-header.png')} />
             <Text style={styles.userName}>用户名</Text>

@@ -8,4 +8,6 @@ export type Action =
   | { type: "BLE_START_SCAN" }
   | { type: "BLE_STOP_SCAN" }
   | { type: "SAVE_COFFEE_SETTINGS", settings: Object }
-  | { type: "SAVE_BEAN_CATEGORY", category: Object };
+  | { type: "SAVE_BEAN_CATEGORY", category: Object }
+  | { type: "SAVE_FLAVOR", flavor: Object }
+  | { type: "SAVE_RECORD", record: Object };

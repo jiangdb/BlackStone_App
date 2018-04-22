@@ -14,7 +14,6 @@ class CoffeeBuilder extends React.Component {
   state = {
     timerCount: 3,
     mode: 'mode_countDown',
-    building: true
   };
 
   componentWillMount() {
@@ -46,80 +45,75 @@ class CoffeeBuilder extends React.Component {
   };
 
   _stopBuilding = () => {
-    this.setState({building: false});
+    this.setState({mode: 'mode_stop'});
   };
 
   _getBuilderComponent = () => {
-    switch (this.state.mode) {
-      case 'mode_countDown':
-        return (
-          <View style={{flexDirection:'column', alignItems: 'center', backgroundColor: '#fff'}}>
-            <View style={styles.countDown}>
-              <Text style={styles.timer}>{this.state.timerCount}</Text>
-              <Text style={styles.timerName}>秒倒计时</Text>
+    if(this.state.mode==='mode_countDown') {
+      return (
+        <View style={{flexDirection:'column', alignItems: 'center', backgroundColor: '#fff'}}>
+          <View style={styles.countDown}>
+            <Text style={styles.timer}>{this.state.timerCount}</Text>
+            <Text style={styles.timerName}>秒倒计时</Text>
+          </View>
+          <View style={{flexDirection: 'column', alignItems: 'center'}}>
+            <Text style={styles.startSoon}>注水开始自动计时，</Text>
+            <Text style={styles.startSoon}>请确认容器内无残水</Text>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
+          <View style={styles.target}>
+            <View style={styles.targetContainer}>
+            <Text style={styles.targetValue}>{this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond}</Text>
+              <View style={{flexDirection:'row',alignItems: 'center'}}>
+                <Image style={styles.targetIcon} source={require('../../images/icon_time.png')} />
+              <Text style={styles.targetName}>目标时间</Text>
+              </View>
             </View>
-            <View style={{flexDirection: 'column', alignItems: 'center'}}>
-              <Text style={styles.startSoon}>注水开始自动计时，</Text>
-              <Text style={styles.startSoon}>请确认容器内无残水</Text>
+            <View style={styles.divider}></View>
+            <View style={{flexDirection:'column',height:46.5, width:187.5,alignItems:'center'}}>
+            <Text style={styles.targetValue}>{this.props.coffeeSettings.waterWeight}</Text>
+              <View style={{flexDirection:'row',alignItems: 'center'}}>
+                <Image style={styles.targetIcon} source={require('../../images/icon_waterweight.png')} />
+              <Text style={styles.targetName}>目标萃取量</Text>
+              </View>
             </View>
           </View>
-        );
-      break;
-      case 'mode_standBy':
-        return (
-          <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
-            <View style={styles.target}>
-              <View style={styles.targetContainer}>
-              <Text style={styles.targetValue}>{this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond}</Text>
-                <View style={{flexDirection:'row',alignItems: 'center'}}>
-                  <Image style={styles.targetIcon} source={require('../../images/icon_time.png')} />
-                <Text style={styles.targetName}>目标时间</Text>
-                </View>
-              </View>
-              <View style={styles.divider}></View>
-              <View style={{flexDirection:'column',height:46.5, width:187.5,alignItems:'center'}}>
-              <Text style={styles.targetValue}>{this.props.coffeeSettings.waterWeight}</Text>
-                <View style={{flexDirection:'row',alignItems: 'center'}}>
-                  <Image style={styles.targetIcon} source={require('../../images/icon_waterweight.png')} />
-                <Text style={styles.targetName}>目标萃取量</Text>
-                </View>
-              </View>
-            </View>
 
-            <View style={{flexDirection:'column', alignItems: 'center'}}>
-              <Text style={styles.stopwatchTimer}>{this._getTimer}</Text>
-              <Text style={styles.textTimer}>分：秒</Text>
-            </View>
-            <View style={this.state.building ? {flexDirection: 'row',} : {display: 'none'}}>
-              <TouchableHighlight>
-                <View style={[styles.button,styles.buttonRestart]}>
-                  <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={this._stopBuilding}>
-                <View style={[styles.button,styles.buttonEnd]}>
-                  <Text style={{color:'#fff',fontSize:16}}>结束</Text>
-                </View>
-              </TouchableHighlight>
-            </View>
-            <View style={this.state.building ? {display: 'none'} : {flexDirection: 'row',}}>
-              <TouchableHighlight>
-                <View style={[styles.button,styles.buttonRestart]}>
-                  <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('SaveRecord')}>
-                <View style={[styles.button,styles.buttonEnd]}>
-                  <Text style={{color:'#fff',fontSize:16}}>保存</Text>
-                </View>
-              </TouchableHighlight>
-            </View>
+          <View style={{flexDirection:'column', alignItems: 'center'}}>
+            <Text style={styles.stopwatchTimer}>00:00</Text>
+            <Text style={styles.textTimer}>分：秒</Text>
           </View>
-        );
-      break;
-      default:
-        return;
-      break;
+
+          <View style={this.state.mode==='mode_stop' ? {display: 'none'} : {flexDirection: 'row'}}>
+            <TouchableHighlight>
+              <View style={[styles.button,styles.buttonRestart]}>
+                <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this._stopBuilding}>
+              <View style={[styles.button,styles.buttonEnd]}>
+                <Text style={{color:'#fff',fontSize:16}}>结束</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+          <View style={this.state.mode==='mode_stop' ? {flexDirection: 'row'} : {display: 'none'}}>
+            <TouchableHighlight>
+              <View style={[styles.button,styles.buttonRestart]}>
+                <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('SaveRecord')}>
+              <View style={[styles.button,styles.buttonEnd]}>
+                <Text style={{color:'#fff',fontSize:16}}>保存</Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
+      );
     }
   };
 
