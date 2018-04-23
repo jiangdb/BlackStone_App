@@ -30,12 +30,19 @@ class FlavorSelect extends React.Component {
   };
 
   _togglePress = (key) => {
-    let flavor = this.state.flavorOption.find((flavor) => flavor.key === key);
-    // this.setState({
-    //   flavor.selected:!flavor.selected
-    // });
-    console.log(flavor.selected);
-
+    this.setState({
+      flavorOption: this.state.flavorOption.map((flavor) => {
+        if(flavor.key === key) {
+          let selectedFlavor = Object.assign({}, flavor, {
+            ...flavor,
+            selected: !flavor.selected
+          });
+          return selectedFlavor;
+        } else {
+          return flavor;
+        }
+      })
+    });
   };
 
   _saveFlavor = () => {
@@ -93,11 +100,12 @@ class FlavorSelect extends React.Component {
             this.state.flavorOption.map((data) => {
               return (
                 <TouchableHighlight
-                  style={styles.flavorContainer}
+                  style={[styles.flavorContainer,
+                        data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                   key={data.key}
                   onPress={this._togglePress.bind(this, data.key)}
                 >
-                  <Text style={styles.flavorName} >{data.name}</Text>
+                  <Text style={[styles.flavorName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
                 </TouchableHighlight>
               )
             })

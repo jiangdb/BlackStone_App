@@ -30,6 +30,26 @@ const initialState = {
       name:'番茄',
       selected: false
     },
+    {
+      key: 7,
+      name:'葡萄',
+      selected: false
+    },
+    {
+      key: 8,
+      name:'茶感',
+      selected: false
+    },
+    {
+      key: 9,
+      name:'青草',
+      selected: false
+    },
+    {
+      key: 10,
+      name:'蜂蜜',
+      selected: false
+    },
   ],
 }
  

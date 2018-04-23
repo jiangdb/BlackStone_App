@@ -1,6 +1,5 @@
 const initialState = {
-  history: [
-  ],
+  history: [],
 }
  
 import type { Action } from "../actions/types";

@@ -102,12 +102,12 @@ class CoffeeBuilder extends React.Component {
           </View>
           <View style={this.state.mode==='mode_stop' ? {flexDirection: 'row'} : {display: 'none'}}>
             <TouchableHighlight>
-              <View style={[styles.button,styles.buttonRestart]}>
+              <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                 <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
               </View>
             </TouchableHighlight>
             <TouchableHighlight onPress={() => this.props.navigation.navigate('SaveRecord')}>
-              <View style={[styles.button,styles.buttonEnd]}>
+              <View style={[styles.button,styles.buttonEnd,{width:215.5}]}>
                 <Text style={{color:'#fff',fontSize:16}}>保存</Text>
               </View>
             </TouchableHighlight>

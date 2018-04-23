@@ -1,10 +1,12 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground,TouchableHighlight} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, TouchableHighlight} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
+import BuildingButtonContainer from './common/BuildingButton.js'
+import { SingleDetail } from './Templates'
 
 class Index extends React.Component {
   static navigationOptions = {
@@ -67,37 +69,13 @@ class Index extends React.Component {
             <Text style={styles.settingContent}>设置参数</Text>
           </View>
         </TouchableWithoutFeedback>
-        <View style={{flexDirection: 'row',justifyContent:'center'}}>
-          <TouchableHighlight
-            onPress={() => this.props.navigation.navigate('CoffeeBuilder')}
-          >
-            <ImageBackground style={styles.btnStart} source={this.props.bleStatus.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
-              <Text style={this.props.bleStatus.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
-            </ImageBackground>
-          </TouchableHighlight>
-        </View>
+        <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
       </ScrollView>
     );
   }
 }
 
-// single coffee detail component
-export class SingleDetail extends Component {
-  render() {
-    return (
-      <View style={styles.detailContainer}>
-        <Image style={styles.settingIcon} source={this.props.img} />
-        <Text style={styles.settingName}>{this.props.name}</Text>
-        <Text style={styles.settingValue}>{this.props.value}</Text>
-        <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
-          <View>
-            <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -128,17 +106,6 @@ const styles = StyleSheet.create({
     width:223.5,
     height:223.5,
   },
-  readerTitle: {
-    color: '#5B5B5B',
-    fontSize: 13,
-    marginTop: 17,
-  },
-  reader: {
-    fontWeight: 'bold',
-    color: '#232323',
-    fontSize: 45,
-    height: 52,
-  },
   btnClear: {
     display:'flex',
     justifyContent:'center',
@@ -155,32 +122,6 @@ const styles = StyleSheet.create({
     color: '#BF9253',
     fontSize: 15,
   },
-  detailContainer: {
-    flexDirection:'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width:187.5,
-  },
-  settingIcon: {
-    width: 20,
-    height: 22,
-    marginTop:5,
-    marginLeft:20,
-  },
-  settingName: {
-    color: '#5B5B5B',
-    marginLeft: 7,
-    lineHeight:32,
-    fontSize:15,
-  },
-  settingValue: {
-    fontWeight: 'bold',
-    color: '#232323',
-    overflow: 'hidden',
-    marginLeft:10,
-    lineHeight:32,
-    fontSize:15,
-  },
   settingImg: {
     height:10,
     width:13,
@@ -191,27 +132,10 @@ const styles = StyleSheet.create({
     fontSize:15,
     color:'#53B2F0',
   },
-  btnStart: {
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    borderRadius: 26,
-    width:252,
-    height:50,
-  },
-  btnStartText: {
-    color:'#fff',
-    fontSize: 20,
-  },
-  disabledBtnStartText: {
-    color:'#6A6A6A',
-    fontSize: 20,
-  },
 });
 
 const mapStateToProps = state => {
   return {
-    bleStatus: state.bleStatus,
     coffeeSettings: state.coffeeSettings
   }
 }

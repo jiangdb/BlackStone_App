@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableHighlight,Alert } from 'react-native';
-import { ChoiceBar, Divider } from './Templates';
-import { SingleDetail } from './Index';
+import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
+import { saveRecord } from '../actions/coffeeBuilder.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -46,6 +46,15 @@ class SaveRecord extends React.Component {
       }
   };
 
+  _getSelectedFlavor = () => {
+    let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
+    if(selectedFlavorObject.length === 0) {
+      return '未选择';
+    } else {
+      return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
+    }
+  };
+
   render() {
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
@@ -68,9 +77,18 @@ class SaveRecord extends React.Component {
             </View>
           </TouchableHighlight>
             <Divider/>
-            <ChoiceBar title='风味' value='请选择' icon='more' onPress={() => this.props.navigation.navigate('FlavorSelect')} />
+            <ChoiceBar
+              title='风味'
+              value={this._getSelectedFlavor()}
+              icon='more'
+              onPress={() => this.props.navigation.navigate('FlavorSelect')}
+            />
             <Divider/>
-            <ChoiceBar title='设备' value='请选择' icon='more' />
+            <ChoiceBar
+              title='设备'
+              value='请选择'
+              icon='more'
+            />
             <Divider/>
             <TextInput
               style={styles.comment}
@@ -181,13 +199,13 @@ const styles = StyleSheet.create({
     fontSize:17,
     color:'#5B5B5B',
     textAlign: 'right',
-
   }
-
 });
 
 const mapStateToProps = state => {
   return {
+    flavor: state.flavorSelect,
+    coffeeSettings: state.coffeeSettings
   }
 }
 
