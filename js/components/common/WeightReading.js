@@ -8,15 +8,15 @@ class WeightReading extends Component {
     if (this.props.type == 'extract' && this.props.bleWeightNotify.extract!== null )
       return (
         <View style={styles.flexColumn}>
-          <Text style={styles.readerTitle}>咖啡萃取量(g)</Text>
-          <Text style={styles.reader}>{this.props.bleWeightNotify.extract >= 2000 ? 'FFFF': this.props.bleWeightNotify.extract.toFixed(1)}</Text>
+          <Text style={[styles.readerTitle,this.props.readerTitleStyle]}>咖啡萃取量(g)</Text>
+          <Text style={[styles.reader,this.props.readerStyle]}>{this.props.bleWeightNotify.extract >= 2000 ? 'FFFF': this.props.bleWeightNotify.extract.toFixed(1)}</Text>
         </View>
       );
     else if(this.props.type == 'total')
       return (
         <View style={styles.flexColumn}>
-          <Text style={styles.readerTitle}>注水总量(g)</Text>
-          <Text style={styles.reader}>{this.props.bleWeightNotify.total >= 3000 ? 'FFFF': this.props.bleWeightNotify.total.toFixed(1)}</Text>
+          <Text style={[styles.readerTitle,this.props.readerTitleStyle]}>注水总量(g)</Text>
+          <Text style={[styles.reader,this.props.readerStyle]}>{this.props.bleWeightNotify.total >= 3000 ? 'FFFF': this.props.bleWeightNotify.total.toFixed(1)}</Text>
         </View>
       );
   }

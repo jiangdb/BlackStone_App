@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, StyleSheet, TouchableHighlight, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
-import {Divider} from './Templates';
+import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 
 class CoffeeSettings extends React.Component {
