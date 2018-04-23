@@ -4,6 +4,8 @@ import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 're
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
+import { AreaChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
+import * as shape from 'd3-shape'
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -14,6 +16,8 @@ class CoffeeBuilder extends React.Component {
   state = {
     timerCount: 3,
     mode: 'mode_countDown',
+    extractData: [0];
+    totalData : [0];
   };
 
   componentWillMount() {
@@ -63,8 +67,43 @@ class CoffeeBuilder extends React.Component {
         </View>
       );
     } else {
+      let extract =[0];
+      let total =[0];
+      extract.push(this.props.bleWeightNotify.extract.toFixed(1));
+      total.push(this.props.bleWeightNotify.total.toFixed(1));
+        console.log(extract);
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
+          <View style={styles.chartContainer}>
+            <View style={ { height: 200 } }>
+              {/*<YAxis
+                  data={ data }
+                  contentInset={{ top: 20, bottom: 20 }}
+                  svg={{
+                      fill: 'grey',
+                      fontSize: 10,
+                  }}
+                  numberOfTicks={ 10 }
+                  formatLabel={ value => `${value}` }
+              />*/}
+              {/*<AreaChart
+                                style={ { flex: 1 } }
+                                data={ extract }
+                                svg={{ fill: 'rgba(134, 65, 244, 0.5)' }}
+                                contentInset={ { top: 20, bottom: 20 } }
+                                curve={ shape.curveNatural }
+                            >
+                                <Grid/>
+                            </AreaChart>
+                            <AreaChart
+                                style={ StyleSheet.absoluteFill }
+                                data={ total }
+                                svg={{ fill: 'rgba(34, 128, 176, 0.5)' }}
+                                contentInset={ { top: 20, bottom: 20 } }
+                                curve={ shape.curveNatural }
+                            />*/}
+            </View>
+          </View>
           <View style={styles.target}>
             <View style={styles.targetContainer}>
             <Text style={styles.targetValue}>{this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond}</Text>
@@ -274,13 +313,19 @@ const styles = StyleSheet.create({
     lineHeight:24,
     fontSize:17,
     color:'#232323',
+  },
+  chartContainer: {
+    width:360,
+    height:200,
+    marginTop:30.5,
+    marginRight:15,
   }
 });
 
 const mapStateToProps = state => {
   return {
     coffeeSettings: state.coffeeSettings,
-    ble: state.ble
+    bleWeightNotify: state.bleWeightNotify,
   }
 }
 

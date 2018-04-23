@@ -9,7 +9,7 @@ function bleWeightNotify(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
- 
+
   switch (action.type) {
     case "BLE_ON_WEIGHT_CHANGE":
       return {
