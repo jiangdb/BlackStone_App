@@ -2,7 +2,6 @@ const initialState = {
   btState: 'unknown',
   connectionState: 'disconnected',
   device: null,
-  deviceInfo: {},
   deviceReady: false,
 }
  
@@ -25,26 +24,12 @@ function bleStatus(state, action) {
         ...state,
         connectionState: action.state,
         device: action.device,
-        deviceInfo: {},
         deviceReady: false,
-      }
-
-    case "BLE_ON_DEVICE_INFO_CHANGE":
-      return {
-        ...state,
-        deviceInfo: {
-          ...state.deviceInfo,
-          ...action.info
-        }
       }
 
     case "BLE_DEVICE_READY":
       return {
         ...state,
-        deviceInfo: {
-          ...state.deviceInfo,
-          ...action.info
-        },
         deviceReady: true
       }
 
