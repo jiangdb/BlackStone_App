@@ -16,11 +16,13 @@ class FlavorSelect extends React.Component {
   };
 
   _addFlavor = (text) => {
-    this.state.flavorOption.push({
-      key: this.state.flavorOption.length+1,
-      name: text,
-      selected: true
-    });
+    if(text !== '') {
+      this.state.flavorOption.push({
+        key: this.state.flavorOption.length+1,
+        name: text,
+        selected: true
+      });
+    }
     this._setModalVisible(false);
     this.setState({newFlavor:''});
   };
@@ -74,7 +76,7 @@ class FlavorSelect extends React.Component {
                 </View>
                 <View style={styles.modalInput}>
                   <TextInput
-                    style={{fontSize: 18}}
+                    style={{fontSize: 18, padding: 0}}
                     onChangeText={(text) => this.setState({newFlavor: text})}
                     value={this.state.newFlavor}
                     placeholder='新的风味'

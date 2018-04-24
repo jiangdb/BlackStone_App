@@ -4,8 +4,9 @@ import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 're
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
-import { AreaChart, Grid, YAxis, XAxis } from 'react-native-svg-charts'
+import { AreaChart, Grid, YAxis, XAxis, StackedAreaChart } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
+import { LinearGradient, Stop, Defs, Path } from 'react-native-svg'
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -16,41 +17,92 @@ class CoffeeBuilder extends React.Component {
   state = {
     timerCount: 3,
     mode: 'mode_countDown',
-    extractData: [0];
-    totalData : [0];
+    extractData: [0, 30, 40, 65, 134, 123, 160],
+    totalData : [0, 40, 63, 103, 255, 247, 400],
+    totalSeconds: 0,
+
+    chartData:[
+      {
+        extract: 0,
+        total: 0,
+      },
+      {
+        extract: 30,
+        total: 40,
+      },
+      {
+        extract: 40,
+        total: 63,
+      },
+      {
+        extract: 66,
+        total: 104,
+      },
+      {
+        extract: 138,
+        total: 257,
+      },
+    ],
   };
 
   componentWillMount() {
-    this.interval = setInterval(() =>{
+    this._startCountDown();
+  };
+
+  componentWillUnmount() {
+  }
+
+  formatNumber = (n) => {
+    n = n.toString()
+    return n[1] ? n : '0' + n
+  };
+
+  convertSecondToFormatTime = (seconds) => {
+    var min = Math.floor(seconds / 60);
+    var second = seconds % 60;
+    return [min, second].map((n) => this.formatNumber(n)).join(':');
+  };
+
+  _startCountDown = () => {
+    countdownTimer = setInterval(() =>{
       if(this.state.timerCount===1){
-        this.interval&&clearInterval(this.interval);
+        clearInterval(countdownTimer);
         this.setState({
           mode: 'mode_standBy',
+          timerCount: 3,
         });
-        // bleService.enableWeightNotify(true)
       }else{
-        // bleService.enableWeightNotify(false)
         this.setState({
           timerCount: this.state.timerCount - 1,
         });
       }
     },1000);
+ };
+
+  _startTimer = () => {
+    // countdown_timer = setInterval(this.countdownTimer, 1000);
+    buildingTimer = setInterval(() =>{
+      this.setState({totalSeconds: this.state.totalSeconds++});
+    },1000);
+    console.log(this.state.totalSeconds);
   };
 
-  componentWillUnmount() {
-    // bleService.enableWeightNotify(false)
-  }
-
-  _getTimer = () => {
-    this.interval = setInterval(() =>{
-      let i = 0;
-      return i+1;
-    },1000);
+  _stopTimer = () => {
+    clearInterval(buildingTimer);
   };
 
   _stopBuilding = () => {
     this.setState({mode: 'mode_stop'});
+    this.stopTimer();
+    // bleService.enableWeightNotify(false);
   };
+
+  _onRestart = () => {
+    this.setState({
+      mode: 'mode_countDown',
+    });
+    this._startCountDown();
+  }
 
   _getBuilderComponent = () => {
     if(this.state.mode==='mode_countDown') {
@@ -67,41 +119,97 @@ class CoffeeBuilder extends React.Component {
         </View>
       );
     } else {
-      let extract =[0];
-      let total =[0];
-      extract.push(this.props.bleWeightNotify.extract.toFixed(1));
-      total.push(this.props.bleWeightNotify.total.toFixed(1));
-        console.log(extract);
+      // setInterval( ()=> {
+      //   this.state.extract.push(this.props.bleWeightNotify.extract.toFixed(1));
+      //   this.state.total.push(this.props.bleWeightNotify.total.toFixed(1));
+      // }, 100);
+      //   console.log(this.state.extract);
+        const GradientExtract = ({ index }) => (
+          <Defs key={index}>
+              <LinearGradient id={'data-gradient'} x1={'0%'} y={'0%'} x2={'0%'} y2={'100%'}>
+                  <Stop offset={'100%'} stopColor={'#E7DCC8'} stopOpacity={0.3}/>
+                  <Stop offset={'30%'} stopColor={'#E0B870'} stopOpacity={0.71}/>
+              </LinearGradient>
+          </Defs>
+        );
+        const GradientTotal = ({ index }) => (
+          <Defs key={'index'}>
+              <LinearGradient id={'data2-gradient'} x1={'0%'} y={'0%'} x2={'0%'} y2={'100%'}>
+                  <Stop offset={'100%'} stopColor={'#B9E1F5'} stopOpacity={0.3}/>
+                  <Stop offset={'30%'} stopColor={'#83C0E8'} stopOpacity={0.91}/>
+              </LinearGradient>
+          </Defs>
+        );
+        const LineExtract = ({ line }) => (
+          <Path
+              key={'line'}
+              d={line}
+              stroke={'#DFB86F'}
+              fill={'none'}
+          />
+        );
+        const LineTotal = ({ line }) => (
+          <Path
+              key={'line'}
+              d={line}
+              stroke={'#53B2F0'}
+              fill={'none'}
+          />
+        );
+
+        const keys = ['extract', 'total'];
+        const colors = [ 'rgb(138, 0, 230, 0.8)', 'rgb(173, 51, 255, 0.8)']
+
+
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
           <View style={styles.chartContainer}>
             <View style={ { height: 200 } }>
-              {/*<YAxis
-                  data={ data }
-                  contentInset={{ top: 20, bottom: 20 }}
-                  svg={{
-                      fill: 'grey',
-                      fontSize: 10,
-                  }}
-                  numberOfTicks={ 10 }
-                  formatLabel={ value => `${value}` }
-              />*/}
+              <StackedAreaChart
+                  style={ { flex: 1 } }
+                  contentInset={ { top: 10, bottom: 10 } }
+                  data={ this.state.chartData }
+                  keys={ keys }
+                  colors={ colors }
+                  curve={ shape.curveNatural }
+              >
+                <Grid/>
+                <LineExtract/>
+                <LineTotal/>
+                <GradientExtract/>
+                <GradientTotal/>
+              </StackedAreaChart>
+              <YAxis
+                style={ { position: 'absolute', top: 0, bottom: 0 }}
+                data={ StackedAreaChart.extractDataPoints(this.state.chartData, keys) }
+                contentInset={{ top: 10, bottom: 10 }}
+                svg={{
+                    fill: '#232323',
+                    fontSize: 13,
+                }}
+                numberOfTicks={ 5 }
+              />
               {/*<AreaChart
-                                style={ { flex: 1 } }
-                                data={ extract }
-                                svg={{ fill: 'rgba(134, 65, 244, 0.5)' }}
-                                contentInset={ { top: 20, bottom: 20 } }
-                                curve={ shape.curveNatural }
+                              style={ { flex: 1 } }
+                              data={ this.state.extractData }
+                              svg={{ fill: 'url(#data-gradient)' }}
+                              contentInset={ { top: 20, bottom: 20 } }
+                              curve={ shape.curveNatural }
                             >
-                                <Grid/>
+                              <Grid/>
+                              <LineExtract/>
+                              <GradientExtract/>
                             </AreaChart>
                             <AreaChart
-                                style={ StyleSheet.absoluteFill }
-                                data={ total }
-                                svg={{ fill: 'rgba(34, 128, 176, 0.5)' }}
-                                contentInset={ { top: 20, bottom: 20 } }
-                                curve={ shape.curveNatural }
-                            />*/}
+                              style={ StyleSheet.absoluteFill }
+                              data={ this.state.totalData }
+                              svg={{ fill: 'url(#data2-gradient)' }}
+                              contentInset={ { top: 20, bottom: 20 } }
+                              curve={ shape.curveNatural }
+                            >
+                            <LineTotal/>
+                            <GradientTotal/>
+                            </AreaChart>*/}
             </View>
           </View>
           <View style={styles.target}>
@@ -114,7 +222,7 @@ class CoffeeBuilder extends React.Component {
             </View>
             <View style={styles.divider}></View>
             <View style={{flexDirection:'column',height:46.5, width:187.5,alignItems:'center'}}>
-            <Text style={styles.targetValue}>{this.props.coffeeSettings.waterWeight}</Text>
+            <Text style={styles.targetValue}>{this.props.coffeeSettings.waterWeight}g</Text>
               <View style={{flexDirection:'row',alignItems: 'center'}}>
                 <Image style={styles.targetIcon} source={require('../../images/icon_waterweight.png')} />
               <Text style={styles.targetName}>目标萃取量</Text>
@@ -123,12 +231,14 @@ class CoffeeBuilder extends React.Component {
           </View>
 
           <View style={{flexDirection:'column', alignItems: 'center'}}>
-            <Text style={styles.stopwatchTimer}>00:00</Text>
+            <Text style={styles.stopwatchTimer}>
+              {this.convertSecondToFormatTime(this.state.totalSeconds)}
+            </Text>
             <Text style={styles.textTimer}>分：秒</Text>
           </View>
 
           <View style={this.state.mode==='mode_stop' ? {display: 'none'} : {flexDirection: 'row'}}>
-            <TouchableHighlight>
+            <TouchableHighlight onPress={this._onRestart}>
               <View style={[styles.button,styles.buttonRestart]}>
                 <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
               </View>
@@ -140,7 +250,7 @@ class CoffeeBuilder extends React.Component {
             </TouchableHighlight>
           </View>
           <View style={this.state.mode==='mode_stop' ? {flexDirection: 'row'} : {display: 'none'}}>
-            <TouchableHighlight>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')}>
               <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                 <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
               </View>
@@ -318,7 +428,8 @@ const styles = StyleSheet.create({
     width:360,
     height:200,
     marginTop:30.5,
-    marginRight:15,
+    paddingRight:15,
+    paddingLeft:15,
   }
 });
 

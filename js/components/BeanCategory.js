@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     lineHeight:24,
     fontSize:17,
     color:'#232323',
+    padding: 0,
   },
   categoryList: {
     lineHeight:53,

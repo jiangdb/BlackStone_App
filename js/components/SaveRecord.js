@@ -49,7 +49,7 @@ class SaveRecord extends React.Component {
   _getSelectedFlavor = () => {
     let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
     if(selectedFlavorObject.length === 0) {
-      return '未选择';
+      return '请选择';
     } else {
       return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
     }
@@ -76,32 +76,33 @@ class SaveRecord extends React.Component {
               </View>
             </View>
           </TouchableHighlight>
-            <Divider/>
-            <ChoiceBar
-              title='风味'
-              value={this._getSelectedFlavor()}
-              icon='more'
-              onPress={() => this.props.navigation.navigate('FlavorSelect')}
-            />
-            <Divider/>
-            <ChoiceBar
-              title='设备'
-              value='请选择'
-              icon='more'
-            />
-            <Divider/>
-            <TextInput
-              style={styles.comment}
-              multiline={true}
-              numberOfLines={4}
-              onChangeText={(comment) => this.setState({comment})}
-              value={this.state.comment}
-              placeholder='请说说你的心得体会'
-              underlineColorAndroid='transparent'
-            />
-            <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
-              <Text style={styles.numberIndicate}>100/100</Text>
-            </View>
+          <Divider/>
+          <ChoiceBar
+            title='风味'
+            value={this._getSelectedFlavor()}
+            icon='more'
+            onPress={() => this.props.navigation.navigate('FlavorSelect')}
+          />
+          <Divider/>
+          <ChoiceBar
+            title='设备'
+            value='请选择'
+            icon='more'
+          />
+          <Divider/>
+          <TextInput
+            style={styles.comment}
+            multiline={true}
+            // numberOfLines={4}
+            maxLength = {100}
+            onChangeText={(comment) => this.setState({comment})}
+            value={this.state.comment}
+            placeholder='请说说你的心得体会'
+            underlineColorAndroid='transparent'
+          />
+          <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
+            <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
+          </View>
         </View>
         <Details/>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 160,}}>
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     marginTop:10,
     marginLeft:25,
     marginRight:25,
+    padding: 0,
   },
   numberIndicate: {
     lineHeight:24,
@@ -186,12 +188,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginLeft:18,
-    paddingRight: 16,
+    marginRight: 16,
   },
   choiceTitle: {
     fontSize:17,
     color:'#232323',
-    marginLeft:14,
+    marginLeft:6,
   },
   rateValue: {
     width:57.5,
