@@ -8,6 +8,7 @@ import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import DeviceScanContainer from './DeviceScan';
 import DeviceSettingContainer from './DeviceSetting';
+import DeviceInfoContainer from './DeviceInfo';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -31,6 +32,7 @@ const MineStack = StackNavigator({
   About: { screen: About },
   DeviceScan: { screen: DeviceScanContainer },
   DeviceSetting: { screen: DeviceSettingContainer },
+  DeviceInfo: { screen: DeviceInfoContainer },
 },{
   navigationOptions: {
     headerStyle: {
