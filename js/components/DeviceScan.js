@@ -54,7 +54,7 @@ class DeviceScan extends React.Component {
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
             title={this.props.bleStatus.deviceReady? '已连接' : '未连接'}
-            value={this.props.bleStatus.deviceReady? this.props.bleStatus.deviceInfo.displayName: ''}
+            value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: ''}
             icon={this.props.bleStatus.deviceReady? 'switch' : ''}
             switchValue={this.props.bleStatus.deviceReady}
             toggleSwitch={this._onSwitchOff}
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     deviceScan: state.deviceScan,
+    bleInfo: state.bleInfo,
     bleStatus: state.bleStatus,
     bleScan: state.bleScan,
   }

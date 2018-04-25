@@ -12,7 +12,10 @@ function bleWeightNotify(state, action) {
  
   switch (action.type) {
     case "BLE_ON_WEIGHT_CHANGE":
-      return Object.assign({}, state, action.weight)
+      return {
+        ...state,
+        ...action.weight
+      }
 
     default:
       return state;
