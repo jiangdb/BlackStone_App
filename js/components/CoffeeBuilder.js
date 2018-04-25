@@ -111,116 +111,9 @@ class CoffeeBuilder extends React.Component {
         </View>
       );
     } else {
-      // setInterval( ()=> {
-      //   this.state.extract.push(this.props.bleWeightNotify.extract.toFixed(1));
-      //   this.state.total.push(this.props.bleWeightNotify.total.toFixed(1));
-      // }, 100);
-      //   console.log(this.state.extract);
-        const GradientExtract = ({ index }) => (
-          <Defs key={index}>
-              <LinearGradient id={'data-gradient'} x1={'0%'} y={'0%'} x2={'0%'} y2={'100%'}>
-                  <Stop offset={'100%'} stopColor={'#E7DCC8'} stopOpacity={0.3}/>
-                  <Stop offset={'30%'} stopColor={'#E0B870'} stopOpacity={0.71}/>
-              </LinearGradient>
-          </Defs>
-        );
-        const GradientTotal = ({ index }) => (
-          <Defs key={'index'}>
-              <LinearGradient id={'data2-gradient'} x1={'0%'} y={'0%'} x2={'0%'} y2={'100%'}>
-                  <Stop offset={'100%'} stopColor={'#B9E1F5'} stopOpacity={0.3}/>
-                  <Stop offset={'30%'} stopColor={'#83C0E8'} stopOpacity={0.91}/>
-              </LinearGradient>
-          </Defs>
-        );
-        const LineExtract = ({ line }) => (
-          <Path
-              key={'line'}
-              d={line}
-              stroke={'#DFB86F'}
-              fill={'none'}
-          />
-        );
-        const LineTotal = ({ line }) => (
-          <Path
-              key={'line'}
-              d={line}
-              stroke={'#53B2F0'}
-              fill={'none'}
-          />
-        );
-
-        const keys = ['extract', 'total'];
-        const colors = [ 'rgb(223, 184, 111, 0.5)', 'rgb(83, 178, 240, 0.5)']
-
-        const axesSvg = { fontSize: 10, fill: 'grey' };
-        const verticalContentInset = { top: 10, bottom: 10 };
-        const xAxisHeight = 30;
-
-
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
           <View style={styles.chartContainer}>
-            {/*<View style={ { width: 360, height: 200, flexDirection: 'row', justifyContent: 'space-between' } }>
-              {/*<YAxis
-                data={ [0,100,200,300] }
-                contentInset={{ top: 10, bottom: 10 }}
-                svg={{
-                    fill: '#232323',
-                    fontSize: 13,
-                }}
-                numberOfTicks={ 5 }
-              />
-              <StackedAreaChart
-                style={ { flex: 1 } }
-                contentInset={ { top: 10, bottom: 10 } }
-                data={ this.state.chartData }
-                keys={ keys }
-                colors={ colors }
-                curve={ shape.curveNatural }
-                  >
-                  <Grid/>
-              </StackedAreaChart>*/}
-
-              {/*<YAxis
-                  data={[0,100,200,300,400]}
-                  contentInset={verticalContentInset}
-                  svg={axesSvg}
-                  numberOfTicks={5}
-              />
-              <View style={{ flexDirection: 'column', marginLeft: 10 }}>
-                <View style={{width: 330,height: 170, position: 'relative'}}>
-                  <AreaChart
-                    style={ {position: 'absolute', height: auto} }
-                    data={ this.state.extractData }
-                    svg={{ fill: 'url(#data-gradient)' }}
-                    contentInset={ { top: 20, bottom: 20 } }
-                    curve={ shape.curveNatural }
-                    >
-                    <LineExtract/>
-                    <GradientExtract/>
-                  </AreaChart>
-                  <AreaChart
-                    style={ {position: 'absolute'} }
-                    data={ this.state.totalData }
-                    svg={{ fill: 'url(#data2-gradient)' }}
-                    contentInset={ { top: 20, bottom: 20 } }
-                    curve={ shape.curveNatural }
-                  >
-                    <Grid/>
-                    <LineTotal/>
-                    <GradientTotal/>
-                  </AreaChart>
-                </View>
-
-                <XAxis
-                  data={this.state.totalData}
-                  formatLabel={(value, index) => index}
-                  contentInset={{ left: 10, right: 10 }}
-                  svg={axesSvg}
-                  numberOfTicks={6}
-                />
-              </View>
-            </View>*/}
             <Chart/>
           </View>
 
@@ -306,128 +199,125 @@ class Chart extends React.Component {
   render() {
     let Highcharts='Highcharts';
     let conf={
-            chart: {
-                type: 'area',
-                events: {
-                    load: function () {
+      chart: {
+        type: 'area',
+        marginTop: 30.5,
+        events: {
+          load: function () {
+            // set up the updating of the chart each second
+            let seriesTotal = this.series[0];
+            let seriesExtract = this.series[1];
+            setInterval(function () {
+                let x = (new Date()).getTime(), // current time
+                    y = Math.random();
+                seriesTotal.addPoint([x, y], true, true);
+            }, 1000);
+            setInterval(function () {
+                let x = (new Date()).getTime(), // current time
+                    y = Math.random();
+                seriesExtract.addPoint([x, y], true, true);
+            }, 1000);
 
-                        // set up the updating of the chart each second
-                        var series_1 = this.series[0];
-                        var series_2 = this.series[1];
-                        setInterval(function () {
-                            var x = (new Date()).getTime(), // current time
-                                y = Math.random();
-                            series_1.addPoint([x, y], true, true);
-                        }, 1000);
-                        setInterval(function () {
-                            var x = (new Date()).getTime(), // current time
-                                y = Math.random();
-                            series_2.addPoint([x, y], true, true);
-                        }, 1000);
-                    }
-                }
-            },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                type: 'datetime',
-                tickPixelInterval: 150
-            },
-            yAxis: {
-              title: {
-                text: ''
-              },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-                }]
-            },
-            plotOptions: {
-              series: {
-                fillColor: {
-                  linearGradient: {
-                      x1: 0,
-                      y1: 0,
-                      x2: 0,
-                      y2: 1
-                  },
-                }
-              }
-            },
-            legend: {
-              itemDistance: 30,
-              itemStyle: {
-                  color: '#000000',
-                  fontSize: 13,
-              }
-            },
-            exporting: {
-              enabled: false
-            },
-            series: [
-              {
-                name: '注水总量',
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+          }
+        }
+      },
+      title: {
+        text: ''
+      },
+      tooltip: false,
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150
+      },
+      yAxis: {
+        title: {
+          text: ''
+        },
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#333'
+        }]
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1
+            }
+          },
+          marker: {
+            enabled: false,
+          },
+          lineWidth: 1,
+          threshold: null
+        }
+      },
+      legend: {
+        margin: 0,
+        itemDistance: 30,
+        itemStyle: {
+          fontSize: 13,
+          fontWeight: 'normal',
+          color: '#000',
+        }
+      },
+      exporting: {
+        enabled: false
+      },
+      series: [
+        {
+          name: '注水总量',
+          data: (function () {
+              // generate an array of random data
+            let data = [],
+                time = (new Date()).getTime(),
+                i;
 
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: Math.random()
-                        });
-                    }
-                    return data;
-                }()),
-                color: '#53B2F0',
-                fillColor: {
-                  linearGradient: {
-                      x1: 0,
-                      y1: 0,
-                      x2: 0,
-                      y2: 1
-                  },
-                  stops: [
-                      [0, 'rgb(131, 192, 232, .91)'],
-                      [1, 'rgb(185, 225, 245, .3)']
-                  ]
-                },
-              } , {
-                name: '咖啡萃取量',
-                data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
-
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: Math.random()
-                        });
-                    }
-                    return data;
-                }()),
-                color: '#DFB86F',
-                fillColor: {
-                  linearGradient: {
-                      x1: 0,
-                      y1: 0,
-                      x2: 0,
-                      y2: 1
-                  },
-                  stops: [
-                      [0, 'rgb(224, 184, 112, .71)'],
-                      [1, 'rgb(231, 220, 200, .3)']
-                  ]
-                },
-              }
+            for (i = -19; i <= 0; i += 1) {
+              data.push({
+                  x: time + i * 1000,
+                  y: Math.random()
+              });
+            }
+            return data;
+          }()),
+          color: '#53B2F0',
+          fillColor: {
+            stops: [
+              [0.3, 'rgba(131, 192, 232, .9)'],
+              [1, 'rgba(185, 225, 245, 0)']
             ]
-        };
+          },
+        } , {
+          name: '咖啡萃取量',
+          data: (function () {
+            // generate an array of random data
+            let data = [],
+                time = (new Date()).getTime(),
+                i;
+
+            for (i = -19; i <= 0; i += 1) {
+              data.push({
+                  x: time + i * 1000,
+                  y: Math.random()
+              });
+            }
+            return data;
+          }()),
+          color: '#DFB86F',
+          fillColor: {
+            stops: [
+              [0.3, 'rgba(224, 184, 112, .9)'],
+              [1, 'rgba(231, 220, 200, 0)']
+            ]
+          },
+        }
+      ]
+    };
 
     const options = {
         global: {
@@ -440,7 +330,7 @@ class Chart extends React.Component {
     };
     return(
       <ChartView
-        style={{width: 360, height: 200,}}
+        style={{height:220,width:360}}
         config={conf}
         options={options}
         javaScriptEnabled={true}
@@ -493,7 +383,9 @@ const styles = StyleSheet.create({
   },
   target: {
     flexDirection:'row',
-    marginTop:18,
+    paddingTop:18,
+    marginTop: -20,
+    backgroundColor: '#fff'
   },
   targetContainer: {
     flexDirection:'column',
@@ -505,6 +397,7 @@ const styles = StyleSheet.create({
     lineHeight:21,
     fontSize:18,
     color:'#232323',
+    fontWeight: 'bold'
   },
   targetIcon: {
     width:20,
