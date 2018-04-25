@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
-import bleService from '../services/bleService.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class Index extends React.Component {
   static navigationOptions = {
