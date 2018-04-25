@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   choiceTitle: {
     fontSize:17,
     color:'#232323',
-    marginLeft:6,
+    marginLeft:14,
   },
   rateValue: {
     width:57.5,

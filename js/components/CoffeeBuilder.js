@@ -54,19 +54,19 @@ class CoffeeBuilder extends React.Component {
 
   _startTimer = () => {
     // countdown_timer = setInterval(this.countdownTimer, 1000);
-    buildingTimer = setInterval(() =>{
+    this.interval = setInterval(() =>{
       this.setState({totalSeconds: this.state.totalSeconds++});
     },1000);
     console.log(this.state.totalSeconds);
   };
 
   _stopTimer = () => {
-    clearInterval(buildingTimer);
+    clearInterval(this.interval);
   };
 
   _stopBuilding = () => {
     this.setState({mode: 'mode_stop'});
-    this.stopTimer();
+    this._stopTimer();
     // bleService.enableWeightNotify(false);
   };
 
