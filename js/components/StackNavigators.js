@@ -7,6 +7,8 @@ import MineContainer from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import DeviceScanContainer from './DeviceScan';
+import HistoryDetailContainer from './HistoryDetail';
+import HistoryContainer from './History';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -29,6 +31,8 @@ const MineStack = StackNavigator({
   Mine: { screen: MineContainer},
   About: { screen: About },
   DeviceScan: { screen: DeviceScanContainer },
+  HistoryDetail: { screen: HistoryDetailContainer },
+  History: { screen: HistoryContainer },
 },{
   navigationOptions: {
     headerStyle: {
