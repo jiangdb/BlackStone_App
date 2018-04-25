@@ -19,34 +19,15 @@ class CoffeeBuilder extends React.Component {
   state = {
     timerCount: 3,
     mode: 'mode_countDown',
-    extractData: [0, 30, 40, 65, 134, 123, 160],
-    totalData : [0, 40, 63, 103, 255, 247, 400],
+    extractData: this.props.bleWeightNotify.extract,
+    totalData : this.props.bleWeightNotify.total,
+    chartExtract:[],
+    chartTotal:[],
 
     totalSeconds: 0,
-
-    chartData:[
-      {
-        extract: 0,
-        total: 0,
-      },
-      {
-        extract: 30,
-        total: 40,
-      },
-      {
-        extract: 40,
-        total: 63,
-      },
-      {
-        extract: 66,
-        total: 104,
-      },
-      {
-        extract: 138,
-        total: 257,
-      },
-    ],
   };
+
+
 
   componentWillMount() {
     this._startCountDown();
@@ -99,7 +80,7 @@ class CoffeeBuilder extends React.Component {
   _getBuilderComponent = () => {
     if(this.state.mode==='mode_countDown') {
       return (
-        <View style={{flexDirection:'column', alignItems: 'center', backgroundColor: '#fff', minHeight: 217}}>
+        <View style={styles.countDownContainer}>
           <View style={styles.countDown}>
             <Text style={styles.timer}>{this.state.timerCount}</Text>
             <Text style={styles.timerName}>秒倒计时</Text>
@@ -111,10 +92,149 @@ class CoffeeBuilder extends React.Component {
         </View>
       );
     } else {
+
+      let y_max = Math.floor(this.state.totalData*1.3);
+
+      let Highcharts='Highcharts';
+      let conf={
+        chart: {
+          type: 'area',
+          marginTop: 30.5,
+          events: {
+            load: function () {
+              // set up the updating of the chart each second
+              let seriesTotal = this.series[0];
+              let seriesExtract = this.series[1];
+              setInterval(function () {
+                  let x = (new Date()).getTime(), // current time
+                      y = Math.random();
+                  seriesTotal.addPoint([x, y], true, true);
+              }, 1000);
+              setInterval(function () {
+                  let x = (new Date()).getTime(), // current time
+                      y = Math.random();
+                  seriesExtract.addPoint([x, y], true, true);
+              }, 1000);
+
+            }
+          }
+        },
+        title: null,
+        tooltip: false,
+        xAxis: {
+          type: 'datetime',
+          tickPixelInterval: 150
+        },
+        yAxis: {
+          // min: 0,
+          // max: y_max,
+          title: null,
+          plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#333'
+          }]
+        },
+        plotOptions: {
+          area: {
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 1
+              }
+            },
+            marker: {
+              enabled: false,
+            },
+            lineWidth: 1,
+            threshold: null
+          }
+        },
+        legend: {
+          margin: 5,
+          itemDistance: 30,
+          itemStyle: {
+            fontSize: 13,
+            fontWeight: 'normal',
+            color: '#000',
+          }
+        },
+        exporting: {
+          enabled: false
+        },
+        series: [
+          {
+            name: '注水总量',
+            data: (function () {
+                // generate an array of random data
+              let data = [],
+                  time = (new Date()).getTime(),
+                  i;
+
+              for (i = -19; i <= 0; i += 1) {
+                data.push({
+                    x: time + i * 1000,
+                    y: Math.random()
+                });
+              }
+              return data;
+            }()),
+            color: '#53B2F0',
+            fillColor: {
+              stops: [
+                [0.3, 'rgba(131, 192, 232, .9)'],
+                [1, 'rgba(185, 225, 245, 0)']
+              ]
+            },
+          } , {
+            name: '咖啡萃取量',
+            data: (function () {
+              // generate an array of random data
+              let data = [],
+                  time = (new Date()).getTime(),
+                  i;
+
+              for (i = -19; i <= 0; i += 1) {
+                data.push({
+                    x: time + i * 1000,
+                    y: Math.random()
+                });
+              }
+              return data;
+            }()),
+            color: '#DFB86F',
+            fillColor: {
+              stops: [
+                [0.3, 'rgba(224, 184, 112, .9)'],
+                [1, 'rgba(231, 220, 200, 0)']
+              ]
+            },
+          }
+        ]
+      };
+      const options = {
+        global: {
+            useUTC: false
+        },
+        lang: {
+            decimalPoint: ',',
+            thousandsSep: '.'
+        }
+      };
+
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
           <View style={styles.chartContainer}>
-            <Chart/>
+            <ChartView
+              style={{height:220,width:345}}
+              config={conf}
+              options={options}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+            >
+            </ChartView>
           </View>
 
           <View style={styles.target}>
@@ -191,152 +311,6 @@ class CoffeeBuilder extends React.Component {
         </View>
         {this._getBuilderComponent()}
       </ScrollView>
-    );
-  }
-}
-
-class Chart extends React.Component {
-  render() {
-    let Highcharts='Highcharts';
-    let conf={
-      chart: {
-        type: 'area',
-        marginTop: 30.5,
-        events: {
-          load: function () {
-            // set up the updating of the chart each second
-            let seriesTotal = this.series[0];
-            let seriesExtract = this.series[1];
-            setInterval(function () {
-                let x = (new Date()).getTime(), // current time
-                    y = Math.random();
-                seriesTotal.addPoint([x, y], true, true);
-            }, 1000);
-            setInterval(function () {
-                let x = (new Date()).getTime(), // current time
-                    y = Math.random();
-                seriesExtract.addPoint([x, y], true, true);
-            }, 1000);
-
-          }
-        }
-      },
-      title: {
-        text: ''
-      },
-      tooltip: false,
-      xAxis: {
-        type: 'datetime',
-        tickPixelInterval: 150
-      },
-      yAxis: {
-        title: {
-          text: ''
-        },
-        plotLines: [{
-          value: 0,
-          width: 1,
-          color: '#333'
-        }]
-      },
-      plotOptions: {
-        area: {
-          fillColor: {
-            linearGradient: {
-              x1: 0,
-              y1: 0,
-              x2: 0,
-              y2: 1
-            }
-          },
-          marker: {
-            enabled: false,
-          },
-          lineWidth: 1,
-          threshold: null
-        }
-      },
-      legend: {
-        margin: 0,
-        itemDistance: 30,
-        itemStyle: {
-          fontSize: 13,
-          fontWeight: 'normal',
-          color: '#000',
-        }
-      },
-      exporting: {
-        enabled: false
-      },
-      series: [
-        {
-          name: '注水总量',
-          data: (function () {
-              // generate an array of random data
-            let data = [],
-                time = (new Date()).getTime(),
-                i;
-
-            for (i = -19; i <= 0; i += 1) {
-              data.push({
-                  x: time + i * 1000,
-                  y: Math.random()
-              });
-            }
-            return data;
-          }()),
-          color: '#53B2F0',
-          fillColor: {
-            stops: [
-              [0.3, 'rgba(131, 192, 232, .9)'],
-              [1, 'rgba(185, 225, 245, 0)']
-            ]
-          },
-        } , {
-          name: '咖啡萃取量',
-          data: (function () {
-            // generate an array of random data
-            let data = [],
-                time = (new Date()).getTime(),
-                i;
-
-            for (i = -19; i <= 0; i += 1) {
-              data.push({
-                  x: time + i * 1000,
-                  y: Math.random()
-              });
-            }
-            return data;
-          }()),
-          color: '#DFB86F',
-          fillColor: {
-            stops: [
-              [0.3, 'rgba(224, 184, 112, .9)'],
-              [1, 'rgba(231, 220, 200, 0)']
-            ]
-          },
-        }
-      ]
-    };
-
-    const options = {
-        global: {
-            useUTC: false
-        },
-        lang: {
-            decimalPoint: ',',
-            thousandsSep: '.'
-        }
-    };
-    return(
-      <ChartView
-        style={{height:220,width:360}}
-        config={conf}
-        options={options}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-      >
-      </ChartView>
     );
   }
 }
@@ -448,10 +422,16 @@ const styles = StyleSheet.create({
     borderColor: '#383838',
     backgroundColor:'#383838',
   },
+  countDownContainer: {
+    flexDirection:'column',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingBottom: 20,
+  },
   countDown: {
     width:250,
     height:250,
-    marginTop: 88.5,
+    marginTop: 58.5,
     marginBottom: 29.5,
     borderWidth:2.5,
     borderColor:'#c7c7c7',
