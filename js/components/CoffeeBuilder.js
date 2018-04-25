@@ -6,7 +6,9 @@ import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import { AreaChart, Grid, YAxis, XAxis, StackedAreaChart } from 'react-native-svg-charts'
 import * as shape from 'd3-shape'
-import { LinearGradient, Stop, Defs, Path } from 'react-native-svg'
+import { LinearGradient, Stop, Defs, Path, Circle, Svg } from 'react-native-svg'
+import { convertSecondToFormatTime } from '../utils/util.js'
+import ChartView from 'react-native-highcharts';
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -19,6 +21,7 @@ class CoffeeBuilder extends React.Component {
     mode: 'mode_countDown',
     extractData: [0, 30, 40, 65, 134, 123, 160],
     totalData : [0, 40, 63, 103, 255, 247, 400],
+
     totalSeconds: 0,
 
     chartData:[
@@ -51,17 +54,6 @@ class CoffeeBuilder extends React.Component {
 
   componentWillUnmount() {
   }
-
-  formatNumber = (n) => {
-    n = n.toString()
-    return n[1] ? n : '0' + n
-  };
-
-  convertSecondToFormatTime = (seconds) => {
-    var min = Math.floor(seconds / 60);
-    var second = seconds % 60;
-    return [min, second].map((n) => this.formatNumber(n)).join(':');
-  };
 
   _startCountDown = () => {
     countdownTimer = setInterval(() =>{
@@ -107,7 +99,7 @@ class CoffeeBuilder extends React.Component {
   _getBuilderComponent = () => {
     if(this.state.mode==='mode_countDown') {
       return (
-        <View style={{flexDirection:'column', alignItems: 'center', backgroundColor: '#fff'}}>
+        <View style={{flexDirection:'column', alignItems: 'center', backgroundColor: '#fff', minHeight: 217}}>
           <View style={styles.countDown}>
             <Text style={styles.timer}>{this.state.timerCount}</Text>
             <Text style={styles.timerName}>秒倒计时</Text>
@@ -158,30 +150,19 @@ class CoffeeBuilder extends React.Component {
         );
 
         const keys = ['extract', 'total'];
-        const colors = [ 'rgb(138, 0, 230, 0.8)', 'rgb(173, 51, 255, 0.8)']
+        const colors = [ 'rgb(223, 184, 111, 0.5)', 'rgb(83, 178, 240, 0.5)']
+
+        const axesSvg = { fontSize: 10, fill: 'grey' };
+        const verticalContentInset = { top: 10, bottom: 10 };
+        const xAxisHeight = 30;
 
 
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
           <View style={styles.chartContainer}>
-            <View style={ { height: 200 } }>
-              <StackedAreaChart
-                  style={ { flex: 1 } }
-                  contentInset={ { top: 10, bottom: 10 } }
-                  data={ this.state.chartData }
-                  keys={ keys }
-                  colors={ colors }
-                  curve={ shape.curveNatural }
-              >
-                <Grid/>
-                <LineExtract/>
-                <LineTotal/>
-                <GradientExtract/>
-                <GradientTotal/>
-              </StackedAreaChart>
-              <YAxis
-                style={ { position: 'absolute', top: 0, bottom: 0 }}
-                data={ StackedAreaChart.extractDataPoints(this.state.chartData, keys) }
+            {/*<View style={ { width: 360, height: 200, flexDirection: 'row', justifyContent: 'space-between' } }>
+              {/*<YAxis
+                data={ [0,100,200,300] }
                 contentInset={{ top: 10, bottom: 10 }}
                 svg={{
                     fill: '#232323',
@@ -189,29 +170,60 @@ class CoffeeBuilder extends React.Component {
                 }}
                 numberOfTicks={ 5 }
               />
-              {/*<AreaChart
-                              style={ { flex: 1 } }
-                              data={ this.state.extractData }
-                              svg={{ fill: 'url(#data-gradient)' }}
-                              contentInset={ { top: 20, bottom: 20 } }
-                              curve={ shape.curveNatural }
-                            >
-                              <Grid/>
-                              <LineExtract/>
-                              <GradientExtract/>
-                            </AreaChart>
-                            <AreaChart
-                              style={ StyleSheet.absoluteFill }
-                              data={ this.state.totalData }
-                              svg={{ fill: 'url(#data2-gradient)' }}
-                              contentInset={ { top: 20, bottom: 20 } }
-                              curve={ shape.curveNatural }
-                            >
-                            <LineTotal/>
-                            <GradientTotal/>
-                            </AreaChart>*/}
-            </View>
+              <StackedAreaChart
+                style={ { flex: 1 } }
+                contentInset={ { top: 10, bottom: 10 } }
+                data={ this.state.chartData }
+                keys={ keys }
+                colors={ colors }
+                curve={ shape.curveNatural }
+                  >
+                  <Grid/>
+              </StackedAreaChart>*/}
+
+              {/*<YAxis
+                  data={[0,100,200,300,400]}
+                  contentInset={verticalContentInset}
+                  svg={axesSvg}
+                  numberOfTicks={5}
+              />
+              <View style={{ flexDirection: 'column', marginLeft: 10 }}>
+                <View style={{width: 330,height: 170, position: 'relative'}}>
+                  <AreaChart
+                    style={ {position: 'absolute', height: auto} }
+                    data={ this.state.extractData }
+                    svg={{ fill: 'url(#data-gradient)' }}
+                    contentInset={ { top: 20, bottom: 20 } }
+                    curve={ shape.curveNatural }
+                    >
+                    <LineExtract/>
+                    <GradientExtract/>
+                  </AreaChart>
+                  <AreaChart
+                    style={ {position: 'absolute'} }
+                    data={ this.state.totalData }
+                    svg={{ fill: 'url(#data2-gradient)' }}
+                    contentInset={ { top: 20, bottom: 20 } }
+                    curve={ shape.curveNatural }
+                  >
+                    <Grid/>
+                    <LineTotal/>
+                    <GradientTotal/>
+                  </AreaChart>
+                </View>
+
+                <XAxis
+                  data={this.state.totalData}
+                  formatLabel={(value, index) => index}
+                  contentInset={{ left: 10, right: 10 }}
+                  svg={axesSvg}
+                  numberOfTicks={6}
+                />
+              </View>
+            </View>*/}
+            <Chart/>
           </View>
+
           <View style={styles.target}>
             <View style={styles.targetContainer}>
             <Text style={styles.targetValue}>{this.props.coffeeSettings.timeMintue+':'+this.props.coffeeSettings.timeSecond}</Text>
@@ -232,7 +244,7 @@ class CoffeeBuilder extends React.Component {
 
           <View style={{flexDirection:'column', alignItems: 'center'}}>
             <Text style={styles.stopwatchTimer}>
-              {this.convertSecondToFormatTime(this.state.totalSeconds)}
+              {convertSecondToFormatTime(this.state.totalSeconds)}
             </Text>
             <Text style={styles.textTimer}>分：秒</Text>
           </View>
@@ -286,6 +298,155 @@ class CoffeeBuilder extends React.Component {
         </View>
         {this._getBuilderComponent()}
       </ScrollView>
+    );
+  }
+}
+
+class Chart extends React.Component {
+  render() {
+    let Highcharts='Highcharts';
+    let conf={
+            chart: {
+                type: 'area',
+                events: {
+                    load: function () {
+
+                        // set up the updating of the chart each second
+                        var series_1 = this.series[0];
+                        var series_2 = this.series[1];
+                        setInterval(function () {
+                            var x = (new Date()).getTime(), // current time
+                                y = Math.random();
+                            series_1.addPoint([x, y], true, true);
+                        }, 1000);
+                        setInterval(function () {
+                            var x = (new Date()).getTime(), // current time
+                                y = Math.random();
+                            series_2.addPoint([x, y], true, true);
+                        }, 1000);
+                    }
+                }
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+              title: {
+                text: ''
+              },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            plotOptions: {
+              series: {
+                fillColor: {
+                  linearGradient: {
+                      x1: 0,
+                      y1: 0,
+                      x2: 0,
+                      y2: 1
+                  },
+                }
+              }
+            },
+            legend: {
+              itemDistance: 30,
+              itemStyle: {
+                  color: '#000000',
+                  fontSize: 13,
+              }
+            },
+            exporting: {
+              enabled: false
+            },
+            series: [
+              {
+                name: '注水总量',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }()),
+                color: '#53B2F0',
+                fillColor: {
+                  linearGradient: {
+                      x1: 0,
+                      y1: 0,
+                      x2: 0,
+                      y2: 1
+                  },
+                  stops: [
+                      [0, 'rgb(131, 192, 232, .91)'],
+                      [1, 'rgb(185, 225, 245, .3)']
+                  ]
+                },
+              } , {
+                name: '咖啡萃取量',
+                data: (function () {
+                    // generate an array of random data
+                    var data = [],
+                        time = (new Date()).getTime(),
+                        i;
+
+                    for (i = -19; i <= 0; i += 1) {
+                        data.push({
+                            x: time + i * 1000,
+                            y: Math.random()
+                        });
+                    }
+                    return data;
+                }()),
+                color: '#DFB86F',
+                fillColor: {
+                  linearGradient: {
+                      x1: 0,
+                      y1: 0,
+                      x2: 0,
+                      y2: 1
+                  },
+                  stops: [
+                      [0, 'rgb(224, 184, 112, .71)'],
+                      [1, 'rgb(231, 220, 200, .3)']
+                  ]
+                },
+              }
+            ]
+        };
+
+    const options = {
+        global: {
+            useUTC: false
+        },
+        lang: {
+            decimalPoint: ',',
+            thousandsSep: '.'
+        }
+    };
+    return(
+      <ChartView
+        style={{width: 360, height: 200,}}
+        config={conf}
+        options={options}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+      >
+      </ChartView>
     );
   }
 }
@@ -425,11 +586,14 @@ const styles = StyleSheet.create({
     color:'#232323',
   },
   chartContainer: {
-    width:360,
-    height:200,
-    marginTop:30.5,
-    paddingRight:15,
-    paddingLeft:15,
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems:'center',
+    width: 100,
   }
 });
 

@@ -61,7 +61,7 @@ export class ChoiceBar extends Component {
       <TouchableWithoutFeedback onPress={this.props.onPress}>
         <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
-          <View style={{flexDirection: 'row', textAlign: 'right', alignItems:'center'}}>
+          <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
             <Text
               style={styles.choiceValue}
               numberOfLines={1}

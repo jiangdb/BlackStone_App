@@ -21,6 +21,7 @@
     "react": "16.2.0",
     "react-native": "0.52.0",
     "react-native-ble-plx": "^0.9.0",
+    "react-native-highcharts": "^1.0.2",
     "react-native-star-rating": "^1.0.9",
     "react-native-svg": "^6.3.1",
     "react-native-svg-charts": "^5.0.0",
