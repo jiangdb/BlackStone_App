@@ -10,6 +10,7 @@ import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
 import SaveRecordContainer from './SaveRecord';
 import FlavorSelectContainer from './FlavorSelect';
+import AccessoriesSelectContainer from './AccessoriesSelect';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -18,6 +19,7 @@ const HomeStack = StackNavigator({
   CoffeeBuilder: { screen: CoffeeBuilderContainer },
   SaveRecord: { screen: SaveRecordContainer },
   FlavorSelect: { screen: FlavorSelectContainer },
+  AccessoriesSelect: { screen: AccessoriesSelectContainer },
 },{
   navigationOptions: {
     headerStyle: {

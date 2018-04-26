@@ -4,9 +4,6 @@ import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 're
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
-import { AreaChart, Grid, YAxis, XAxis, StackedAreaChart } from 'react-native-svg-charts'
-import * as shape from 'd3-shape'
-import { LinearGradient, Stop, Defs, Path, Circle, Svg } from 'react-native-svg'
 import { convertSecondToFormatTime } from '../utils/util.js'
 import ChartView from 'react-native-highcharts';
 

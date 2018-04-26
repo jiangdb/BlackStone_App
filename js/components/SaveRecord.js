@@ -12,19 +12,23 @@ class SaveRecord extends React.Component {
   };
 
   state = {
-    comment: '',
     starCount: 5,
+    comment: '',
     flavorSelected:'',
     device:'',
+    coffeeSetting:{},
+    chart_time: [],
+    chart_water_weight: [],
+    chart_extract_weight: [],
   };
 
-  _onStarRatingPress(rating) {
+  _onStarRatingPress = (rating) => {
     this.setState({
       starCount: rating
     });
   };
 
-  _renderRateValue(rating) {
+  _renderRateValue = (rating) => {
     switch(rating)
     {
       case 1:
@@ -54,6 +58,21 @@ class SaveRecord extends React.Component {
       return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
     }
   };
+
+  _getSelectedAccessories = () => {
+    let selectedFilter = this.props.accessories.filterOption.filter((filter) => filter.selected);
+    let selectedKettle = this.props.accessories.kettleOption.filter((kettle) => kettle.selected);
+    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+      return '请选择';
+    } else {
+      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
+      return [selectedFilter[0].name, selectedKettle[0].name].join(" ");
+    }
+  };
+
+  _onSaveRecord = () => {
+
+  }
 
   render() {
     return (
@@ -86,26 +105,29 @@ class SaveRecord extends React.Component {
           <Divider/>
           <ChoiceBar
             title='设备'
-            value='请选择'
+            value={this._getSelectedAccessories()}
             icon='more'
+            onPress={() => this.props.navigation.navigate('AccessoriesSelect')}
           />
           <Divider/>
+          <View style={{height:165.5}}>
           <TextInput
             style={styles.comment}
             multiline={true}
             // numberOfLines={4}
-            maxLength = {100}
+            // maxLength = {100}
             onChangeText={(comment) => this.setState({comment})}
             value={this.state.comment}
             placeholder='请说说你的心得体会'
             underlineColorAndroid='transparent'
           />
+          </View>
           <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
             <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
           </View>
         </View>
         <Details/>
-        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 160,}}>
+        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 220,}}>
 
         </View>
         <TouchableHighlight onPress={() => {Alert.alert('pressed');}}>
@@ -158,11 +180,11 @@ const styles = StyleSheet.create({
     height: 40,
   },
   comment: {
-    height:151.5,
     marginTop:10,
     marginLeft:25,
     marginRight:25,
     padding: 0,
+    fontSize: 17,
   },
   numberIndicate: {
     lineHeight:24,
@@ -207,6 +229,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     flavor: state.flavorSelect,
+    accessories: state.accessoriesSelect,
     coffeeSettings: state.coffeeSettings
   }
 }

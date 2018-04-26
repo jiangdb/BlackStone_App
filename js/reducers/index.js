@@ -8,4 +8,5 @@ export default combineReducers({
     coffeeSettings: require('./coffeeSettings.js'),
     beanCategory: require('./beanCategory.js'),
     flavorSelect: require('./flavorSelect.js'),
+    accessoriesSelect: require('./accessoriesSelect.js'),
 })
