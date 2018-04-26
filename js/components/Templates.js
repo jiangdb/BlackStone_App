@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginLeft:18,
+    marginRight: 16,
   },
   choiceTitle: {
     fontSize:17,
@@ -109,7 +110,6 @@ const styles = StyleSheet.create({
     marginLeft:7,
     width:8,
     height:13,
-    marginRight: 16,
   },
   detailContainer: {
     flexDirection:'row',

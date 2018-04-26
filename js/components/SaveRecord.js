@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TextInput, ScrollView,TouchableHighlight,Alert } from 'react-native';
+import { Text, View,StyleSheet, TextInput, ScrollView,TouchableHighlight,Alert,BackHandler } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
@@ -20,6 +20,15 @@ class SaveRecord extends React.Component {
     chart_time: [],
     chart_water_weight: [],
     chart_extract_weight: [],
+  };
+
+  componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', function() {
+      this.props.navigation.navigate('Home');
+    });
+  };
+
+  componentWillUnmount() {
   };
 
   _onStarRatingPress = (rating) => {

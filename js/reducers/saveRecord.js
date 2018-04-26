@@ -1,5 +1,7 @@
 const initialState = {
-  history: [],
+  historyList: [
+
+  ],
 }
  
 import type { Action } from "../actions/types";
@@ -13,7 +15,7 @@ function saveRecord(state, action) {
     case "SAVE_RECORD":
       return Object.assign({}, state, {
         beanCategoryData: [
-          ...state.history,
+          ...state.historyList,
           action.record
         ]
       })
@@ -23,4 +25,4 @@ function saveRecord(state, action) {
   }
 }
 
-module.exports = flavorSelect;
+module.exports = saveRecord;

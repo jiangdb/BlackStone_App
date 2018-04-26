@@ -9,4 +9,5 @@ export default combineReducers({
     beanCategory: require('./beanCategory.js'),
     flavorSelect: require('./flavorSelect.js'),
     accessoriesSelect: require('./accessoriesSelect.js'),
+    saveRecord: require('./saveRecord.js'),
 })

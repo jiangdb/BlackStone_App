@@ -5,7 +5,9 @@ import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import { convertSecondToFormatTime } from '../utils/util.js'
-import ChartView from 'react-native-highcharts';
+import WeightChartContainer from './common/WeightChart.js'
+
+// import Toast from 'react-native-root-toast';
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -14,17 +16,12 @@ class CoffeeBuilder extends React.Component {
   };
 
   state = {
+    toastVisible: false,
     timerCount: 3,
     mode: 'mode_countDown',
-    extractData: this.props.bleWeightNotify.extract,
-    totalData : this.props.bleWeightNotify.total,
-    chartExtract:[],
-    chartTotal:[],
 
     totalSeconds: 0,
   };
-
-
 
   componentWillMount() {
     this._startCountDown();
@@ -90,149 +87,9 @@ class CoffeeBuilder extends React.Component {
       );
     } else {
 
-      let y_max = Math.floor(this.state.totalData*1.3);
-
-      let Highcharts='Highcharts';
-      let conf={
-        chart: {
-          type: 'area',
-          marginTop: 30.5,
-          events: {
-            load: function () {
-              // set up the updating of the chart each second
-              let seriesTotal = this.series[0];
-              let seriesExtract = this.series[1];
-              setInterval(function () {
-                  let x = (new Date()).getTime(), // current time
-                      y = Math.random();
-                  seriesTotal.addPoint([x, y], true, true);
-              }, 1000);
-              setInterval(function () {
-                  let x = (new Date()).getTime(), // current time
-                      y = Math.random();
-                  seriesExtract.addPoint([x, y], true, true);
-              }, 1000);
-
-            }
-          }
-        },
-        title: null,
-        tooltip: false,
-        xAxis: {
-          type: 'datetime',
-          tickPixelInterval: 150
-        },
-        yAxis: {
-          // min: 0,
-          // max: y_max,
-          title: null,
-          plotLines: [{
-            value: 0,
-            width: 1,
-            color: '#333'
-          }]
-        },
-        plotOptions: {
-          area: {
-            fillColor: {
-              linearGradient: {
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 1
-              }
-            },
-            marker: {
-              enabled: false,
-            },
-            lineWidth: 1,
-            threshold: null
-          }
-        },
-        legend: {
-          margin: 5,
-          itemDistance: 30,
-          itemStyle: {
-            fontSize: 13,
-            fontWeight: 'normal',
-            color: '#000',
-          }
-        },
-        exporting: {
-          enabled: false
-        },
-        series: [
-          {
-            name: '注水总量',
-            data: (function () {
-                // generate an array of random data
-              let data = [],
-                  time = (new Date()).getTime(),
-                  i;
-
-              for (i = -19; i <= 0; i += 1) {
-                data.push({
-                    x: time + i * 1000,
-                    y: Math.random()
-                });
-              }
-              return data;
-            }()),
-            color: '#53B2F0',
-            fillColor: {
-              stops: [
-                [0.3, 'rgba(131, 192, 232, .9)'],
-                [1, 'rgba(185, 225, 245, 0)']
-              ]
-            },
-          } , {
-            name: '咖啡萃取量',
-            data: (function () {
-              // generate an array of random data
-              let data = [],
-                  time = (new Date()).getTime(),
-                  i;
-
-              for (i = -19; i <= 0; i += 1) {
-                data.push({
-                    x: time + i * 1000,
-                    y: Math.random()
-                });
-              }
-              return data;
-            }()),
-            color: '#DFB86F',
-            fillColor: {
-              stops: [
-                [0.3, 'rgba(224, 184, 112, .9)'],
-                [1, 'rgba(231, 220, 200, 0)']
-              ]
-            },
-          }
-        ]
-      };
-      const options = {
-        global: {
-            useUTC: false
-        },
-        lang: {
-            decimalPoint: ',',
-            thousandsSep: '.'
-        }
-      };
-
       return (
         <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
-          <View style={styles.chartContainer}>
-            <ChartView
-              style={{height:220,width:345}}
-              config={conf}
-              options={options}
-              javaScriptEnabled={true}
-              domStorageEnabled={true}
-            >
-            </ChartView>
-          </View>
+          <WeightChartContainer/>
 
           <View style={styles.target}>
             <View style={styles.targetContainer}>
@@ -307,6 +164,13 @@ class CoffeeBuilder extends React.Component {
           </View>
         </View>
         {this._getBuilderComponent()}
+        {/*<Toast
+          visible={this.state.toastVisible}
+          position={0}
+          shadow={false}
+          animation={false}
+          hideOnPress={true}
+        >冲煮完成{this.state.toastName}</Toast>*/}
       </ScrollView>
     );
   }
@@ -454,10 +318,6 @@ const styles = StyleSheet.create({
     lineHeight:24,
     fontSize:17,
     color:'#232323',
-  },
-  chartContainer: {
-    paddingLeft: 15,
-    paddingRight: 15,
   },
   labelContainer: {
     flexDirection: 'row',
