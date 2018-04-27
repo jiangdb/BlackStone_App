@@ -3,12 +3,26 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View } from 'react-native';
 import ChartView from 'react-native-highcharts';
 
+
+let x_total = 0;
 class WeightChart extends Component {
 
-  state = {
-    chartExtract:[],
-    chartTotal:[],
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+      xtract:[],
+      chartTotal:[],
+      start: true,
+
+    };
+    this.x_total = 0;
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      start: nextProps.start,
+    })
+  }
 
   render() {
     let y_max = Math.floor(this.props.coffeeSettings.waterWeight*1.3);
@@ -16,6 +30,9 @@ class WeightChart extends Component {
       let Highcharts='Highcharts';
       let conf={
         chart: {
+          animation: {
+            duration: 100
+          },
           type: 'area',
           marginTop: 30.5,
           events: {
@@ -24,25 +41,26 @@ class WeightChart extends Component {
               let seriesTotal = this.series[0];
               let seriesExtract = this.series[1];
 
-                let x_total = 0;
-                let x_extract = 0;
+              let x_total = 0;
+              let x_extract = 0;
 
+              // if(this.state.start) {
                 setInterval(function () {
-                    // let y_total = Math.random()*10;
-                    let y_total = this.props.bleWeightNotify.total.toFixed(1);
+                  let y_total = Math.random()*100;
+                  // let y_total = this.props.bleWeightNotify.total.toFixed(1);
 
-                    if(x_total<=120) {
-                      seriesTotal.removePoint(x_total);
-                      seriesTotal.addPoint([x_total, y_total], true,false);
-                    } else {
-                      seriesTotal.addPoint([x_total, y_total], true, true);
-                    }
-                    x_total += 1;
+                  if(x_total<=120) {
+                    seriesTotal.removePoint(x_total);
+                    seriesTotal.addPoint([x_total, y_total], true,false);
+                  } else {
+                    seriesTotal.addPoint([x_total, y_total], true, true);
+                  }
+                  x_total += 1;
                 }, 100);
 
                 setInterval(function () {
-                    // let y_extract = Math.random()*10;
-                    let y_extract = this.props.bleWeightNotify.extract.toFixed(1);
+                    let y_extract = Math.random()*100;
+                    // let y_extract = this.props.bleWeightNotify.extract.toFixed(1);
 
                     if(x_extract<=120) {
                       seriesExtract.removePoint(x_extract);
@@ -52,7 +70,7 @@ class WeightChart extends Component {
                     }
                     x_extract += 1;
                 }, 100);
-
+              // }
             }
           }
         },
@@ -74,14 +92,18 @@ class WeightChart extends Component {
         },
         yAxis: {
           min: 0,
-          // max: y_max,
+          max: y_max,
           tickAmount: 5,
           title: null,
           plotLines: [{
             value: 0,
             width: 1,
             color: '#333'
-          }]
+          }],
+          labels:{
+            x:-5,
+            // align: 'left',
+          },
         },
         plotOptions: {
           area: {

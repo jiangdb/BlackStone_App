@@ -11,4 +11,5 @@ export default combineReducers({
     accessoriesSelect: require('./accessoriesSelect.js'),
     saveRecord: require('./saveRecord.js'),
     weightChart: require('./weightChart.js'),
+    coffeeBuilder: require('./coffeeBuilder.js'),
 })

@@ -12,3 +12,8 @@ export const saveAccessories = accessories => ({
   type: 'SAVE_ACCESSORIES',
   accessories
 });
+
+export const changeMode = mode => ({
+  type: 'COFFEE_BUILDER_MODE_CHANGE',
+  mode
+});
