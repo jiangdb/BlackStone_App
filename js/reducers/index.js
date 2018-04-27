@@ -10,4 +10,5 @@ export default combineReducers({
     flavorSelect: require('./flavorSelect.js'),
     accessoriesSelect: require('./accessoriesSelect.js'),
     saveRecord: require('./saveRecord.js'),
+    weightChart: require('./weightChart.js'),
 })
