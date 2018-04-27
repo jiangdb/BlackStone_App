@@ -6,14 +6,12 @@ import ChartView from 'react-native-highcharts';
 class WeightChart extends Component {
 
   state = {
-    extractData: this.props.bleWeightNotify.extract.toFixed(1),
-    totalData : this.props.bleWeightNotify.total.toFixed(1),
     chartExtract:[],
     chartTotal:[],
   };
 
   render() {
-    let y_max = Math.floor(this.state.totalData*1.3);
+    let y_max = Math.floor(this.props.coffeeSettings.waterWeight*1.3);
 
       let Highcharts='Highcharts';
       let conf={
@@ -26,21 +24,34 @@ class WeightChart extends Component {
               let seriesTotal = this.series[0];
               let seriesExtract = this.series[1];
 
-              setInterval(function () {
-                  let x = (new Date()).getTime(), // current time
-                      y = this.state.totalData;
-                      // y = Math.random();
-                      // console.log(this.state.totalData);
+                let x_total = 0;
+                let x_extract = 0;
 
-                  seriesTotal.addPoint([x, y], true, true);
-              }, 100);
-              setInterval(function () {
-                  let x = (new Date()).getTime(), // current time
-                      y = this.state.extractData;
-                      // y = Math.random();
+                setInterval(function () {
+                    // let y_total = Math.random()*10;
+                    let y_total = this.props.bleWeightNotify.total.toFixed(1);
 
-                  seriesExtract.addPoint([x, y], true, true);
-              }, 100);
+                    if(x_total<=120) {
+                      seriesTotal.removePoint(x_total);
+                      seriesTotal.addPoint([x_total, y_total], true,false);
+                    } else {
+                      seriesTotal.addPoint([x_total, y_total], true, true);
+                    }
+                    x_total += 1;
+                }, 100);
+
+                setInterval(function () {
+                    // let y_extract = Math.random()*10;
+                    let y_extract = this.props.bleWeightNotify.extract.toFixed(1);
+
+                    if(x_extract<=120) {
+                      seriesExtract.removePoint(x_extract);
+                      seriesExtract.addPoint([x_extract, y_extract], true, false);
+                    } else {
+                      seriesExtract.addPoint([x_extract, y_extract], true, true);
+                    }
+                    x_extract += 1;
+                }, 100);
 
             }
           }
@@ -51,12 +62,20 @@ class WeightChart extends Component {
             enabled: false
         },
         xAxis: {
-          type: 'datetime',
-          tickPixelInterval: 150
+          tickInterval: 20,
+          labels: {
+            formatter: function () {
+                return this.value/10;
+            }
+          },
+          lineWidth:2,
+          lineColor: '#ccc',
+          tickLength: 0
         },
         yAxis: {
-          // min: 0,
+          min: 0,
           // max: y_max,
+          tickAmount: 5,
           title: null,
           plotLines: [{
             value: 0,
@@ -78,7 +97,6 @@ class WeightChart extends Component {
               enabled: false,
             },
             lineWidth: 1,
-            threshold: null
           }
         },
         legend: {
@@ -96,17 +114,14 @@ class WeightChart extends Component {
         series: [
           {
             name: '注水总量',
-            // data: this.state.chartTotal,
             data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    // generate an array of initial data
+                    let data = [],i;
 
-                    for (i = -19; i <= 0; i += 1) {
+                    for (i = 0; i <= 120; i++) {
                         data.push({
-                            x: time + i * 1000,
-                            y: Math.random()
+                            x: i,
+                            y: 0,
                         });
                     }
                     return data;
@@ -120,17 +135,14 @@ class WeightChart extends Component {
             },
           } , {
             name: '咖啡萃取量',
-            // data: this.state.chartExtract,
             data: (function () {
-                    // generate an array of random data
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    // generate an array of initial data
+                    let data = [],i;
 
-                    for (i = -19; i <= 0; i += 1) {
+                    for (i = 0; i <= 120; i++) {
                         data.push({
-                            x: time + i * 1000,
-                            y: Math.random()
+                            x: i,
+                            y: 0,
                         });
                     }
                     return data;
@@ -180,6 +192,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     bleWeightNotify: state.bleWeightNotify,
+    coffeeSettings: state.coffeeSettings
   }
 }
 
