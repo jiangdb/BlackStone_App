@@ -6,6 +6,7 @@ import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import WeightChartContainer from './common/WeightChart.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
+import { coffeeBuilderModeChange } from '../actions/coffeeBuilder.js'
 
 // import Toast from 'react-native-root-toast';
 
@@ -24,7 +25,6 @@ class CoffeeBuilder extends React.Component {
   };
 
   componentWillMount() {
-    this._startCountDown();
   };
 
   componentWillUnmount() {
@@ -38,6 +38,7 @@ class CoffeeBuilder extends React.Component {
           mode: 'mode_working',
           timerCount: 3,
         });
+        this.props.onModeChange('mode_working');
       }else{
         this.setState({
           timerCount: this.state.timerCount - 1,
@@ -48,22 +49,25 @@ class CoffeeBuilder extends React.Component {
 
   _stopBuilding = () => {
     this.setState({
-      mode: 'mode_stop',
+      // mode: 'mode_done',
       buildingTimerStart: false,
     });
+    this.props.onModeChange('mode_done');
+
   };
 
   _onRestart = () => {
     this.setState({
-      mode: 'mode_countDown',
       buildingTimerStart: false,
     });
-    this._startCountDown();
+    // this._startCountDown();
+    this.props.onModeChange('mode_countDown');
   };
 
   _getBuilderComponent = () => {
-    switch (this.state.mode) {
+    switch (this.props.coffeeBuilder.mode) {
       case 'mode_countDown':
+        this._startCountDown();
         return (
           <View style={styles.countDownContainer}>
             <View style={styles.countDown}>
@@ -102,7 +106,7 @@ class CoffeeBuilder extends React.Component {
 
             <BuildingTimerContainer start={this.state.buildingTimerStart}/>
 
-            <View style={this.state.mode==='mode_stop' ? {display: 'none'} : {flexDirection: 'row'}}>
+            <View style={this.state.mode==='mode_done' ? {display: 'none'} : {flexDirection: 'row'}}>
               <TouchableHighlight onPress={this._onRestart}>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
@@ -114,7 +118,7 @@ class CoffeeBuilder extends React.Component {
                 </View>
               </TouchableHighlight>
             </View>
-            <View style={this.state.mode==='mode_stop' ? {flexDirection: 'row'} : {display: 'none'}}>
+            <View style={this.state.mode==='mode_done' ? {flexDirection: 'row'} : {display: 'none'}}>
               <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')}>
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
@@ -313,6 +317,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onModeChange: mode => {
+      dispatch(coffeeBuilderModeChange(mode))
+    }
   }
 }
 

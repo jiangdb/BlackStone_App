@@ -13,7 +13,7 @@ export const saveAccessories = accessories => ({
   accessories
 });
 
-export const changeMode = mode => ({
+export const coffeeBuilderModeChange = mode => ({
   type: 'COFFEE_BUILDER_MODE_CHANGE',
   mode
 });

@@ -13,19 +13,19 @@ class BuildingTimer extends Component {
   }
 
   shouldComponentUpdate () {
-    switch (this.props.coffeeBuilder.mode) {
-      case 'mode_countDown':
-        break;
-      case 'mode_pending':
-        break;
-      case 'mode_working':
-        break;
-      case 'mode_done':
-        clearInterval(this.interval);
-        break;
-      default:
-        break;
-    }
+    // switch (this.props.coffeeBuilder.mode) {
+    //   case 'mode_countDown':
+    //     break;
+    //   case 'mode_pending':
+    //     break;
+    //   case 'mode_working':
+    //     break;
+    //   case 'mode_done':
+    //     clearInterval(this.interval);
+    //     break;
+    //   default:
+    //     break;
+    // }
   };
 
   // componentWillReceiveProps (nextProps) {
