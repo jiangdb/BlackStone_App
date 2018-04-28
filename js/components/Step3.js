@@ -10,7 +10,7 @@ class Step3 extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection:'columns', alignContent:'center'}}>
+      <View style={{ flex: 1, flexDirection:'column', alignContent:'center'}}>
         <View style={{marginTop: 59}}>
           <Text style={{fontSize: 24,color: '#232323'}}>3/4 第三步</Text>
         </View>
@@ -38,8 +38,8 @@ class Step3 extends React.Component {
 
 const styles = StyleSheet.create({
   deviceList: {
-    height:112.5;
-    marginTop:71.5;
+    height:112.5,
+    marginTop:71.5,
   },
   btnContainer: {
     marginTop:138.5,
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   btn: {
-    display:flex,
     flexDirection:'row',
     justifyContent:'center',
     backgroundColor: '#383838',

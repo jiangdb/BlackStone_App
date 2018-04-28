@@ -10,7 +10,7 @@ class Step2 extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection:'columns', alignContent:'center'}}>
+      <View style={{ flex: 1, flexDirection:'column', alignContent:'center'}}>
         <View style={{marginTop: 59}}>
           <Text style={{fontSize: 24,color: '#232323'}}>2/4 第二步</Text>
         </View>
@@ -30,7 +30,6 @@ class Step2 extends React.Component {
 
 const styles = StyleSheet.create({
   btn: {
-    display:flex,
     flexDirection:'row',
     justifyContent:'center',
     backgroundColor: '#383838',

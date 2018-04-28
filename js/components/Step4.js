@@ -16,7 +16,7 @@ class Step4 extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection:'columns', alignContent:'center'}}>
+      <View style={{ flex: 1, flexDirection:'column', alignContent:'center'}}>
         <View style={{marginTop: 59}}>
           <Text style={{fontSize: 24,color: '#232323'}}>4/4 第四步</Text>
         </View>
@@ -50,7 +50,7 @@ class Step4 extends React.Component {
           </View>
         </View>
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Home');}>
+          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Home')}>
             <View style={[styles.btn, styles.btnOutline]}>
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   btn: {
-    display:flex,
     flexDirection:'row',
     justifyContent:'center',
     backgroundColor: '#383838',
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
   },
   input:{
     width:250,
-    fontSize:17;
+    fontSize:17,
     color:'#878787',
   }
 });

@@ -7,6 +7,7 @@ import MineContainer from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import DeviceScanContainer from './DeviceScan';
+import Step0 from './Step0';
 import Step1Container from './Step1';
 import Step2Container from './Step2';
 import Step3Container from './Step3';
@@ -16,6 +17,7 @@ const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
   BeanCategory: { screen: BeanCategoryContainer },
+  Step0: { screen: Step0 },
   Step1: { screen: Step1Container },
   Step2: { screen: Step2Container },
   Step3: { screen: Step3Container },
