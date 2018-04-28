@@ -12,7 +12,7 @@ export default class Step0 extends React.Component {
       // if (app.globalData.started) {
         // wx.switchTab({ url: "../../index/index" })
       // }else{
-        () => this.props.navigation.navigate('Step1')
+        this.props.navigation.navigate('Step1')
         // this.props.navigation.navigate('Step1');
       // }
     },2000);
