@@ -1,11 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Image, StyleSheet,TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { Text, View, Image, StyleSheet,TouchableWithoutFeedback, FlatList } from 'react-native';
+import {Divider} from './Templates';
+import bleService from '../services/bleService.js'
 
 class Step3 extends React.Component {
   static navigationOptions = {
     title: '开机向导',
     tabBarVisible: false,
+  };
+
+  // render device list item
+  _renderItem = ({item}) => {
+    return (
+      <Text
+        style={styles.deviceList}
+        onPress={this._onPressItem.bind(this, item)}
+      >{ item.localName }</Text>
+    );
+  };
+
+  // function when press on the device item
+  _onPressItem = (device) => {
+    bleService.deviceConnect(device);
   };
 
   render() {
@@ -17,8 +34,14 @@ class Step3 extends React.Component {
         <View style={{marginTop: 18.5}}>
           <Text style={{fontSize: 17,color: '#232323'}}>选择需要连接的设备</Text>
         </View>
-        <ScrollView style={styles.deviceList}>
-        </ScrollView>
+        <FlatList
+          style={styles.deviceList}
+          data={this.props.bleScan.deviceScanned}
+          ItemSeparatorComponent={() => <Divider/> }
+          renderItem={this._renderItem}
+          // refreshing={this.state.refreshing}
+          keyExtractor={item => item.id}
+        />
         <View style={styles.btnContainer}>
           <TouchableWithoutFeedback>
             <View style={[styles.btn, styles.btnOutline]}>
@@ -40,6 +63,7 @@ const styles = StyleSheet.create({
   deviceList: {
     height:112.5,
     marginTop:71.5,
+    backgroundColor: '#fff'
   },
   btnContainer: {
     marginTop:138.5,
@@ -73,6 +97,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    bleScan: state.bleScan,
   }
 }
 

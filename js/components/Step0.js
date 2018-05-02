@@ -7,12 +7,10 @@ export default class Step0 extends React.Component {
     tabBarVisible: false,
   };
 
-  componentDidMount() {
+  shouldComponentUpdate() {
     setTimeout(function(){
-      // if (app.globalData.started) {
-        // wx.switchTab({ url: "../../index/index" })
+      // if () {
       // }else{
-        this.props.navigation.navigate('Step1')
         // this.props.navigation.navigate('Step1');
       // }
     },2000);
@@ -20,8 +18,8 @@ export default class Step0 extends React.Component {
 
   render() {
     return (
-      <View>
-        <Image style={{ width:375}} source={require('../../images/splashscreen.jpeg')} />
+      <View style={{ flex:1 }}>
+        <Image style={{ width:375 }} source={require('../../images/splashscreen.jpeg')} />
         {/*<ImageBackground style={{width: 375}} source={require('../../images/splashscreen.jpeg')} >
         </ImageBackground>*/}
       </View>
