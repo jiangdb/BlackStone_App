@@ -12,39 +12,23 @@ class BuildingTimer extends Component {
     };
   }
 
-  shouldComponentUpdate () {
-    // switch (this.props.coffeeBuilder.mode) {
-    //   case 'mode_countDown':
-    //     break;
-    //   case 'mode_pending':
-    //     break;
-    //   case 'mode_working':
-    //     break;
-    //   case 'mode_done':
-    //     clearInterval(this.interval);
-    //     break;
-    //   default:
-    //     break;
-    // }
-  };
+  componentWillReceiveProps(nextProps) {
+    let totalSeconds = Math.floor(nextProps.coffeeBuilder.datas.length / 10)
+    if (totalSeconds != this.state.totalSeconds) {
+      this.setState({
+        totalSeconds: totalSeconds
+      })
+    }
+  }
 
-  // componentWillReceiveProps (nextProps) {
-  //   if(nextProps.start) {
-  //     this._startTimer();
-  //   } else {
-  //     clearInterval(this.interval);
-  //   }
-  // }
-
-  _startTimer = () => {
-      this.interval = setInterval(() =>{
-        this.setState({
-          totalSeconds: this.state.totalSeconds+1,
-        });
-      },1000);
-  };
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.totalSeconds != nextState.totalSeconds)
+      return true
+    return false
+  }
 
   render() {
+    console.log('BuildingTimer render')
     return (
       <View style={{flexDirection:'column', alignItems: 'center'}}>
         <Text style={styles.stopwatchTimer}>
@@ -73,7 +57,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     coffeeBuilder: state.coffeeBuilder,
-    bleWeightNotify: state.bleWeightNotify,
   }
 }
 

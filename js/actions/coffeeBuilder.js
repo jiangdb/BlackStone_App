@@ -13,6 +13,11 @@ export const saveAccessories = accessories => ({
   accessories
 });
 
+export const coffeeBuilderQueueData = data => ({
+  type: 'COFFEE_BUILDER_QUEUE_DATA',
+  data
+});
+
 export const coffeeBuilderModeChange = mode => ({
   type: 'COFFEE_BUILDER_MODE_CHANGE',
   mode

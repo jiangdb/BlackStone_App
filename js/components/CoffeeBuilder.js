@@ -6,7 +6,7 @@ import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import WeightChartContainer from './common/WeightChart.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
-import { coffeeBuilderModeChange } from '../actions/coffeeBuilder.js'
+import { coffeeBuilderModeChange, coffeeBuilderQueueData } from '../actions/coffeeBuilder.js'
 
 // import Toast from 'react-native-root-toast';
 
@@ -19,26 +19,68 @@ class CoffeeBuilder extends React.Component {
   state = {
     toastVisible: false,
     timerCount: 3,
-    mode: this.props.coffeeBuilder.mode,
-    buildingTimerStart: true,
-    weightChartStart: true,
   };
 
   componentWillMount() {
+    this.props.onModeChange('countDown')
+  };
+
+  componentDidMount() {
+    this._startCountDown()
   };
 
   componentWillUnmount() {
+    this.props.onModeChange('idle')
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //console.log('coffeeBuilder componentWillReceiveProps')
+    if (this.props.bleWeightNotify.index != nextProps.bleWeightNotify.index) {
+      if (this.props.coffeeBuilder.mode == "pending") {
+        if ( nextProps.bleWeightNotify.total > 0.5 ) {
+          this.props.onModeChange('working')
+          this.props.onDataChange(nextProps.bleWeightNotify)
+        }
+      } else if (this.props.coffeeBuilder.mode == "working") {
+        if ( nextProps.bleWeightNotify.total <= 0 ) {
+          this.props.onModeChange('done')
+        }
+        this.props.onDataChange(nextProps.bleWeightNotify)
+      }
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log('coffeeBuilder shouldComponentUpdate')
+    //check mode
+    //countDown: timer update
+    if (this.props.coffeeBuilder.mode == 'countDown') {
+      if (this.state.timerCount != nextState.timerCount) {
+        //count down timer
+        return true
+      }
+    }
+    
+    if (((this.props.coffeeBuilder.mode == 'idle') && (nextProps.coffeeBuilder.mode != 'countDown'))       //idle --> countDown
+       || ((this.props.coffeeBuilder.mode == 'countDown') && (nextProps.coffeeBuilder.mode == 'pending'))  //countDown --> pending
+       || ((this.props.coffeeBuilder.mode == 'pending') && (nextProps.coffeeBuilder.mode == 'countDown'))  //pending --> countDown
+       || ((this.props.coffeeBuilder.mode == 'pending') && (nextProps.coffeeBuilder.mode == 'done'))       //pending --> done
+       || ((this.props.coffeeBuilder.mode == 'working') && (nextProps.coffeeBuilder.mode == 'done'))       //working --> done
+      ) {
+      return true
+    }
+
+    return false
   }
 
   _startCountDown = () => {
+    this.setState({
+      timerCount: 3,
+    });
     this.interval = setInterval(() =>{
       if(this.state.timerCount===1){
         clearInterval(this.interval);
-        this.setState({
-          mode: 'mode_working',
-          timerCount: 3,
-        });
-        this.props.onModeChange('mode_working');
+        this.props.onModeChange('pending');
       }else{
         this.setState({
           timerCount: this.state.timerCount - 1,
@@ -48,26 +90,18 @@ class CoffeeBuilder extends React.Component {
   };
 
   _stopBuilding = () => {
-    this.setState({
-      // mode: 'mode_done',
-      buildingTimerStart: false,
-    });
-    this.props.onModeChange('mode_done');
-
+    this.props.onModeChange('done');
   };
 
   _onRestart = () => {
-    this.setState({
-      buildingTimerStart: false,
-    });
-    // this._startCountDown();
-    this.props.onModeChange('mode_countDown');
+    this.props.onModeChange('countDown');
+    this._startCountDown()
   };
 
   _getBuilderComponent = () => {
     switch (this.props.coffeeBuilder.mode) {
-      case 'mode_countDown':
-        this._startCountDown();
+      case 'idle':
+      case 'countDown':
         return (
           <View style={styles.countDownContainer}>
             <View style={styles.countDown}>
@@ -84,7 +118,7 @@ class CoffeeBuilder extends React.Component {
       default:
         return (
           <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
-            <WeightChartContainer start={this.state.buildingTimerStart}/>
+            <WeightChartContainer/>
 
             <View style={styles.target}>
               <View style={styles.targetContainer}>
@@ -104,9 +138,9 @@ class CoffeeBuilder extends React.Component {
               </View>
             </View>
 
-            <BuildingTimerContainer start={this.state.buildingTimerStart}/>
+            <BuildingTimerContainer/>
 
-            <View style={this.state.mode==='mode_done' ? {display: 'none'} : {flexDirection: 'row'}}>
+            <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row'}}>
               <TouchableHighlight onPress={this._onRestart}>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
@@ -118,7 +152,7 @@ class CoffeeBuilder extends React.Component {
                 </View>
               </TouchableHighlight>
             </View>
-            <View style={this.state.mode==='mode_done' ? {flexDirection: 'row'} : {display: 'none'}}>
+            <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row'} : {display: 'none'}}>
               <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')}>
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
@@ -309,9 +343,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    coffeeSettings: state.coffeeSettings,
     bleWeightNotify: state.bleWeightNotify,
     coffeeBuilder: state.coffeeBuilder,
+    coffeeSettings: state.coffeeSettings,
   }
 }
 
@@ -319,6 +353,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onModeChange: mode => {
       dispatch(coffeeBuilderModeChange(mode))
+    },
+    onDataChange: data => {
+      dispatch(coffeeBuilderQueueData(data))
     }
   }
 }

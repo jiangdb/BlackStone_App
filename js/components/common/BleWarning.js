@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class BleMessage extends Component {
   render() {
-    if(!this.props.bleStatus.deviceReady) {
+    if(!this.props.bleStatus.btState == 'PoweredOn') {
       return (
         <View style={styles.messageContainer}>
           <Ionicons name="ios-alert" size={23} color='tomato'/>

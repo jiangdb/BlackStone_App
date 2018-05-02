@@ -1,5 +1,9 @@
+/**
+ * mode: idle, countDown, pending, working, done
+ */
 const initialState = {
-  mode: 'mode_countDown',
+  mode: 'idle',
+  datas: [],
 }
  
 import type { Action } from "../actions/types";
@@ -15,6 +19,11 @@ function coffeeBuilder(state, action) {
         mode: action.mode
       });
 
+    case "COFFEE_BUILDER_QUEUE_DATA":
+      return {
+        ...state,
+        datas: [ ...state.datas, action.data],
+      }
     default:
       return state;
   }
