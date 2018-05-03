@@ -60,7 +60,7 @@ class CoffeeBuilder extends React.Component {
         return true
       }
     }
-    
+
     if (((this.props.coffeeBuilder.mode == 'idle') && (nextProps.coffeeBuilder.mode != 'countDown'))       //idle --> countDown
        || ((this.props.coffeeBuilder.mode == 'countDown') && (nextProps.coffeeBuilder.mode == 'pending'))  //countDown --> pending
        || ((this.props.coffeeBuilder.mode == 'pending') && (nextProps.coffeeBuilder.mode == 'countDown'))  //pending --> countDown
@@ -95,7 +95,7 @@ class CoffeeBuilder extends React.Component {
 
   _onRestart = () => {
     this.props.onModeChange('countDown');
-    this._startCountDown()
+    this._startCountDown();
   };
 
   _getBuilderComponent = () => {

@@ -1,11 +1,11 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, processColor,LayoutAnimation } from 'react-native';
 import ChartView from 'react-native-highcharts';
+import { LineChart } from "react-native-charts-wrapper";
+import update from 'immutability-helper';
 
-
-let x_total = 0;
-class WeightChart extends Component {
+{/*class WeightChart extends Component {
 
   constructor(props){
     super(props);
@@ -202,19 +202,124 @@ class WeightChart extends Component {
         </View>
       );
   }
+}*/}
+
+const colors = [processColor('#53B2F0'), processColor('#DFB86F'), processColor('yellow'), processColor('purple'), processColor('pink')];
+
+
+class WeightChart extends React.Component {
+
+  state = {
+    legend: {
+      enabled: true,
+      textColor: processColor('#000'),
+      textSize: 13,
+      // position: 'BELOW_CHART_CENTER',
+      form: 'CIRCLE',
+      formSize: 12,
+      wordWrapEnabled: true,
+    },
+    xAxis: {
+      position: 'BOTTOM',
+      drawGridLines: false,
+      drawAxisLine: false,
+      drawZeroLine: false,
+      labelCount: 6,
+    },
+    yAxis: {
+      axisMaximum: this.props.coffeeSettings.waterWeight*1.3,
+      axisMinimum: 0,
+      drawAxisLine: false,
+      labelCount: 6,
+    },
+  };
+
+  _next = () => {
+    return {
+      data: {
+        dataSets: [{
+          values: this.props.coffeeBuilder.chartTotal,
+          label: '注水总量',
+          config: {
+            drawValues: false,
+            color: processColor('#53B2F0'),
+            mode: "CUBIC_BEZIER",
+            drawCircles: false,
+            lineWidth: 1.5,
+            drawFilled: true,
+            fillGradient: {
+              colors: [processColor('rgba(131, 192, 232, .9)'), processColor('rgba(185, 225, 245, 0)')],
+              positions: [0, 1],
+              orientation: "BOTTOM_TOP",
+            },
+            fillAlpha: 150,
+          }
+        },{
+          values: this.props.coffeeBuilder.chartExtract,
+          label: '咖啡萃取量',
+          config: {
+            drawValues: false,
+            color: processColor('#DFB86F'),
+            mode: "CUBIC_BEZIER",
+            drawCircles: false,
+            lineWidth: 1.5,
+            drawFilled: true,
+            fillGradient: {
+              colors: [processColor('rgba(224, 184, 112, .9)'), processColor('rgba(231, 220, 200, 0)')],
+              positions: [0.3, 1],
+              orientation: "BOTTOM_TOP",
+            },
+            fillAlpha: 150,
+          }
+        }],
+
+      }
+    }
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return true;
+  // }
+
+  render() {
+    return (
+        <LineChart
+          data={this._next().data}
+          xAxis={this.state.xAxis}
+          yAxis={this.state.yAxis}
+          style={styles.chart}
+          legend={this.state.legend}
+          chartDescription={{text: ''}}
+          ref="chart"
+        />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  chartContainer: {
-    paddingRight: 7.5,
-    paddingLeft: 7.5,
-  },
+  chart: {
+    height:220,
+    width:360,
+    marginLeft: 7.5,
+    marginRight: 7.5,
+    backgroundColor: '#fff'
+  }
 });
 
 const mapStateToProps = state => {
   return {
-    bleWeightNotify: state.bleWeightNotify,
-    coffeeSettings: state.coffeeSettings
+    coffeeBuilder: state.coffeeBuilder,
+    coffeeSettings: state.coffeeSettings,
   }
 }
 

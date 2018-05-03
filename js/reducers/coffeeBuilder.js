@@ -4,6 +4,8 @@
 const initialState = {
   mode: 'idle',
   datas: [],
+  chartTotal:[0],
+  chartExtract:[0],
 }
  
 import type { Action } from "../actions/types";
@@ -23,6 +25,8 @@ function coffeeBuilder(state, action) {
       return {
         ...state,
         datas: [ ...state.datas, action.data],
+        chartTotal:[ ...state.chartTotal, action.data.total],
+        chartExtract:[ ...state.chartExtract, action.data.extract],
       }
     default:
       return state;
