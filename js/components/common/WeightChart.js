@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, processColor,LayoutAnimation } from 'react-native';
 import ChartView from 'react-native-highcharts';
 import { LineChart } from "react-native-charts-wrapper";
-import update from 'immutability-helper';
 
 {/*class WeightChart extends Component {
 
