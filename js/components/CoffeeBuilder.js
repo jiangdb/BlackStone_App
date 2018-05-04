@@ -43,12 +43,6 @@ class CoffeeBuilder extends React.Component {
       } else if (this.props.coffeeBuilder.mode == "working") {
         if ( nextProps.bleWeightNotify.total <= 0 ) {
           this.props.onModeChange('done');
-          if (this.props.coffeeBuilder.chartTotal.length > 10) {
-            for (let i = 0; i < 10; i++) {
-              this.props.coffeeBuilder.chartTotal.pop();
-              this.props.coffeeBuilder.chartExtract.pop();
-            }
-          }
         }
         this.props.onDataChange(nextProps.bleWeightNotify)
       }
