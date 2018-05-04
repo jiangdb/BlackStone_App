@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler } from 'react-native';
+import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler,Modal, Image } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
@@ -18,7 +18,12 @@ class SaveRecord extends React.Component {
     flavor:[],
     accessories: null,
     actualWaterWeight: this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1].toFixed(1),
-    actualRatioWater: Math.round(this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1] / this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1])
+    actualRatioWater: Math.round(this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1] / this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1]),
+    category: this.props.coffeeSettings.category,
+    grandSize: this.props.coffeeSettings.grandSize,
+    modalVisible: false,
+    modalName: '',
+    newOption:'',
   };
 
   componentWillMount() {
@@ -83,8 +88,48 @@ class SaveRecord extends React.Component {
       let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
       return selectedAccessories.join(" ");
     }
-
   };
+
+  _showModal = (name) => {
+    this.setState({
+      modalVisible: true,
+      modalName: name,
+    });
+  };
+
+  _setModalVisible = (visible) => {
+    this.setState({modalVisible: visible});
+  };
+
+  _changeValue = (text) => {
+    if(text !== '') {
+      switch (this.state.modalName) {
+        case '咖啡豆':
+          this.setState({category: text})
+          break;
+        case '研磨度':
+          this.setState({grandSize: text})
+          break;
+        default:
+          break;
+      }
+    }
+    this._setModalVisible(false);
+    this.setState({newOption:''});
+  };
+
+  _getModalPlaceHolder = () => {
+    switch (this.state.modalName) {
+      case '咖啡豆':
+        return this.state.category
+        break;
+      case '研磨度':
+        return this.state.grandSize.toString()
+        break;
+      default:
+        break;
+    }
+  }
 
   _onSaveRecord = () => {
     this.props.onSaveRecord({
@@ -95,18 +140,20 @@ class SaveRecord extends React.Component {
         kettle: this.props.accessories.kettleOption.filter((kettle) => kettle.selected)
       },
       comment: this.state.comment,
-      category: this.props.coffeeSettings.category,
+      category: this.state.category,
       ratioWater: this.props.coffeeSettings.ratioWater,
       beanWeight: this.props.coffeeSettings.beanWeight,
       waterWeight: this.props.coffeeSettings.waterWeight,
       temperature: this.props.coffeeSettings.temperature,
-      grandSize: this.props.coffeeSettings.grandSize,
+      grandSize: this.state.grandSize,
       totalSeconds: '' ,
       chartTotal:this.props.coffeeBuilder.chartTotal,
       chartExtract:this.props.coffeeBuilder.chartExtract,
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
     });
+
+    console.log(this.props.history.historyList)
   };
 
   render() {
@@ -165,8 +212,15 @@ class SaveRecord extends React.Component {
 
         <View style={{flexDirection: 'column', alignItems:'center', marginTop: 8.5,backgroundColor: '#fff'}}>
           <View style={styles.detailRow}>
-            <SingleDetail name='咖啡豆' value={this.props.coffeeSettings.category} img={require('../../images/icon_brand.png')}/>
-            <SingleDetail/>
+            <View style={styles.detailContainer}>
+              <Image style={styles.settingIcon} source={require('../../images/icon_brand.png')} />
+              <Text style={styles.settingName}>咖啡豆</Text>
+              <TouchableWithoutFeedback onPress={() => {this._showModal('咖啡豆')}}>
+                <View style={styles.settingValueContainer}>
+                  <Text style={styles.settingValue}>{this.state.category}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
@@ -174,7 +228,15 @@ class SaveRecord extends React.Component {
           </View>
 
           <View style={styles.detailRow}>
-            <SingleDetail name='研磨度' value={this.props.coffeeSettings.grandSize} img={require('../../images/icon_grandsize.png')}/>
+            <View style={styles.detailContainer}>
+              <Image style={styles.settingIcon} source={require('../../images/icon_grandsize.png')} />
+              <Text style={styles.settingName}>研磨度</Text>
+              <TouchableWithoutFeedback onPress={() => {this._showModal('研磨度')}}>
+                <View style={styles.settingValueContainer}>
+                  <Text style={styles.settingValue}>{this.state.grandSize}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
             <SingleDetail name='水温' value={this.props.coffeeSettings.temperature+'℃'} img={require('../../images/icon_temp.png')}/>
           </View>
 
@@ -197,6 +259,44 @@ class SaveRecord extends React.Component {
             <Text style={styles.btnSaveText}>保存</Text>
           </View>
         </TouchableWithoutFeedback>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}
+        >
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18}}>{this.state.modalName}</Text>
+              </View>
+              <View style={styles.modalInput}>
+                <TextInput
+                  style={{fontSize: 18, padding: 0}}
+                  onChangeText={(text) => this.setState({newOption: text})}
+                  value={this.state.newOption}
+                  placeholder={this._getModalPlaceHolder()}
+                  underlineColorAndroid='transparent'
+                />
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableWithoutFeedback onPress={() => {this._setModalVisible(false)}}>
+                  <View style={[styles.modalBtn,styles.withBorderRight]}>
+                    <Text style={{fontSize: 18}}>取消</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={ () => this._changeValue(this.state.newOption)}>
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     );
   }
@@ -252,6 +352,76 @@ const styles = StyleSheet.create({
     fontSize:17,
     color:'#5B5B5B',
     textAlign: 'right',
+  },
+  detailContainer: {
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width:187.5,
+  },
+  settingIcon: {
+    width: 20,
+    height: 22,
+    marginTop:5,
+    marginLeft:20,
+  },
+  settingName: {
+    color: '#5B5B5B',
+    marginLeft: 7,
+    lineHeight:32,
+    fontSize:15,
+  },
+  settingValueContainer: {
+    borderStyle: 'solid',
+    borderBottomColor: '#CACACA',
+    borderBottomWidth: 0.5,
+    marginLeft:10,
+  },
+  settingValue: {
+    fontWeight: 'bold',
+    color: '#232323',
+    overflow: 'hidden',
+    lineHeight:32,
+    fontSize:15,
+  },
+  modalTitle: {
+    display: 'flex',
+    height:50,
+    justifyContent: 'center',
+    alignItems:'center',
+  },
+  modalMask: {
+    flex:1,
+    backgroundColor:'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent:{
+    backgroundColor:'#fff',
+    width:300,
+    borderRadius:1.5,
+  },
+  modalInput: {
+    height:40,
+    paddingTop:5,
+    paddingBottom:5,
+    paddingLeft:10,
+    paddingRight:10,
+  },
+  modalBtn: {
+    display: 'flex',
+    height:50,
+    borderTopWidth:0.5,
+    borderStyle:'solid',
+    borderTopColor: '#E8E8EA',
+    justifyContent: 'center',
+    alignItems:'center',
+    width: 150,
+  },
+  withBorderRight: {
+    borderStyle: 'solid',
+    borderRightWidth: 0.5,
+    borderRightColor: '#E8E8EA',
   }
 });
 

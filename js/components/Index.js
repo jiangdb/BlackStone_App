@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
   },
   coverImg: {
     resizeMode: 'contain',
-    marginTop: 30,
-    marginBottom: 30,
-    marginLeft: 12.5,
-    marginRight: 12.5,
-    width:223.5,
-    height:223.5,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 12.5,
+    paddingRight: 12.5,
+    width:223,
+    height:223,
   },
   btnClear: {
     display:'flex',

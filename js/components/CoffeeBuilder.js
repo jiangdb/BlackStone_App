@@ -6,9 +6,8 @@ import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import WeightChartContainer from './common/WeightChart.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
-import { coffeeBuilderModeChange, coffeeBuilderQueueData } from '../actions/coffeeBuilder.js'
-
-// import Toast from 'react-native-root-toast';
+import { coffeeBuilderModeChange, coffeeBuilderQueueData,saveChartData } from '../actions/coffeeBuilder.js'
+import Toast from 'react-native-root-toast';
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -180,28 +179,23 @@ class CoffeeBuilder extends React.Component {
     return (
       <ScrollView style={{ flexDirection: 'column' }}>
         <View style={styles.readerContainer}>
-          <WeightReadingContainer
-            type='extract'
-            readerStyle={styles.reader}
-            readerTitleStyle={styles.readerTitle}
-          />
-          <WeightReadingContainer
-            type='total'
-            readerStyle={styles.reader}
-            readerTitleStyle={styles.readerTitle}
-          />
+          <View style={{ flexDirection: 'row' }}>
+            <WeightReadingContainer
+              type='extract'
+              readerStyle={styles.reader}
+              readerTitleStyle={styles.readerTitle}
+            />
+            <WeightReadingContainer
+              type='total'
+              readerStyle={styles.reader}
+              readerTitleStyle={styles.readerTitle}
+            />
+          </View>
           <View style={styles.btnClear}>
             <Text style={styles.btnClearText} onPress={ bleService.setZero }>归零</Text>
           </View>
         </View>
         {this._getBuilderComponent()}
-        {/*<Toast
-          visible={this.state.toastVisible}
-          position={0}
-          shadow={false}
-          animation={false}
-          hideOnPress={true}
-        >冲煮完成{this.state.toastName}</Toast>*/}
       </ScrollView>
     );
   }
@@ -212,21 +206,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row' ,
     justifyContent:'space-between',
     alignItems: 'center',
-    height:121.5,
+    height:121,
     backgroundColor:'#ebedee',
   },
   readerTitle: {
     color: '#5B5B5B',
     fontSize: 13,
-    marginTop: 17,
+    marginTop: 20,
     marginLeft: 35,
   },
   reader: {
     fontWeight: 'bold',
     color: '#232323',
     fontSize: 45,
-    marginLeft: 35,
     marginBottom: 22.5,
+    marginLeft: 35,
   },
   btnClear: {
     display:'flex',
@@ -241,7 +235,6 @@ const styles = StyleSheet.create({
     marginTop:31.5,
     marginRight:30,
     marginBottom:32,
-    marginLeft:30,
   },
   btnClearText: {
     color: '#232323',

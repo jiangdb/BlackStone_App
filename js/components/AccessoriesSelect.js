@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
 import { saveAccessories } from '../actions/coffeeBuilder.js';
-// import Toast from 'react-native-root-toast';
+import Toast from 'react-native-root-toast';
 
 class AccessoriesSelect extends React.Component {
   static navigationOptions = {
@@ -126,14 +126,20 @@ class AccessoriesSelect extends React.Component {
       });
       this.props.navigation.goBack();
     } else if (!this._selectedFilterConfirm()) {
-      this.setState({
-        toastVisible: true,
-        toastName: '滤杯',
+      let toast = Toast.show('请选择一款滤杯', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+        shadow: false,
+        animation: false,
+        hideOnPress: true,
       });
     } else {
-      this.setState({
-        toastVisible: true,
-        toastName: '手冲壶',
+      let toast = Toast.show('请选择一款手冲壶', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+        shadow: false,
+        animation: false,
+        hideOnPress: true,
       });
     }
   }
@@ -232,14 +238,6 @@ class AccessoriesSelect extends React.Component {
             </View>
           </View>
         </Modal>
-
-        {/*<Toast
-          visible={this.state.toastVisible}
-          position={0}
-          shadow={false}
-          animation={false}
-          hideOnPress={true}
-        >请选择一款{this.state.toastName}</Toast>*/}
       </View>
 
     );
