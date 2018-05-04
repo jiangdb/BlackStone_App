@@ -203,9 +203,6 @@ import { LineChart } from "react-native-charts-wrapper";
   }
 }*/}
 
-const colors = [processColor('#53B2F0'), processColor('#DFB86F'), processColor('yellow'), processColor('purple'), processColor('pink')];
-
-
 class WeightChart extends React.Component {
 
   state = {
@@ -277,7 +274,6 @@ class WeightChart extends React.Component {
             // },
             // fillAlpha: 150,
             // startAtZero: false,
-            axisDependency: "left",
           }
         },{
           values: this.props.coffeeBuilder.chartExtract,
@@ -296,7 +292,6 @@ class WeightChart extends React.Component {
             // },
             // fillAlpha: 150,
             // startAtZero: false,
-            axisDependency: "right",
           }
         }],
       }

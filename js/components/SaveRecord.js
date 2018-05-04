@@ -14,12 +14,10 @@ class SaveRecord extends React.Component {
   state = {
     starCount: 5,
     comment: '',
-    flavorSelected:'',
-    device:'',
-    coffeeSetting:{},
-    chart_time: [],
-    chart_water_weight: [],
-    chart_extract_weight: [],
+    flavor:'',
+    accessories: '',
+    realWaterWeight: this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1],
+    realBeanWeight: this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1],
   };
 
   componentWillMount() {
@@ -62,8 +60,10 @@ class SaveRecord extends React.Component {
   _getSelectedFlavor = () => {
     let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
     if(selectedFlavorObject.length === 0) {
+      this.setState({flavor:''});
       return '请选择';
     } else {
+      this.setState({flavor:''});
       return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
     }
   };
@@ -80,8 +80,22 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
+    this.props.onSaveRecord({
+      starCount: this.state.starCount,
+      flavor: this.state.flavor,
+      accessories: this.state.accessories,
+      comment: this.state.comment,
+      category: this.props.coffeeSettings.category,
+      ratioWater: this.props.coffeeSettings.ratioWater,
+      beanWeight: this.props.coffeeSettings.beanWeight,
+      waterWeight: this.props.coffeeSettings.waterWeight,
+      temperature: this.props.coffeeSettings.temperature,
+      grandSize: this.props.coffeeSettings.grandSize,
+      totalSeconds: '' ,
 
-  }
+    })
+
+  };
 
   render() {
     return (
@@ -124,7 +138,7 @@ class SaveRecord extends React.Component {
             style={styles.comment}
             multiline={true}
             // numberOfLines={4}
-            // maxLength = {100}
+            maxLength = {100}
             onChangeText={(comment) => this.setState({comment})}
             value={this.state.comment}
             placeholder='请说说你的心得体会'
@@ -135,49 +149,42 @@ class SaveRecord extends React.Component {
             <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
           </View>
         </View>
-        <Details/>
+
+        <View style={{flexDirection: 'column', alignItems:'center', marginTop: 8.5,backgroundColor: '#fff'}}>
+          <View style={styles.detailRow}>
+            <SingleDetail name='咖啡豆' value={this.props.coffeeSettings.category} img={require('../../images/icon_brand.png')}/>
+            <SingleDetail/>
+          </View>
+          <View style={styles.detailRow}>
+            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
+            <SingleDetail name='时间' value='02:30' img={require('../../images/icon_time.png')}/>
+          </View>
+
+          <View style={styles.detailRow}>
+            <SingleDetail name='研磨度' value={this.props.coffeeSettings.grandSize} img={require('../../images/icon_grandsize.png')}/>
+            <SingleDetail name='水温' value={this.props.coffeeSettings.temperature+'℃'} img={require('../../images/icon_temp.png')}/>
+          </View>
+
+          <View style={styles.detailRow}>
+            <SingleDetail name='预设注水量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_proportion.png')}/>
+            <SingleDetail name='实际注水量' value={this.state.realWaterWeight} img={require('../../images/icon_waterweight.png')}/>
+          </View>
+
+          <View style={styles.detailRow}>
+            <SingleDetail name='预设粉水比' value={'1:'+this.props.coffeeSettings.ratioWater} img={require('../../images/icon_proportion.png')}/>
+            <SingleDetail name='实际粉水比' value='1:12' img={require('../../images/icon_proportion.png')}/>
+          </View>
+        </View>
+
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 220,}}>
 
         </View>
-        <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}}>
+        <TouchableWithoutFeedback onPress={this._onSaveRecord()}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>保存</Text>
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>
-
-    );
-  }
-}
-
-class Details extends React.Component {
-  render() {
-    return (
-      <View style={{flexDirection: 'column', alignItems:'center', marginTop: 8.5,backgroundColor: '#fff'}}>
-        <View style={styles.detailRow}>
-          <SingleDetail name='咖啡豆' value='曼特宁' img={require('../../images/icon_brand.png')}/>
-          <SingleDetail/>
-        </View>
-        <View style={styles.detailRow}>
-          <SingleDetail name='粉重' value='20g' img={require('../../images/icon_beanweight.png')}/>
-          <SingleDetail name='时间' value='02:30' img={require('../../images/icon_time.png')}/>
-        </View>
-
-        <View style={styles.detailRow}>
-          <SingleDetail name='研磨度' value='3.5' img={require('../../images/icon_grandsize.png')}/>
-          <SingleDetail name='水温' value='92℃' img={require('../../images/icon_temp.png')}/>
-        </View>
-
-        <View style={styles.detailRow}>
-          <SingleDetail name='预设注水量' value='240g' img={require('../../images/icon_proportion.png')}/>
-          <SingleDetail name='实际注水量' value='240g' img={require('../../images/icon_waterweight.png')}/>
-        </View>
-
-        <View style={styles.detailRow}>
-          <SingleDetail name='预设粉水比' value='1:12' img={require('../../images/icon_proportion.png')}/>
-          <SingleDetail name='实际粉水比' value='1:12' img={require('../../images/icon_proportion.png')}/>
-        </View>
-      </View>
     );
   }
 }
@@ -237,9 +244,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    coffeeSettings: state.coffeeSettings,
     flavor: state.flavorSelect,
     accessories: state.accessoriesSelect,
-    coffeeSettings: state.coffeeSettings
+    coffeeBuilder: state.coffeeBuilder,
   }
 }
 

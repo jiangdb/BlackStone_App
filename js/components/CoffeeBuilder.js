@@ -140,7 +140,7 @@ class CoffeeBuilder extends React.Component {
 
             <BuildingTimerContainer/>
 
-            <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row'}}>
+            <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row',marginTop:19.5,marginBottom:46.5,}}>
               <TouchableWithoutFeedback onPress={this._onRestart}>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
@@ -152,7 +152,7 @@ class CoffeeBuilder extends React.Component {
                 </View>
               </TouchableWithoutFeedback>
             </View>
-            <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row'} : {display: 'none'}}>
+            <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row',marginTop:19.5,marginBottom:46.5} : {display: 'none'}}>
               <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Home')}>
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
@@ -282,8 +282,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width:152.5,
     height:35,
-    marginTop:19.5,
-    marginBottom:46.5,
     marginLeft: 7,
     marginRight: 7,
     borderRadius:5,

@@ -7,8 +7,6 @@ const initialState = {
     grandSize: 3.5,
     timeMintue:'30',
     timeSecond:'22',
-    beanWeightReader: 200,
-    waterWeightReader: 200,
 }
  
 import type { Action } from "../actions/types";
