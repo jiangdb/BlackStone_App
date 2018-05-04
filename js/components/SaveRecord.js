@@ -217,10 +217,15 @@ class SaveRecord extends React.Component {
               <Text style={styles.settingName}>咖啡豆</Text>
               <TouchableWithoutFeedback onPress={() => {this._showModal('咖啡豆')}}>
                 <View style={styles.settingValueContainer}>
-                  <Text style={styles.settingValue}>{this.state.category}</Text>
+                  <Text
+                    style={styles.settingValue}
+                    numberOfLines={1}
+                    ellipsizeMode='tail'
+                  >{this.state.category}</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
+            <View style={styles.detailContainer}></View>
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
