@@ -4,6 +4,7 @@ import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,A
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
+import WeightChartContainer from './common/WeightChart.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -14,10 +15,10 @@ class SaveRecord extends React.Component {
   state = {
     starCount: 5,
     comment: '',
-    flavor:'',
-    accessories: '',
-    realWaterWeight: this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1],
-    realBeanWeight: this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1],
+    flavor:[],
+    accessories: null,
+    actualWaterWeight: this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1].toFixed(1),
+    actualRatioWater: Math.round(this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1] / this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1])
   };
 
   componentWillMount() {
@@ -59,31 +60,40 @@ class SaveRecord extends React.Component {
 
   _getSelectedFlavor = () => {
     let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
+
+
     if(selectedFlavorObject.length === 0) {
-      this.setState({flavor:''});
+      // this.setState({flavor:''});
       return '请选择';
     } else {
-      this.setState({flavor:''});
+      // this.setState({flavor:''});
       return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
     }
+
+    console.log(this.state.flavor);
   };
 
   _getSelectedAccessories = () => {
     let selectedFilter = this.props.accessories.filterOption.filter((filter) => filter.selected);
     let selectedKettle = this.props.accessories.kettleOption.filter((kettle) => kettle.selected);
+
     if(selectedFilter.length === 0 && selectedKettle.length === 0) {
       return '请选择';
     } else {
       let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return [selectedFilter[0].name, selectedKettle[0].name].join(" ");
+      return selectedAccessories.join(" ");
     }
+
   };
 
   _onSaveRecord = () => {
     this.props.onSaveRecord({
       starCount: this.state.starCount,
-      flavor: this.state.flavor,
-      accessories: this.state.accessories,
+      flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
+      accessories: {
+        filter: this.props.accessories.filterOption.filter((filter) => filter.selected),
+        kettle: this.props.accessories.kettleOption.filter((kettle) => kettle.selected)
+      },
       comment: this.state.comment,
       category: this.props.coffeeSettings.category,
       ratioWater: this.props.coffeeSettings.ratioWater,
@@ -92,12 +102,15 @@ class SaveRecord extends React.Component {
       temperature: this.props.coffeeSettings.temperature,
       grandSize: this.props.coffeeSettings.grandSize,
       totalSeconds: '' ,
-
-    })
-
+      chartTotal:this.props.coffeeBuilder.chartTotal,
+      chartExtract:this.props.coffeeBuilder.chartExtract,
+      actualWaterWeight: this.state.actualWaterWeight,
+      actualRatioWater: this.state.actualRatioWater
+    });
   };
 
   render() {
+
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
@@ -167,19 +180,19 @@ class SaveRecord extends React.Component {
 
           <View style={styles.detailRow}>
             <SingleDetail name='预设注水量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_proportion.png')}/>
-            <SingleDetail name='实际注水量' value={this.state.realWaterWeight} img={require('../../images/icon_waterweight.png')}/>
+            <SingleDetail name='实际注水量' value={this.state.actualWaterWeight} img={require('../../images/icon_waterweight.png')}/>
           </View>
 
           <View style={styles.detailRow}>
             <SingleDetail name='预设粉水比' value={'1:'+this.props.coffeeSettings.ratioWater} img={require('../../images/icon_proportion.png')}/>
-            <SingleDetail name='实际粉水比' value='1:12' img={require('../../images/icon_proportion.png')}/>
+            <SingleDetail name='实际粉水比' value={'1:'+this.state.actualRatioWater} img={require('../../images/icon_proportion.png')}/>
           </View>
         </View>
 
-        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 220,}}>
-
+        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 320,}}>
+          <WeightChartContainer/>
         </View>
-        <TouchableWithoutFeedback onPress={this._onSaveRecord()}>
+        <TouchableWithoutFeedback onPress={this._onSaveRecord}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>保存</Text>
           </View>
@@ -248,6 +261,7 @@ const mapStateToProps = state => {
     flavor: state.flavorSelect,
     accessories: state.accessoriesSelect,
     coffeeBuilder: state.coffeeBuilder,
+    history: state.history,
   }
 }
 

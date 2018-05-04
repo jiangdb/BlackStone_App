@@ -6,6 +6,7 @@ const initialState = {
   datas: [],
   chartTotal:[0],
   chartExtract:[0],
+  totalSeconds: 0,
 }
  
 import type { Action } from "../actions/types";
@@ -27,7 +28,13 @@ function coffeeBuilder(state, action) {
         datas: [ ...state.datas, action.data],
         chartTotal:[ ...state.chartTotal, action.data.total],
         chartExtract:[ ...state.chartExtract, action.data.extract],
-      }
+      };
+
+    case "SAVE_TIMER":
+      return {
+        ...state,
+        totalSeconds: action.seconds,
+      };
     default:
       return state;
   }

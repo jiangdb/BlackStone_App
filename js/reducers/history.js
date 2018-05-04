@@ -12,6 +12,10 @@ function history(state, action) {
   switch (action.type) {
     case "SAVE_RECORD":
       return {
+        historyList:[
+         ...state.historyList,
+         action.record
+        ]
       }
 
     default:

@@ -62,6 +62,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onSaveTimer: seconds => {
+      dispatch(saveTimer(seconds))
+    }
   }
 }
 

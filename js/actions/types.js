@@ -14,3 +14,4 @@ export type Action =
   | { type: "SAVE_FLAVOR", flavor: Object }
   | { type: "SAVE_RECORD", record: Object }
   | { type: "SAVE_ACCESSORIES", accessories: Object }
+  | { type: "SAVE_TIMER", seconds: Object }

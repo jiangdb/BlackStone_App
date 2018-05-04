@@ -22,3 +22,8 @@ export const coffeeBuilderModeChange = mode => ({
   type: 'COFFEE_BUILDER_MODE_CHANGE',
   mode
 });
+
+export const saveTimer = seconds => ({
+  type: 'SAVE_TIMER',
+  seconds
+});

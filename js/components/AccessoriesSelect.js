@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
 import { saveAccessories } from '../actions/coffeeBuilder.js';
-import Toast from 'react-native-root-toast';
+// import Toast from 'react-native-root-toast';
 
 class AccessoriesSelect extends React.Component {
   static navigationOptions = {
@@ -152,12 +152,12 @@ class AccessoriesSelect extends React.Component {
               this.state.filterOption.map((data) => {
                 return (
                   <TouchableWithoutFeedback
-                    style={[styles.optionContainer,
-                          data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                     key={data.key}
                     onPress={this._onPressFilter.bind(this, data.key)}
                   >
-                    <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                    <View style={[styles.optionContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
+                      <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                    </View>
                   </TouchableWithoutFeedback>
                 )
               })
@@ -174,12 +174,12 @@ class AccessoriesSelect extends React.Component {
               this.state.kettleOption.map((data) => {
                 return (
                   <TouchableWithoutFeedback
-                    style={[styles.optionContainer,
-                          data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                     key={data.key}
                     onPress={this._onPressKettle.bind(this, data.key)}
                   >
-                    <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                    <View style={[styles.optionContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
+                      <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                    </View>
                   </TouchableWithoutFeedback>
                 )
               })
@@ -233,13 +233,13 @@ class AccessoriesSelect extends React.Component {
           </View>
         </Modal>
 
-        <Toast
+        {/*<Toast
           visible={this.state.toastVisible}
           position={0}
           shadow={false}
           animation={false}
           hideOnPress={true}
-        >请选择一款{this.state.toastName}</Toast>
+        >请选择一款{this.state.toastName}</Toast>*/}
       </View>
 
     );

@@ -102,12 +102,12 @@ class FlavorSelect extends React.Component {
             this.state.flavorOption.map((data) => {
               return (
                 <TouchableWithoutFeedback
-                  style={[styles.flavorContainer,
-                        data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                   key={data.key}
                   onPress={this._togglePress.bind(this, data.key)}
                 >
-                  <Text style={[styles.flavorName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                  <View style={[styles.flavorContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
+                    <Text style={[styles.flavorName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
+                  </View>
                 </TouchableWithoutFeedback>
               )
             })
