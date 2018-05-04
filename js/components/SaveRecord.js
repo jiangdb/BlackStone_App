@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TextInput, ScrollView,TouchableHighlight,Alert,BackHandler } from 'react-native';
+import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
@@ -87,7 +87,7 @@ class SaveRecord extends React.Component {
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
-          <TouchableHighlight>
+          <TouchableWithoutFeedback>
             <View style={styles.choiceBar}>
               <Text style={styles.choiceTitle}>评分</Text>
               <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
@@ -103,7 +103,7 @@ class SaveRecord extends React.Component {
                 <Text style={styles.rateValue}>{this._renderRateValue(this.state.starCount)}</Text>
               </View>
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
           <Divider/>
           <ChoiceBar
             title='风味'
@@ -139,11 +139,11 @@ class SaveRecord extends React.Component {
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 220,}}>
 
         </View>
-        <TouchableHighlight onPress={() => {Alert.alert('pressed');}}>
+        <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>保存</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       </ScrollView>
 
     );

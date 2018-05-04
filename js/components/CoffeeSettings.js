@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableHighlight, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
+import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 // import Picker from 'react-native-picker';
@@ -69,14 +69,14 @@ class CoffeeSettings extends React.Component {
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
-              <TouchableHighlight
+              <TouchableWithoutFeedback
                 underlayColor='#f2f2f2'
                 onPress={() => this.props.navigation.navigate('BeanCategory')}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
                   <Image style={styles.icon} source={require('../../images/more.png')} />
                 </View>
-              </TouchableHighlight>
+              </TouchableWithoutFeedback>
               <Divider/>
             </View>
 
@@ -92,11 +92,11 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableHighlight  onPress={() => {Alert.alert('pressed');}}>
+                <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
-                </TouchableHighlight>
+                </TouchableWithoutFeedback>
               </View>
               <Divider/>
             </View>
@@ -202,11 +202,11 @@ class CoffeeSettings extends React.Component {
               <Divider/>
             </View>
 
-          <TouchableHighlight onPress={this._saveSetting}>
+          <TouchableWithoutFeedback onPress={this._saveSetting}>
             <View style={styles.btnSave}>
               <Text style={styles.btnSaveText}>确认</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
         </View>
       </ScrollView>
     );

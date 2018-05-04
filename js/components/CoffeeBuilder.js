@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, Image, TouchableHighlight,ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableWithoutFeedback,ScrollView } from 'react-native';
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
@@ -141,28 +141,28 @@ class CoffeeBuilder extends React.Component {
             <BuildingTimerContainer/>
 
             <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row'}}>
-              <TouchableHighlight onPress={this._onRestart}>
+              <TouchableWithoutFeedback onPress={this._onRestart}>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
                 </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={this._stopBuilding}>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={this._stopBuilding}>
                 <View style={[styles.button,styles.buttonEnd]}>
                   <Text style={{color:'#fff',fontSize:16}}>结束</Text>
                 </View>
-              </TouchableHighlight>
+              </TouchableWithoutFeedback>
             </View>
             <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row'} : {display: 'none'}}>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('Home')}>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Home')}>
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
                 </View>
-              </TouchableHighlight>
-              <TouchableHighlight onPress={() => this.props.navigation.navigate('SaveRecord')}>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('SaveRecord')}>
                 <View style={[styles.button,styles.buttonEnd,{width:215.5}]}>
                   <Text style={{color:'#fff',fontSize:16}}>保存</Text>
                 </View>
-              </TouchableHighlight>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         );

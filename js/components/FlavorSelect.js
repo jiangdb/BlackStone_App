@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TouchableHighlight, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
 import { saveFlavor } from '../actions/coffeeBuilder.js'
 
 class FlavorSelect extends React.Component {
@@ -101,23 +101,23 @@ class FlavorSelect extends React.Component {
           {
             this.state.flavorOption.map((data) => {
               return (
-                <TouchableHighlight
+                <TouchableWithoutFeedback
                   style={[styles.flavorContainer,
                         data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                   key={data.key}
                   onPress={this._togglePress.bind(this, data.key)}
                 >
                   <Text style={[styles.flavorName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
-                </TouchableHighlight>
+                </TouchableWithoutFeedback>
               )
             })
           }
         </ScrollView>
-        <TouchableHighlight onPress={this._saveFlavor}>
+        <TouchableWithoutFeedback onPress={this._saveFlavor}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>确认</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       </View>
 
     );

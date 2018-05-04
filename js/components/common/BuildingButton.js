@@ -1,12 +1,12 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, TouchableHighlight, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground } from 'react-native';
 
 class BuildingButton extends Component {
   render() {
     return (
       <View style={{flexDirection: 'row',justifyContent:'center'}}>
-        <TouchableHighlight
+        <TouchableWithoutFeedback
           onPress={this.props.onPressButton}
         >
           <ImageBackground
@@ -14,7 +14,7 @@ class BuildingButton extends Component {
             source={this.props.bleStatus.deviceReady ? require('../../../images/btnStart.png') : require('../../../images/disabled-btnStart.png')} >
             <Text style={this.props.bleStatus.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
           </ImageBackground>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
       </View>
     );
   }

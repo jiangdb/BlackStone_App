@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View,StyleSheet, TouchableHighlight, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
 import { saveAccessories } from '../actions/coffeeBuilder.js';
 import Toast from 'react-native-root-toast';
 
@@ -151,14 +151,14 @@ class AccessoriesSelect extends React.Component {
             {
               this.state.filterOption.map((data) => {
                 return (
-                  <TouchableHighlight
+                  <TouchableWithoutFeedback
                     style={[styles.optionContainer,
                           data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                     key={data.key}
                     onPress={this._onPressFilter.bind(this, data.key)}
                   >
                     <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
-                  </TouchableHighlight>
+                  </TouchableWithoutFeedback>
                 )
               })
             }
@@ -173,14 +173,14 @@ class AccessoriesSelect extends React.Component {
             {
               this.state.kettleOption.map((data) => {
                 return (
-                  <TouchableHighlight
+                  <TouchableWithoutFeedback
                     style={[styles.optionContainer,
                           data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}
                     key={data.key}
                     onPress={this._onPressKettle.bind(this, data.key)}
                   >
                     <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
-                  </TouchableHighlight>
+                  </TouchableWithoutFeedback>
                 )
               })
             }
@@ -188,11 +188,11 @@ class AccessoriesSelect extends React.Component {
 
         </ScrollView>
 
-        <TouchableHighlight onPress={this._saveAccessories}>
+        <TouchableWithoutFeedback onPress={this._saveAccessories}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>确认</Text>
           </View>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
 
         <Modal
           animationType="fade"

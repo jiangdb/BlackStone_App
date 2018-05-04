@@ -213,24 +213,48 @@ class WeightChart extends React.Component {
       enabled: true,
       textColor: processColor('#000'),
       textSize: 13,
-      // position: 'BELOW_CHART_CENTER',
+      position: 'BELOW_CHART_CENTER',
       form: 'CIRCLE',
       formSize: 12,
       wordWrapEnabled: true,
+      maxSizePercent: 0.5,
     },
     xAxis: {
       position: 'BOTTOM',
+      // axisMinimum: 0,
       drawGridLines: false,
       drawAxisLine: false,
       drawZeroLine: false,
       labelCount: 6,
+      labelCountForce: true,
+      granularityEnabled: true,
+      granularity : 20,
+      // valueFormatter: ['0','2','4','6','8','12',],
+      textColor: processColor('#333'),
     },
     yAxis: {
-      axisMaximum: this.props.coffeeSettings.waterWeight*1.3,
-      axisMinimum: 0,
-      drawAxisLine: false,
-      labelCount: 6,
+      left: {
+        axisMaximum: this.props.coffeeSettings.waterWeight*1.3,
+        axisMinimum: 0,
+        drawAxisLine: false,
+        labelCount: 6,
+        labelCountForce: true,
+        zeroLine: {
+          enabled: true,
+          lineWidth: 1,
+          color: processColor('#ccc'),
+        },
+        gridColor: processColor('#ccc'),
+        textColor: processColor('#333'),
+      },
+      right: {
+        enabled: false
+      },
     },
+    animation:{
+      durationX: 1000,
+      // easingX: 'EaseInCirc',
+    }
   };
 
   _next = () => {
@@ -242,16 +266,18 @@ class WeightChart extends React.Component {
           config: {
             drawValues: false,
             color: processColor('#53B2F0'),
-            mode: "CUBIC_BEZIER",
+            // mode: "CUBIC_BEZIER",
             drawCircles: false,
-            lineWidth: 1.5,
-            drawFilled: true,
-            fillGradient: {
-              colors: [processColor('rgba(131, 192, 232, .9)'), processColor('rgba(185, 225, 245, 0)')],
-              positions: [0, 1],
-              orientation: "BOTTOM_TOP",
-            },
-            fillAlpha: 150,
+            lineWidth: 2,
+            drawFilled: false,
+            // fillGradient: {
+            //   colors: [processColor('rgba(131, 192, 232, .9)'), processColor('rgba(185, 225, 245, 0)')],
+            //   positions: [0, 1],
+            //   orientation: "BOTTOM_TOP",
+            // },
+            // fillAlpha: 150,
+            // startAtZero: false,
+            axisDependency: "left",
           }
         },{
           values: this.props.coffeeBuilder.chartExtract,
@@ -259,19 +285,20 @@ class WeightChart extends React.Component {
           config: {
             drawValues: false,
             color: processColor('#DFB86F'),
-            mode: "CUBIC_BEZIER",
+            // mode: "CUBIC_BEZIER",
             drawCircles: false,
-            lineWidth: 1.5,
-            drawFilled: true,
-            fillGradient: {
-              colors: [processColor('rgba(224, 184, 112, .9)'), processColor('rgba(231, 220, 200, 0)')],
-              positions: [0.3, 1],
-              orientation: "BOTTOM_TOP",
-            },
-            fillAlpha: 150,
+            lineWidth: 2,
+            drawFilled: false,
+            // fillGradient: {
+            //   colors: [processColor('rgba(224, 184, 112, .9)'), processColor('rgba(231, 220, 200, 0)')],
+            //   positions: [0.3, 1],
+            //   orientation: "BOTTOM_TOP",
+            // },
+            // fillAlpha: 150,
+            // startAtZero: false,
+            axisDependency: "right",
           }
         }],
-
       }
     }
   }
@@ -298,8 +325,12 @@ class WeightChart extends React.Component {
           yAxis={this.state.yAxis}
           style={styles.chart}
           legend={this.state.legend}
+          animation={this.state.animation}
           chartDescription={{text: ''}}
-          ref="chart"
+
+          touchEnabled={false}
+          scaleXEnabled={true}
+          // ref="chart"
         />
     );
   }
