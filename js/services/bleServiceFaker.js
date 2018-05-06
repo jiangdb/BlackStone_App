@@ -178,7 +178,7 @@ function enableWeightNotify(enable) {
         weight.total = normalBuildData[1][dataIndex++]
         if (dataIndex >= normalBuildData[1].length) dataIndex = 0
         dispatch(bleActions.bleOnWeightChange(weight))
-      }, 500)
+      }, 100)
     }
   } else {
     if (weightNotifyInterval != null ) {

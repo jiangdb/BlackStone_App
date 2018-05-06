@@ -4,8 +4,6 @@
 const initialState = {
   mode: 'idle',
   datas: [],
-  chartTotal:[0],
-  chartExtract:[0],
   totalSeconds: 0,
 }
  
@@ -18,6 +16,15 @@ function coffeeBuilder(state, action) {
  
   switch (action.type) {
     case "COFFEE_BUILDER_MODE_CHANGE":
+      if (action.mode == 'countDown') {
+        // countdown means we start a new builder, need clear existing data
+        return {
+          ...state,
+          mode: action.mode,
+          datas: [],
+        };
+      }
+
       return Object.assign({}, state, {
         mode: action.mode
       });
@@ -26,8 +33,6 @@ function coffeeBuilder(state, action) {
       return {
         ...state,
         datas: [ ...state.datas, action.data],
-        chartTotal:[ ...state.chartTotal, action.data.total],
-        chartExtract:[ ...state.chartExtract, action.data.extract],
       };
 
     case "SAVE_TIMER":
