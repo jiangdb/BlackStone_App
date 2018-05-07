@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
-import {} from '../services/bleServiceFaker.js'
+import * as bleService from '../services/bleServiceFaker.js'
 
 class DeviceSetting extends React.Component {
   static navigationOptions = {
@@ -14,6 +14,21 @@ class DeviceSetting extends React.Component {
     alarm: false,
     keySound: false,
     keyVibrate: false,
+  };
+
+  _toggleAlarm = () => {
+    this.setState({alarm: !this.state.alarm});
+    bleService.setAlarmEnable(this.state.alarm);
+  };
+
+  _toggleKeySound = () => {
+    this.setState({keySound: !this.state.keySound});
+    bleService.setKeySound(this.state.keySound);
+  };
+
+  _toggleKeyVibrate = () => {
+    this.setState({keyVibrate: !this.state.keyVibrate});
+    bleService.setKeyVibrate(this.state.keyVibrate);
   };
 
   render() {
@@ -40,19 +55,19 @@ class DeviceSetting extends React.Component {
             title='报警提示'
             icon='switch'
             switchValue={this.state.alarm}
-            // toggleSwitch={this.setState({alarm: !this.state.alarm})}
+            toggleSwitch={this._toggleAlarm}
           />
 	      	<ChoiceBar
             title='按键声音'
             icon='switch'
             switchValue={this.state.keySound}
-            // toggleSwitch={this.setState({alarm: !this.state.keySound})}
+            toggleSwitch={this._toggleKeySound}
           />
 	      	<ChoiceBar
             title='按键振动'
             icon='switch'
             switchValue={this.state.keyVibrate}
-            // toggleSwitch={this.setState({alarm: !this.state.keyVibrate})}
+            toggleSwitch={this._toggleKeyVibrate}
           />
       	</View>
       	<View style={{backgroundColor:'#fff'}}>

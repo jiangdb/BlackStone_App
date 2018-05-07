@@ -9,6 +9,8 @@ import BeanCategoryContainer from './BeanCategory';
 import DeviceScanContainer from './DeviceScan';
 import DeviceSettingContainer from './DeviceSetting';
 import DeviceInfoContainer from './DeviceInfo';
+import DeviceNameContainer from './DeviceName';
+import WifiSettingContainer from './WifiSetting';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -33,6 +35,8 @@ const MineStack = StackNavigator({
   DeviceScan: { screen: DeviceScanContainer },
   DeviceSetting: { screen: DeviceSettingContainer },
   DeviceInfo: { screen: DeviceInfoContainer },
+  DeviceName: { screen: DeviceNameContainer },
+  WifiSetting: { screen: WifiSettingContainer },
 },{
   navigationOptions: {
     headerStyle: {
