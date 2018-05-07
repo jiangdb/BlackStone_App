@@ -37,6 +37,10 @@ class WifiSetting extends React.Component {
     }
   };
 
+  _connectWifi = () => {
+    this.props.navigation.goBack();
+  }
+
   render() {
     return (
       <View style={{flexDirection: 'column'}}>
@@ -73,9 +77,9 @@ class WifiSetting extends React.Component {
         </View>
 
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback>
-            <View style={styles.btn}>
-              <Text style={styles.btnText}>连接</Text>
+          <TouchableWithoutFeedback onPress={this._connectWifi()}>
+            <View style={[styles.btn, this.props.bleInfo.wifiStatus === 'connected' && this.state.wifiPass !== '' && this.state.wifiSSID !== ''? : styles.btnDisabled]}>
+              <Text style={[styles.btnText,this.props.bleInfo.wifiStatus === 'connected' && this.state.wifiPass !== '' && this.state.wifiSSID !== ''? : styles.btnDisabledText]}>连接</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

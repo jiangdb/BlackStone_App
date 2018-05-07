@@ -10,6 +10,7 @@ import DeviceScanContainer from './DeviceScan';
 import DeviceSettingContainer from './DeviceSetting';
 import DeviceInfoContainer from './DeviceInfo';
 import DeviceNameContainer from './DeviceName';
+import DeviceUpgradeContainer from './DeviceUpgrade';
 import WifiSettingContainer from './WifiSetting';
 
 const HomeStack = StackNavigator({
@@ -36,6 +37,7 @@ const MineStack = StackNavigator({
   DeviceSetting: { screen: DeviceSettingContainer },
   DeviceInfo: { screen: DeviceInfoContainer },
   DeviceName: { screen: DeviceNameContainer },
+  DeviceUpgrade: { screen: DeviceUpgradeContainer },
   WifiSetting: { screen: WifiSettingContainer },
 },{
   navigationOptions: {

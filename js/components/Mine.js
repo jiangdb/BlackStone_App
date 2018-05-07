@@ -14,6 +14,25 @@ class Mine extends React.Component {
     }
   };
 
+  state = {
+    newVersion: false,
+  }
+
+  _checkNewVersion = {
+    if(this.state.newVersion) {
+      return (
+        <ChoiceBar
+          title='机器升级'
+          icon='more'
+          onPress={() => this.props.navigation.navigate('DeviceUpgrade')}
+        />
+        <Divider/>
+      );
+    } else {
+      return;
+    }
+  }
+
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
@@ -42,6 +61,7 @@ class Mine extends React.Component {
             onPress={() => this.props.navigation.navigate('DeviceSetting')}
           />
           <Divider/>
+          {this._checkNewVersion()}
           <ChoiceBar
             title='关于我们'
             icon='more'
