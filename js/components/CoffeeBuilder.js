@@ -152,12 +152,12 @@ class CoffeeBuilder extends React.Component {
               </TouchableWithoutFeedback>
             </View>
             <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row',marginTop:19.5,marginBottom:46.5} : {display: 'none'}}>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Home')}>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
                 </View>
               </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('SaveRecord')}>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.replace('SaveRecord')}>
                 <View style={[styles.button,styles.buttonEnd,{width:215.5}]}>
                   <Text style={{color:'#fff',fontSize:16}}>保存</Text>
                 </View>

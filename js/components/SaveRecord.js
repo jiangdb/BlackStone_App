@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler,Modal, Image } from 'react-native';
+import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
 import WeightChartContainer from './common/WeightChart.js'
+import { LineChart } from "react-native-charts-wrapper";
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -17,22 +18,114 @@ class SaveRecord extends React.Component {
     comment: '',
     flavor:[],
     accessories: null,
-    actualWaterWeight: this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1].toFixed(1),
-    actualRatioWater: Math.round(this.props.coffeeBuilder.chartTotal[this.props.coffeeBuilder.chartTotal.length - 1] / this.props.coffeeBuilder.chartExtract[this.props.coffeeBuilder.chartExtract.length - 1]),
+    actualWaterWeight: this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total.toFixed(1),
+    actualRatioWater: Math.round(this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total / this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].extract),
     category: this.props.coffeeSettings.category,
     grandSize: this.props.coffeeSettings.grandSize,
     modalVisible: false,
     modalName: '',
     newOption:'',
+
+    description: {},
+    data: {},
+    xAxis: {},
+    yAxis: {},
+    legend: {},
+    extract: [{x:0,y:0}],
+    total: [{x:0,y:0}],
   };
 
   componentWillMount() {
-    BackHandler.addEventListener('hardwareBackPress', function() {
-      this.props.navigation.navigate('Home');
-    });
+
+    let length = this.props.coffeeBuilder.datas.length
+
+    for( let i = 0; i<length; i++) {
+      let data = this.props.coffeeBuilder.datas[ i ]
+      this.state.extract.push({
+        x: i/10,
+        y: data.extract
+      })
+      this.state.total.push({
+        x: i/10,
+        y: data.total
+      })
+    }
   };
 
-  componentWillUnmount() {
+  componentDidMount() {
+    this.setState({
+      description: {
+        text: 'Timemore',
+        textColor: processColor('red'),
+        textSize: 30,
+        //positionX: 500,
+        //positionY: 200
+      },
+      data: {
+        dataSets: [
+          {
+            values: this.state.extract,
+            label: 'Extract',
+            config: {
+              lineWidth: 1,
+              drawValues: false,
+              drawCircles: false,
+              color: processColor('#E0B870'),
+              drawFilled: false,
+            }
+          },
+          {
+            values: this.state.total,
+            label: 'Total',
+            config: {
+              lineWidth: 1,
+              drawValues: false,
+              drawCircles: false,
+              color: processColor('#53B2F0'),
+              drawFilled: false,
+            }
+          },
+        ]
+      },
+      xAxis: {
+        enabled: true,
+        position: 'BOTTOM',
+        drawAxisLine: true,
+        drawLabels: true,
+        drawGridLines: false,
+        textColor: processColor('#AAAAAA'),
+        textSize: 12,
+      },
+      yAxis: {
+        left: {
+          enabled: true,
+          axisMinimum: 0,
+          drawAxisLine: true,
+          drawLabels: true,
+        },
+        right: {
+          enabled: false
+        }
+      },
+      legend: {
+        enabled: true,
+        textColor: processColor('#232323'),
+        textSize: 13,
+        position: 'BELOW_CHART_CENTER',     //bug in react-native-chart-wraper, not handle this in ChartBaseManager.java  node_modules/react-native-charts-wrapper/android/src/main/java/com/github/wuxudong/rncharts/charts line 97
+        form: 'CIRCLE',
+        formSize: 12,
+        xEntrySpace: 50,
+        formToTextSpace: 7,
+        custom: {
+          colors: [processColor('#53B2F0'), processColor('#DFB86F')],
+          labels: ['注水总量', '咖啡萃取量']
+        }
+      },
+    })
+  }
+
+  onBackButtonPressAndroid = () => {
+      console.log('back');
   };
 
   _onStarRatingPress = (rating) => {
@@ -66,16 +159,11 @@ class SaveRecord extends React.Component {
   _getSelectedFlavor = () => {
     let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
 
-
     if(selectedFlavorObject.length === 0) {
-      // this.setState({flavor:''});
       return '请选择';
     } else {
-      // this.setState({flavor:''});
       return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
     }
-
-    console.log(this.state.flavor);
   };
 
   _getSelectedAccessories = () => {
@@ -152,8 +240,6 @@ class SaveRecord extends React.Component {
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
     });
-
-    console.log(this.props.history.historyList)
   };
 
   render() {
@@ -256,8 +342,17 @@ class SaveRecord extends React.Component {
           </View>
         </View>
 
-        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff', height: 320,}}>
-          <WeightChartContainer/>
+        <View style={{ flexDirection: 'row', marginTop: 8.5,backgroundColor: '#fff', height: 320, justifyContent: 'center'}}>
+          <LineChart
+            style={styles.chart}
+            chartDescription={this.state.description}
+            data={this.state.data}
+            legend={this.state.legend}
+            xAxis={this.state.xAxis}
+            yAxis={this.state.yAxis}
+            drawGridBackground={false}
+            touchEnabled={false}
+          />
         </View>
         <TouchableWithoutFeedback onPress={this._onSaveRecord}>
           <View style={styles.btnSave}>
@@ -427,6 +522,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderRightWidth: 0.5,
     borderRightColor: '#E8E8EA',
+  },
+  chart: {
+    height:300,
+    width:360,
+    marginLeft: 7.5,
+    marginRight: 7.5,
+    backgroundColor: '#fff'
   }
 });
 
