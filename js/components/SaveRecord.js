@@ -6,6 +6,7 @@ import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
 import WeightChartContainer from './common/WeightChart.js'
 import { LineChart } from "react-native-charts-wrapper";
+import { convertSecondToFormatTime } from '../utils/util.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -234,12 +235,15 @@ class SaveRecord extends React.Component {
       waterWeight: this.props.coffeeSettings.waterWeight,
       temperature: this.props.coffeeSettings.temperature,
       grandSize: this.state.grandSize,
-      totalSeconds: '' ,
-      chartTotal:this.props.coffeeBuilder.chartTotal,
-      chartExtract:this.props.coffeeBuilder.chartExtract,
+      totalSeconds: convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10),
+      chartDatas:this.props.coffeeBuilder.datas,
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
     });
+
+    console.log(this.props.history.historyList)
+
+    this.props.navigation.goBack();
   };
 
   render() {
@@ -315,7 +319,7 @@ class SaveRecord extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value='02:30' img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
