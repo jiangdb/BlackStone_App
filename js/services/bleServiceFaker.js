@@ -22,6 +22,24 @@ function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   normalBuildData = generateBuildData()
+  dispatch(bleActions.bleOnConnectionStateChange('connected', {
+      id: 1,
+      localName: 'test1',
+      name: 'test1'
+  }))
+  deviceConnected = true;
+  dispatch(bleActions.bleOnDeviceInfoChange({
+    displayName: 'Timemore',
+    manufacturerName: 'Timemore',
+    modelNum: 'TES04PL',
+    serialNum: '30AEA41A2200',
+    fwVersion: '0.80.20',
+    batteryLevel: 3,
+    wifiStatus: 'connected',
+    wifiSSID: 'test'
+  }))
+  dispatch(bleActions.bleDeviceReady())
+  enableWeightNotify(true)
 }
 
 /**
@@ -156,7 +174,7 @@ function enableWeightNotify(enable) {
   if (enable) {
     if (weightNotifyInterval == null ) {
       weightNotifyInterval = setInterval( ()=> {
-        weight.extract = normalBuildData[0][dataIndex++]
+        weight.extract = normalBuildData[0][dataIndex]
         weight.total = normalBuildData[1][dataIndex++]
         if (dataIndex >= normalBuildData[1].length) dataIndex = 0
         dispatch(bleActions.bleOnWeightChange(weight))

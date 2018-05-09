@@ -1,21 +1,21 @@
 const initialState = {
-  index: 0,
-  extract: 0,
-  total: 0,
+  historyList:[],
 }
  
 import type { Action } from "../actions/types";
 
-function bleWeightNotify(state, action) {
+function history(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
-
+ 
   switch (action.type) {
-    case "BLE_ON_WEIGHT_CHANGE":
+    case "SAVE_RECORD":
       return {
-        index: state.index+1,
-        ...action.weight
+        historyList:[
+         ...state.historyList,
+         action.record
+        ]
       }
 
     default:
@@ -23,4 +23,4 @@ function bleWeightNotify(state, action) {
   }
 }
 
-module.exports = bleWeightNotify;
+module.exports = history;
