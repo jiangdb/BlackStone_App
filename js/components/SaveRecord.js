@@ -5,8 +5,8 @@ import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
 import WeightChartContainer from './common/WeightChart.js'
-import { LineChart } from "react-native-charts-wrapper";
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
+import { LineChart } from "../libs/rnmpandroidchart";
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
