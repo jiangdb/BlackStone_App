@@ -14,13 +14,18 @@ class History extends React.Component {
     this.props.navigation.navigate('HistoryDetail');
   };
 
-  renderItem = ({item}) => {
+  _renderItem = (item) => {
+    console.log(item.index);
     return (
-      <TouchableWithoutFeedback onPress={this.onPressItem}>
+      <TouchableWithoutFeedback onPress={() => {
+        this.props.navigation.navigate('HistoryDetail', {
+          itemIndex: item.index
+        })
+      }}>
         <View style={styles.singleList}>
           <View style={{flexDirection:'column'}}>
-            <Text style={styles.listTitle}>{item.title}</Text>
-            <Text style={styles.listTime}>{item.time}</Text>
+            <Text style={styles.listTitle}>{item.item.category}</Text>
+            <Text style={styles.listTime}>{item.item.date}</Text>
           </View>
           <Image style={styles.icon} source={require('../../images/more.png')} />
         </View>
@@ -42,20 +47,35 @@ class History extends React.Component {
   ]
 
   render() {
-    return (
-      <View style={{backgroundColor: '#fff'}}>
-        <FlatList
-            data={this.data}
+    if(this.props.history.historyList.length === 0) {
+      return (
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <Text style={styles.noHistory}>还没有记录</Text>
+        </View>
+      )
+    } else {
+      return (
+        <View style={{backgroundColor: '#fff'}}>
+          <FlatList
+            data={this.props.history.historyList}
             ItemSeparatorComponent={() => <Divider/> }
-            renderItem={this.renderItem}
+            renderItem={this._renderItem}
+            keyExtractor={(item, index) => index}
           />
-      </View>
-
-    );
+        </View>
+      )
+    }
   }
 }
 
 const styles = StyleSheet.create({
+  noHistory: {
+    height:25,
+    marginTop:10,
+    lineHeight:25,
+    fontSize:16,
+    color:'#232323'
+  },
   icon: {
     marginLeft:7,
     width:8,
@@ -83,6 +103,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    history:state.history
   }
 }
 

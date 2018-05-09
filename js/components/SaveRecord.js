@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
 import WeightChartContainer from './common/WeightChart.js'
 import { LineChart } from "react-native-charts-wrapper";
-import { convertSecondToFormatTime } from '../utils/util.js'
+import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -218,10 +218,12 @@ class SaveRecord extends React.Component {
       default:
         break;
     }
-  }
+  };
 
   _onSaveRecord = () => {
+    let date = new Date();
     this.props.onSaveRecord({
+      date: formatTime(date),
       starCount: this.state.starCount,
       flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
       accessories: {
@@ -284,16 +286,16 @@ class SaveRecord extends React.Component {
           />
           <Divider/>
           <View style={{height:165.5}}>
-          <TextInput
-            style={styles.comment}
-            multiline={true}
-            // numberOfLines={4}
-            maxLength = {100}
-            onChangeText={(comment) => this.setState({comment})}
-            value={this.state.comment}
-            placeholder='请说说你的心得体会'
-            underlineColorAndroid='transparent'
-          />
+            <TextInput
+              style={styles.comment}
+              multiline={true}
+              // numberOfLines={4}
+              maxLength = {100}
+              onChangeText={(comment) => this.setState({comment})}
+              value={this.state.comment}
+              placeholder='请说说你的心得体会'
+              underlineColorAndroid='transparent'
+            />
           </View>
           <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
             <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
