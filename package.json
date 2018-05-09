@@ -1,5 +1,5 @@
 {
-  "name": "BlackStoneApp",
+  "name": "BlackMirror",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -18,8 +18,9 @@
   },
   "dependencies": {
     "buffer": "^5.1.0",
-    "react": "16.2.0",
-    "react-native": "0.52.0",
+    "eslint": "^4.19.1",
+    "react": "^16.3.1",
+    "react-native": "^0.55.3",
     "react-native-ble-plx": "^0.9.0",
     "react-native-charts-wrapper": "^0.4.3",
     "react-native-root-toast": "^3.0.1",
