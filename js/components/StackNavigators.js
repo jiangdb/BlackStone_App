@@ -6,12 +6,20 @@ import About from './About';
 import MineContainer from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
+import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
+import SaveRecordContainer from './SaveRecord';
+import FlavorSelectContainer from './FlavorSelect';
+import AccessoriesSelectContainer from './AccessoriesSelect';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
   BeanCategory: { screen: BeanCategoryContainer },
+  CoffeeBuilder: { screen: CoffeeBuilderContainer },
+  SaveRecord: { screen: SaveRecordContainer },
+  FlavorSelect: { screen: FlavorSelectContainer },
+  AccessoriesSelect: { screen: AccessoriesSelectContainer },
 },{
   navigationOptions: {
     headerStyle: {
