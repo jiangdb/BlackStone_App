@@ -24,7 +24,7 @@ class Mine extends React.Component {
         <View style={{backgroundColor:'#fff', marginBottom: 12}}>
           <ChoiceBar
             title='连接设备'
-            value={this.props.bleStatus.deviceReady ? this.props.bleStatus.deviceInfo.displayName : '未连接'}
+            value={this.props.bleStatus.deviceReady ? this.props.bleInfo.displayName : '未连接'}
             icon='more'
             onPress={() => this.props.navigation.navigate('DeviceScan')}
           />
@@ -86,6 +86,7 @@ const mapStateToProps = state => {
   return {
     deviceScan: state.deviceScan,
     bleStatus: state.bleStatus,
+    bleInfo: state.bleInfo,
   }
 }
 

@@ -40,7 +40,7 @@ class BeanCategory extends React.Component {
       	</View>
         <FlatList
           style={{backgroundColor: '#fff',flex: 1}}
-          data={this.props.coffeeSettings.beanCategoryData}
+          data={this.props.beanCategory.data}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={({item}) => <Text style={styles.categoryList} onPress={this._onPressItem.bind(this, item.key)}>{item.key}</Text>}
         />
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     lineHeight:24,
     fontSize:17,
     color:'#232323',
+    padding: 0,
   },
   categoryList: {
     lineHeight:53,
@@ -70,7 +71,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    coffeeSettings: state.coffeeSettings
+    coffeeSettings: state.coffeeSettings,
+    beanCategory: state.beanCategory,
   }
 }
 
