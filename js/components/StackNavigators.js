@@ -8,6 +8,7 @@ import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
+import Failed from './Failed';
 import Step0 from './Step0';
 import Step1Container from './Step1';
 import Step2Container from './Step2';
@@ -21,6 +22,7 @@ const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
   BeanCategory: { screen: BeanCategoryContainer },
+  Failed: { screen: Failed },
   Step0: { screen: Step0 },
   Step1: { screen: Step1Container },
   Step2: { screen: Step2Container },

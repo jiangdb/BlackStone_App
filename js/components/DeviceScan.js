@@ -70,7 +70,7 @@ class DeviceScan extends React.Component {
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
         />
       </View>
     );

@@ -16,13 +16,9 @@ class Step4 extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection:'column', alignContent:'center'}}>
-        <View style={{marginTop: 59}}>
-          <Text style={{fontSize: 24,color: '#232323'}}>4/4 第四步</Text>
-        </View>
-        <View style={{marginTop: 18.5}}>
-          <Text style={{fontSize: 17,color: '#232323'}}>输入WiFi信息</Text>
-        </View>
+      <View style={{ flex: 1, flexDirection:'column', alignItems: 'center',}}>
+        <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>4/4 第四步</Text>
+        <Text style={{fontSize: 17,color: '#232323',marginTop: 18.5}}>输入WiFi信息</Text>
         <View style={{flexDirection: 'column'}}>
           <View style={styles.choiceBar}>
             <Text style={styles.choiceTitle}>名称</Text>
@@ -77,6 +73,7 @@ const styles = StyleSheet.create({
   btn: {
     flexDirection:'row',
     justifyContent:'center',
+    alignItems: 'center',
     backgroundColor: '#383838',
     height: 35,
     width:153.5,

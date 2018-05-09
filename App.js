@@ -4,7 +4,7 @@ import { createStore } from 'redux'
 import reducer from './js/reducers/index'
 import TabNavigator from './js/components/TabNavigator'
 import Step0 from './js/components/Step0'
-import Step3 from './js/components/Step3'
+import Step3Container from './js/components/Step3'
 import bleService from './js/services/bleServiceFaker.js'
  
 let store = createStore(reducer)
@@ -18,8 +18,8 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <Step3/>
-        {/*<TabNavigator />*/}
+        {/*<Step3Container/>*/}
+        <TabNavigator />
       </Provider>
     );
   }
