@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View ,StyleSheet, TextInput,TouchableWithoutFeedback } from 'react-native';
+import * as bleService from '../services/bleServiceFaker.js'
+import Toast from 'react-native-root-toast';
+import { toUTF8Array } from '../utils/util.js'
 
 class WifiSetting extends React.Component {
   static navigationOptions = {
@@ -10,7 +13,9 @@ class WifiSetting extends React.Component {
 
   state= {
     wifiSSID: '',
-    wifiPass: ''
+    wifiPass: '',
+    wifiSSIDReady: false,
+    wifiPassReady: false,
   };
 
   _getConnectStatus = () => {
@@ -37,8 +42,55 @@ class WifiSetting extends React.Component {
     }
   };
 
-  _connectWifi = () => {
+  _connectWifi = (ssid, pass) => {
+    bleService.setWifi(ssid, pass);
     this.props.navigation.goBack();
+  };
+
+  _lengthCheck = (value) => {
+    if (value !== '') {
+      let utf8Name = toUTF8Array(value)
+      if (utf8Name.length > 20) {
+        switch (value) {
+          case this.state.wifiSSID:
+            let toast1 = Toast.show('WIFI名字太长啦', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.CENTER,
+              shadow: false,
+              animation: false,
+              hideOnPress: true,
+            });
+            this.setState({wifiSSIDReady: false})
+            break;
+          case this.state.wifiPass:
+            let toast2 = Toast.show('WIFI密码太长啦', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.CENTER,
+              shadow: false,
+              animation: false,
+              hideOnPress: true,
+            });
+            this.setState({wifiPassReady: false})
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (value) {
+          case this.state.wifiSSID:
+          console.log('wifiSSID ready')
+            this.setState({wifiSSIDReady: true})
+            break;
+          case this.state.wifiPass:
+          console.log('wifiPass ready')
+
+            this.setState({wifiPassReady: true})
+            break;
+          default:
+            break;
+        }
+      }
+    }
   }
 
   render() {
@@ -46,7 +98,7 @@ class WifiSetting extends React.Component {
       <View style={{flexDirection: 'column'}}>
         <View style={styles.currentWifi}>
           <Text style={{fontSize:17, color:'#232323'}}>{this._getConnectStatus()}</Text>
-          <Text style={{fontSize:17, color:'#232323'}}>{this._getWifiSSID()}</Text>
+          <Text style={{fontSize:17, color:'#878787'}}>{this._getWifiSSID()}</Text>
         </View>
 
         <View style={{ flexDirection: 'column', marginTop: 12, backgroundColor: '#fff',}}>
@@ -55,9 +107,10 @@ class WifiSetting extends React.Component {
             <TextInput
               style={styles.input}
               value={this.state.wifiSSID}
-              onChangeText={(text) => this.setState({wifiSSID: text})}
-              // onSubmitEditing={this._submitBeanWeight}
-              // onBlur={this._submitBeanWeight}
+              onChangeText={(text) => {
+                this.setState({wifiSSID: text})
+                this._lengthCheck(this.state.wifiSSID)
+              }}
               placeholder='请输入WiFi名称'
               underlineColorAndroid='transparent'
             />
@@ -67,9 +120,10 @@ class WifiSetting extends React.Component {
             <TextInput
               style={styles.input}
               value={this.state.wifiPass}
-              onChangeText={(text) => this.setState({wifiPass: text})}
-              // onSubmitEditing={this._submitBeanWeight}
-              // onBlur={this._submitBeanWeight}
+              onChangeText={(text) => {
+                this.setState({wifiPass: text})
+                this._lengthCheck(this.state.wifiPass)
+              }}
               underlineColorAndroid='transparent'
               keyboardType='numeric'
             />
@@ -77,15 +131,16 @@ class WifiSetting extends React.Component {
         </View>
 
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={this._connectWifi()}>
-            <View style={[styles.btn, this.props.bleInfo.wifiStatus === 'connected' && this.state.wifiPass !== '' && this.state.wifiSSID !== ''? : styles.btnDisabled]}>
-              <Text style={[styles.btnText,this.props.bleInfo.wifiStatus === 'connected' && this.state.wifiPass !== '' && this.state.wifiSSID !== ''? : styles.btnDisabledText]}>连接</Text>
+          <TouchableWithoutFeedback onPress={() => {
+            if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
+              this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
+          }}>
+            <View style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btn : styles.btnDisabled}>
+              <Text style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btnText : styles.btnDisabledText}>连接</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
       </View>
-
-
     );
   }
 }
@@ -121,9 +176,16 @@ const styles = StyleSheet.create({
   },
   btnDisabled: {
     backgroundColor: '#cacaca',
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems: 'center',
+    height: 35,
+    width:152.5,
+    borderRadius: 5,
   },
   btnDisabledText: {
     color: '#6a6a6a',
+    fontSize: 16,
   },
   choiceBar: {
     height: 55,

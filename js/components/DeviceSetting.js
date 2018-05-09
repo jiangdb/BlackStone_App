@@ -11,9 +11,9 @@ class DeviceSetting extends React.Component {
   };
 
   state = {
-    alarm: false,
-    keySound: false,
-    keyVibrate: false,
+    alarm: true,
+    keySound: true,
+    keyVibrate: true,
   };
 
   _toggleAlarm = () => {
@@ -31,6 +31,16 @@ class DeviceSetting extends React.Component {
     bleService.setKeyVibrate(this.state.keyVibrate);
   };
 
+  _getWifiChoiceBarValue = () => {
+    if(!this.props.bleStatus.deviceReady) {
+      return '蓝牙未连接'
+    } else if (this.props.bleInfo.wifiStatus == 'connected') {
+      return '已连接 '+this.props.bleInfo.wifiSSID
+    } else {
+      return '未设置'
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column', marginTop: 12}}>
@@ -40,14 +50,20 @@ class DeviceSetting extends React.Component {
             title='名称'
             value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: '蓝牙未连接'}
             icon={this.props.bleStatus.deviceReady? 'more' : ''}
-            onPress={() => this.props.navigation.navigate('DeviceName')}
+            onPress={() => {
+              if (!this.props.bleStatus.deviceReady) return
+              this.props.navigation.navigate('DeviceName')
+            }}
           />
           <Divider/>
           <ChoiceBar
             title='无线连接'
-            value={this.props.bleStatus.deviceReady? '未设置': '蓝牙未连接'}
+            value={this._getWifiChoiceBarValue()}
             icon={this.props.bleStatus.deviceReady? 'more' : ''}
-            onPress={() => this.props.navigation.navigate('WifiSetting')}
+            onPress={() => {
+              if (!this.props.bleStatus.deviceReady) return
+              this.props.navigation.navigate('WifiSetting')
+            }}
           />
       	</View>
       	<View style={{flexDirection: 'column', backgroundColor:'#fff', marginBottom: 12}}>
@@ -71,7 +87,10 @@ class DeviceSetting extends React.Component {
           />
       	</View>
       	<View style={{backgroundColor:'#fff'}}>
-	      	<ChoiceBar title='关于机器' onPress={() => this.props.navigation.navigate('DeviceInfo')}/>
+	      	<ChoiceBar title='关于机器' onPress={() => {
+            if (!this.props.bleStatus.deviceReady) return
+            this.props.navigation.navigate('DeviceInfo')
+          }}/>
       	</View>
       </View>
 

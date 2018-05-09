@@ -15,18 +15,20 @@ class Mine extends React.Component {
   };
 
   state = {
-    newVersion: false,
-  }
+    newVersion: true,
+  };
 
-  _checkNewVersion = {
+  _checkNewVersion = () => {
     if(this.state.newVersion) {
       return (
+        <View style={{flexDirection: 'column'}}>
         <ChoiceBar
           title='机器升级'
           icon='more'
           onPress={() => this.props.navigation.navigate('DeviceUpgrade')}
         />
         <Divider/>
+        </View>
       );
     } else {
       return;

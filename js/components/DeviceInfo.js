@@ -11,12 +11,12 @@ class DeviceInfo extends React.Component {
 
   render() {
     return (
-      <View style={{ flexDirection: 'column', marginTop: 12,backgroundColor: '#fff'}}>
-	      	<ChoiceBar title='Model' value={this.props.bleInfo.modelNum}/>
-          <Divider/>
-	      	<ChoiceBar title='序列号' value={this.props.bleInfo.serialNum} />
-          <Divider/>
-	      	<ChoiceBar title='固件版本' value={this.props.bleInfo.fwVersion} />
+      <View style={{ flexDirection: 'column', marginTop: 8,backgroundColor: '#fff'}}>
+      	<ChoiceBar title='Model' value={this.props.bleInfo.modelNum}/>
+        <Divider/>
+      	<ChoiceBar title='序列号' value={this.props.bleInfo.serialNum} />
+        <Divider/>
+      	<ChoiceBar title='固件版本' value={this.props.bleInfo.fwVersion} />
       </View>
 
     );

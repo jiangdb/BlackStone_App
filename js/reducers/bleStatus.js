@@ -2,7 +2,7 @@ const initialState = {
   btState: 'unknown',
   connectionState: 'disconnected',
   device: null,
-  deviceReady: false,
+  deviceReady: true,
 }
  
 import type { Action } from "../actions/types";
