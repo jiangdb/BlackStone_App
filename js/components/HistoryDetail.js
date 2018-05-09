@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Text, View, StyleSheet, ScrollView, processColor } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
-import { LineChart } from "react-native-charts-wrapper";
+import { LineChart } from "../libs/rnmpandroidchart";
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
