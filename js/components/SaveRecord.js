@@ -235,7 +235,7 @@ class SaveRecord extends React.Component {
       waterWeight: this.props.coffeeSettings.waterWeight,
       temperature: this.props.coffeeSettings.temperature,
       grandSize: this.state.grandSize,
-      totalSeconds: convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10),
+      totalSeconds: convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10)),
       chartDatas:this.props.coffeeBuilder.datas,
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
