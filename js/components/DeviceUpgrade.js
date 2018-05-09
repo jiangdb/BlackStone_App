@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, Image, TouchableWithoutFeedback, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
+import {Svg, Circle} from 'react-native-svg';
 
-let descriptionString = 'test1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3'
+let descriptionString = 'test1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3'
 class DeviceUpgrade extends React.Component {
   static navigationOptions = {
     title: '设备升级',
@@ -47,7 +48,14 @@ class DeviceUpgrade extends React.Component {
           <FlatList
             style={styles.description}
             data={this.state.descriptionArray}
-            renderItem={({item}) => <Text style={styles.descriptionContent}>{item.content}</Text>}
+            renderItem={({item}) => (
+              <View style={{flexDirection: 'row'}}>
+                <Svg height="18" width="40" >
+                  <Circle cx="25" cy="9" r="3" fill="#767676" />
+                </Svg>
+                <Text style={styles.descriptionContent}>{item.content}</Text>
+              </View>
+            )}
           />
         </View>
 
@@ -179,6 +187,7 @@ const styles = StyleSheet.create({
   },
   descriptionContent: {
     fontSize:17,
+    lineHeight:18,
     color:'#767676',
   },
   modalTitle: {
