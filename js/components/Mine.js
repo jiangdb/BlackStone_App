@@ -18,7 +18,11 @@ class Mine extends React.Component {
     newVersion: true,
   };
 
-  _checkNewVersion = () => {
+  componentWillMount() {
+    //check if there is a new version of the device
+  };
+
+  _getNewVersionChoiceBar = () => {
     if(this.state.newVersion) {
       return (
         <View style={{flexDirection: 'column'}}>
@@ -63,7 +67,7 @@ class Mine extends React.Component {
             onPress={() => this.props.navigation.navigate('DeviceSetting')}
           />
           <Divider/>
-          {this._checkNewVersion()}
+          {this._getNewVersionChoiceBar()}
           <ChoiceBar
             title='关于我们'
             icon='more'

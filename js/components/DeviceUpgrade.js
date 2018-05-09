@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, Image, TouchableWithoutFeedback,StyleSheet } from 'react-native';
+import { Text, View, Image, TouchableWithoutFeedback, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
 
 let descriptionString = 'test1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3'
 class DeviceUpgrade extends React.Component {
@@ -10,35 +10,52 @@ class DeviceUpgrade extends React.Component {
   };
 
   state = {
-    version:'1.1',
-    description: descriptionString.split('\r\n')
+    modalVisible: false,
+    description: descriptionString.split('\r\n'),
+    descriptionArray: [],
   };
 
-  _getDescription = () => {
-    let descriptions = this.state.description.split('\r\n');
-    let descriptionContent;
+  componentWillMount() {
+    let descriptionArray = [];
 
-    for (let i = 0; i < descriptions.length; i++) {
-      console.log(descriptions[i])
-      return <Text style={styles.descriptionContent}>{descriptions[i]}</Text>
+    for (let i = 0; i < this.state.description.length; i++) {
+      descriptionArray.push({
+        key: i,
+        content: this.state.description[i]
+      })
     }
+
+    this.setState({
+      descriptionArray: descriptionArray
+    })
+  };
+
+  _onUpgrade = () => {
+    this.setState({modalVisible: true})
   }
 
   render() {
     return (
-      <View style={{ flexDirection: 'column', alignItems: 'center'}}>
+      <ScrollView style={{ flexDirection: 'column', alignItems: 'center'}}>
 
         <View style={styles.topContainer}>
           <Image source={require('../../images/fw_upgrade.png')} style={styles.upgradeImg} />
           <View style={styles.versionRow}>
             <View style={styles.divider}></View>
-            <Text style={styles.version}>{this.state.version}</Text>
+            <Text style={styles.version}>{this.props.bleInfo.fwVersion}</Text>
             <View style={styles.divider}></View>
           </View>
-          <View style={styles.description}></View>
+          <FlatList
+            style={styles.description}
+            data={this.state.descriptionArray}
+            renderItem={({item}) => <Text style={styles.descriptionContent}>{item.content}</Text>}
+          />
         </View>
 
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={() => {
+          if(this.props.bleInfo.wifiStatus !=='connected') return
+          this._onUpgrade()
+        }}>
           <View style={this.props.bleInfo.wifiStatus ==='connected'? styles.btn : styles.btnDisabled}>
             <Text style={this.props.bleInfo.wifiStatus ==='connected'? styles.btnText : styles.btnTextDisabled}>立刻更新</Text>
           </View>
@@ -52,7 +69,30 @@ class DeviceUpgrade extends React.Component {
             </View>
           </TouchableWithoutFeedback>
         </View>
-      </View>
+
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}>
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18, color: '#0c0c0c', lineHeight: 30,}}>更新中</Text>
+                <Text style={{fontSize: 17, lineHeight: 30,}}>请查看机器上显示的更新状态</Text>
+              </View>
+                <TouchableWithoutFeedback onPress={() => {this.setState({modalVisible: false})}}>
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18,color:'#3CC51F'}}>我知道了</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
 
     );
   }
@@ -65,10 +105,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     backgroundColor: '#fff',
     marginBottom: 30,
-    width: 375,
+    width:375,
     paddingLeft: 40,
     paddingRight: 40,
-    paddingBottom: 36.5,
   },
   upgradeImg: {
     width:109,
@@ -79,7 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 16,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   version:{
     height:26,
@@ -87,6 +126,7 @@ const styles = StyleSheet.create({
     color:'#0C0C0C',
     lineHeight:26,
     textAlign:'center',
+    width:107,
   },
   divider: {
     height:1,
@@ -135,12 +175,39 @@ const styles = StyleSheet.create({
   description: {
     width:295,
     paddingTop: 37.5,
-    flexDirection: 'column',
+    paddingBottom: 36.5,
   },
   descriptionContent: {
     fontSize:17,
     color:'#767676',
-  }
+  },
+  modalTitle: {
+    flexDirection:'column',
+    justifyContent: 'center',
+    alignItems:'center',
+    paddingTop: 17,
+    paddingBottom: 17,
+  },
+  modalMask: {
+    flex:1,
+    backgroundColor:'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent:{
+    backgroundColor:'#fff',
+    width:300,
+    borderRadius:1.5,
+  },
+  modalBtn: {
+    flexDirection:'row',
+    height:50,
+    borderTopWidth:0.5,
+    borderStyle:'solid',
+    borderTopColor: '#E8E8EA',
+    justifyContent: 'center',
+    alignItems:'center',
+  },
 })
 
 const mapStateToProps = state => {

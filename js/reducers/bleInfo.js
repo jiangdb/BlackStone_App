@@ -5,7 +5,7 @@ const initialState = {
   serialNum: '0A3245ER12DQ',
   fwVersion: '0.80.01',
   batteryLevel: null,
-  wifiStatus: '',
+  wifiStatus: 'connected',
   wifiSSID: ''
 }
  
