@@ -1,5 +1,10 @@
+/**
+ *  btState: Unknown, Resetting, Unsupported, Unauthorized, PoweredOff, PoweredOn
+ *  connectionState: disconnected, connected, connecting, disconnecting
+ */
+
 const initialState = {
-  btState: 'unknown',
+  btState: 'Unknown',
   connectionState: 'disconnected',
   device: null,
   deviceReady: true,

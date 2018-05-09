@@ -1,9 +1,12 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, ImageBackground} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
+import BleMessageContainer from './common/BleWarning.js'
+import BuildingButtonContainer from './common/BuildingButton.js'
+import { SingleDetail } from './Templates'
 
 class Index extends React.Component {
   static navigationOptions = {
@@ -16,13 +19,21 @@ class Index extends React.Component {
     },
   };
 
+  componentDidMount() {
+    // bleService.enableWeightNotify(true)
+  }
+
+  componentWillUnmount() {
+    // bleService.enableWeightNotify(false)
+  }
+
   render() {
     return (
       <ScrollView style={styles.container}>
-        {/*<Message/>*/}
+        <BleMessageContainer/>
         <View style={styles.topReader}>
           <Image source={require('../../images/cover.png')} style={styles.coverImg} />
-          <View style={[styles.flexColumn, this.props.style]}>
+          <View style={styles.flexColumn}>
             <WeightReadingContainer type='extract'/>
             <WeightReadingContainer type='total'/>
             <View style={styles.btnClear}>
@@ -37,13 +48,13 @@ class Index extends React.Component {
             <SingleDetail/>
           </View>
           <View style={styles.flexRow}>
-            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight} img={require('../../images/icon_beanweight.png')} text='读秤'/>
-            <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight} img={require('../../images/icon_waterweight.png')}/>
+            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤'/>
+            <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_waterweight.png')}/>
           </View>
 
           <View style={styles.flexRow}>
             <SingleDetail name='粉液比' value={'1:'+this.props.coffeeSettings.ratioWater} img={require('../../images/icon_proportion.png')}/>
-            <SingleDetail name='温度' value={this.props.coffeeSettings.temperature} img={require('../../images/icon_temp.png')}/>
+            <SingleDetail name='温度' value={this.props.coffeeSettings.temperature+'℃'} img={require('../../images/icon_temp.png')}/>
           </View>
 
           <View style={styles.flexRow}>
@@ -58,37 +69,13 @@ class Index extends React.Component {
             <Text style={styles.settingContent}>设置参数</Text>
           </View>
         </TouchableWithoutFeedback>
-        <View style={{flexDirection: 'row',justifyContent:'center'}}>
-          <TouchableWithoutFeedback
-            onPress={() => {Alert.alert('pressed');}}
-          >
-            <ImageBackground style={styles.btnStart} source={this.props.bleStatus.deviceReady ? require('../../images/btnStart.png') : require('../../images/disabled-btnStart.png')} >
-              <Text style={this.props.bleStatus.deviceReady ? styles.btnStartText : styles.disabledBtnStartText}>开始冲煮</Text>
-            </ImageBackground>
-          </TouchableWithoutFeedback>
-        </View>
+        <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
       </ScrollView>
     );
   }
 }
 
-// single coffee detail component
-export class SingleDetail extends Component {
-  render() {
-    return (
-      <View style={styles.detailContainer}>
-        <Image style={styles.settingIcon} source={this.props.img} />
-        <Text style={styles.settingName}>{this.props.name}</Text>
-        <Text style={styles.settingValue}>{this.props.value}</Text>
-        <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
-          <View>
-            <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
-    );
-  }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -112,23 +99,12 @@ const styles = StyleSheet.create({
   },
   coverImg: {
     resizeMode: 'contain',
-    marginTop: 30,
-    marginBottom: 30,
-    marginLeft: 12.5,
-    marginRight: 12.5,
-    width:223.5,
-    height:223.5,
-  },
-  readerTitle: {
-    color: '#5B5B5B',
-    fontSize: 13,
-    marginTop: 17,
-  },
-  reader: {
-    fontWeight: 'bold',
-    color: '#232323',
-    fontSize: 45,
-    height: 52,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingLeft: 12.5,
+    paddingRight: 12.5,
+    width:223,
+    height:223,
   },
   btnClear: {
     display:'flex',
@@ -146,32 +122,6 @@ const styles = StyleSheet.create({
     color: '#BF9253',
     fontSize: 15,
   },
-  detailContainer: {
-    flexDirection:'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    width:187.5,
-  },
-  settingIcon: {
-    width: 20,
-    height: 22,
-    marginTop:5,
-    marginLeft:20,
-  },
-  settingName: {
-    color: '#5B5B5B',
-    marginLeft: 7,
-    lineHeight:32,
-    fontSize:15,
-  },
-  settingValue: {
-    fontWeight: 'bold',
-    color: '#232323',
-    overflow: 'hidden',
-    marginLeft:10,
-    lineHeight:32,
-    fontSize:15,
-  },
   settingImg: {
     height:10,
     width:13,
@@ -182,35 +132,10 @@ const styles = StyleSheet.create({
     fontSize:15,
     color:'#53B2F0',
   },
-  btnStart: {
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
-    borderRadius: 26,
-    width:252,
-    height:50,
-  },
-  btnStartText: {
-    color:'#fff',
-    fontSize: 20,
-  },
-  disabledBtnStartText: {
-    color:'#6A6A6A',
-    fontSize: 20,
-  },
-  item: {
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: 'red',
-  },
-  action: {
-    marginTop: 10,
-  }
 });
 
 const mapStateToProps = state => {
   return {
-    bleStatus: state.bleStatus,
     coffeeSettings: state.coffeeSettings
   }
 }

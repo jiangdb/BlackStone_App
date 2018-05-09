@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableHighlight, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
-import {Divider} from './Templates';
+import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
+import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
+// import Picker from 'react-native-picker';
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -25,6 +26,10 @@ class CoffeeSettings extends React.Component {
         '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
         '50', '51', '52', '53', '54', '55', '56', '57', '58', '59',
       ],
+    pickerData:[
+      [1, 2, 3, 4],
+      [5, 6, 7, 8],
+    ],
   };
 
   _saveSetting = () => {
@@ -64,14 +69,14 @@ class CoffeeSettings extends React.Component {
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
-              <TouchableHighlight
+              <TouchableWithoutFeedback
                 underlayColor='#f2f2f2'
                 onPress={() => this.props.navigation.navigate('BeanCategory')}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
                   <Image style={styles.icon} source={require('../../images/more.png')} />
                 </View>
-              </TouchableHighlight>
+              </TouchableWithoutFeedback>
               <Divider/>
             </View>
 
@@ -87,11 +92,11 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableHighlight  onPress={() => {Alert.alert('pressed');}}>
+                <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
-                </TouchableHighlight>
+                </TouchableWithoutFeedback>
               </View>
               <Divider/>
             </View>
@@ -148,6 +153,22 @@ class CoffeeSettings extends React.Component {
                     <Picker.Item key={item} label={item} value={item} />
                    )) }
                 </Picker>
+                {/*
+                  Picker.init({
+                    pickerData: pickerData,
+                    selectedValue: [2,6],
+                    onPickerConfirm: data => {
+                        console.log(data);
+                    },
+                    onPickerCancel: data => {
+                        console.log(data);
+                    },
+                    onPickerSelect: data => {
+                        console.log(data);
+                    }
+                  });
+                  Picker.show();
+                */}
               </View>
               <Divider/>
             </View>
@@ -181,11 +202,11 @@ class CoffeeSettings extends React.Component {
               <Divider/>
             </View>
 
-          <TouchableHighlight onPress={this._saveSetting}>
+          <TouchableWithoutFeedback onPress={this._saveSetting}>
             <View style={styles.btnSave}>
               <Text style={styles.btnSaveText}>确认</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableWithoutFeedback>
         </View>
       </ScrollView>
     );
@@ -259,6 +280,7 @@ const styles = StyleSheet.create({
     marginLeft:21,
     color:'#232323',
     width: 250,
+    padding: 0,
   },
   pickerContainer:{
     flexDirection: 'row',

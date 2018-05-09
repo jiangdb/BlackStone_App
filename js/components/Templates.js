@@ -1,25 +1,29 @@
 import React, {Component} from 'react';
 import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableWithoutFeedback} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
-// message component on the top
-export class Message extends Component {
-  render() {
-    return (
-      <View style={styles.messageContainer}>
-        <Ionicons name="ios-alert" size={23} color='tomato'/>
-        <Text style={styles.message}>当前蓝牙不可用，请检查你的蓝牙设置</Text>
-        {/*-- icon and content depends on whether it is 'warn' or 'info' --*/}
-      </View>
-    );
-  }
-}
 
 // divider
 export class Divider extends Component {
   render() {
     return (
       <View style={styles.divider}>
+      </View>
+    );
+  }
+}
+
+// single coffee detail component
+export class SingleDetail extends Component {
+  render() {
+    return (
+      <View style={styles.detailContainer}>
+        <Image style={styles.settingIcon} source={this.props.img} />
+        <Text style={styles.settingName}>{this.props.name}</Text>
+        <Text style={styles.settingValue}>{this.props.value}</Text>
+        <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
+          <View>
+            <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -63,8 +67,12 @@ export class ChoiceBar extends Component {
       <TouchableWithoutFeedback onPress={this.props.onPress}>
         <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
-          <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
-            <Text style={styles.choiceValue}>{this.props.value}</Text>
+          <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
+            <Text
+              style={styles.choiceValue}
+              numberOfLines={1}
+              ellipsizeMode='tail'
+            >{this.props.value}</Text>
             {/*-- value next to icon, eg:'未连接' --*/}
             {this.getIcon()}
             {/*-- icon value can be 'more', 'check','switch' or none --*/}
@@ -83,18 +91,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.5,
     marginLeft: 18,
   },
-  messageContainer: {
-    height: 50,
-    flexDirection:'row',
-    alignItems: 'center',
-    backgroundColor: '#ffdfe0',
-    paddingLeft: 15,
-  },
-  message: {
-    color:'#6f5153',
-    fontSize:15,
-    marginLeft: 15,
-  },
   choiceBar: {
     height: 55,
     flexDirection: 'row',
@@ -102,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     marginLeft:18,
-    paddingRight: 16,
+    marginRight: 16,
   },
   choiceTitle: {
     fontSize:17,
@@ -112,11 +108,39 @@ const styles = StyleSheet.create({
   choiceValue: {
     fontSize:17,
     color:'#878787',
+    textAlign:'right',
+    maxWidth: 250,
+    width: 'auto',
   },
   icon: {
     marginLeft:7,
     width:8,
     height:13,
   },
-
+  detailContainer: {
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width:187.5,
+  },
+  settingIcon: {
+    width: 20,
+    height: 22,
+    marginTop:5,
+    marginLeft:20,
+  },
+  settingName: {
+    color: '#5B5B5B',
+    marginLeft: 7,
+    lineHeight:32,
+    fontSize:15,
+  },
+  settingValue: {
+    fontWeight: 'bold',
+    color: '#232323',
+    overflow: 'hidden',
+    marginLeft:10,
+    lineHeight:32,
+    fontSize:15,
+  },
 });

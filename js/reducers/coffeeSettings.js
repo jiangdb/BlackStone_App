@@ -7,24 +7,6 @@ const initialState = {
     grandSize: 3.5,
     timeMintue:'30',
     timeSecond:'22',
-    beanWeightReader: 200,
-    waterWeightReader: 200,
-    beanCategoryData: [
-      {key: '曼特宁'},
-      {key: '危地马拉'},
-      {key: '巴西'},
-      {key: '哥伦比亚'},
-      {key: '耶加雪菲'},
-      {key: '西达摩'},
-      {key: '墨西哥'},
-      {key: '云南'},
-      {key: '帕卡马拉'},
-      {key: '肯尼亚'},
-      {key: '蓝山'},
-      {key: '瑰夏'},
-      {key: '可娜'},
-    ],
-    startBuilding: false
 }
  
 import type { Action } from "../actions/types";
@@ -37,14 +19,6 @@ function coffeeSettings(state, action) {
   switch (action.type) {
     case "SAVE_COFFEE_SETTINGS":
       return Object.assign({}, state, action.settings)
-
-    case "SAVE_BEAN_CATEGORY":
-      return Object.assign({}, state, {
-        beanCategoryData: [
-          ...state.beanCategoryData,
-          action.category
-        ]
-      })
 
     default:
       return state;
