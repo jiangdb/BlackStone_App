@@ -1,7 +1,7 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, processColor,LayoutAnimation } from 'react-native';
-import { LineChart } from "react-native-charts-wrapper";
+import { LineChart } from "../../libs/rnmpandroidchart";
 
 class WeightChart extends React.Component {
   constructor() {

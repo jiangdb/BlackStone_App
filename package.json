@@ -22,7 +22,6 @@
     "react": "^16.3.1",
     "react-native": "^0.55.3",
     "react-native-ble-plx": "^0.9.0",
-    "react-native-charts-wrapper": "^0.4.3",
     "react-native-root-toast": "^3.0.1",
     "react-native-star-rating": "^1.0.9",
     "react-native-vector-icons": "^4.6.0",

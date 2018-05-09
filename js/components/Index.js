@@ -1,6 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, YellowBox} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
@@ -8,6 +8,7 @@ import BleMessageContainer from './common/BleWarning.js'
 import BuildingButtonContainer from './common/BuildingButton.js'
 import { SingleDetail } from './Templates'
 
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 class Index extends React.Component {
   static navigationOptions = {
     title: 'TIMEMORE Labs',
