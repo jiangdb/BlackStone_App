@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Text, View } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
 import * as bleService from '../services/bleServiceFaker.js'
+import BleMessageContainer from './common/BleWarning.js'
 
 class DeviceSetting extends React.Component {
   static navigationOptions = {
@@ -44,7 +45,7 @@ class DeviceSetting extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column', marginTop: 12}}>
-        {/*<Message/>*/}
+        <BleMessageContainer/>
         <View style={{flexDirection: 'column', backgroundColor:'#fff', marginBottom: 12}}>
           <ChoiceBar
             title='名称'

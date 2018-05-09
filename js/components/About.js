@@ -1,7 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import { Text, View, Image, StyleSheet } from 'react-native';
 
-export default class About extends React.Component {
+class About extends React.Component {
   static navigationOptions = {
     title: '关于我们',
     tabBarVisible: false,
@@ -27,7 +28,7 @@ export default class About extends React.Component {
           </View>
         </View>
         <View style={{ flex: 1, alignItems: 'center', justifyContent:'flex-end'}}>
-          <Text style={styles.version}>v1.0</Text>
+          <Text style={styles.version}>v{this.props.bleInfo.fwVersion}</Text>
         </View>
       </View>
     );
@@ -46,3 +47,21 @@ const styles = StyleSheet.create({
     color:'#AAAAAA',
   },
 });
+
+const mapStateToProps = state => {
+  return {
+    bleInfo: state.bleInfo,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  }
+}
+
+const AboutContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(About)
+
+export default AboutContainer

@@ -36,8 +36,7 @@ class DeviceUpgrade extends React.Component {
 
   render() {
     return (
-      <ScrollView style={{ flexDirection: 'column', alignItems: 'center'}}>
-
+      <ScrollView style={{ flexDirection: 'column'}}>
         <View style={styles.topContainer}>
           <Image source={require('../../images/fw_upgrade.png')} style={styles.upgradeImg} />
           <View style={styles.versionRow}>
@@ -52,14 +51,16 @@ class DeviceUpgrade extends React.Component {
           />
         </View>
 
-        <TouchableWithoutFeedback onPress={() => {
-          if(this.props.bleInfo.wifiStatus !=='connected') return
-          this._onUpgrade()
-        }}>
-          <View style={this.props.bleInfo.wifiStatus ==='connected'? styles.btn : styles.btnDisabled}>
-            <Text style={this.props.bleInfo.wifiStatus ==='connected'? styles.btnText : styles.btnTextDisabled}>立刻更新</Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <TouchableWithoutFeedback onPress={() => {
+            if(this.props.bleInfo.wifiStatus !=='connected') return
+            this._onUpgrade()
+          }}>
+            <View style={this.props.bleInfo.wifiStatus ==='connected'? styles.btn : styles.btnDisabled}>
+              <Text style={this.props.bleInfo.wifiStatus ==='connected'? styles.btnText : styles.btnTextDisabled}>立刻更新</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
 
         <View style={this.props.bleInfo.wifiStatus ==='connected'? {display: 'none'} : styles.warnWrapper}>
           <Text style={{fontSize:15,color:'#3E3E3E'}}>Wi-Fi未连接 , 无法更新</Text>
@@ -93,7 +94,6 @@ class DeviceUpgrade extends React.Component {
           </View>
         </Modal>
       </ScrollView>
-
     );
   }
 }

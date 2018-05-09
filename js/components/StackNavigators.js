@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import IndexContainer from './Index';
-import About from './About';
+import AboutContainer from './About';
 import MineContainer from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
@@ -40,7 +40,7 @@ const HomeStack = StackNavigator({
 
 const MineStack = StackNavigator({
   Mine: { screen: MineContainer},
-  About: { screen: About },
+  About: { screen: AboutContainer },
   DeviceScan: { screen: DeviceScanContainer },
   DeviceSetting: { screen: DeviceSettingContainer },
   DeviceInfo: { screen: DeviceInfoContainer },

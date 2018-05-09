@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View ,StyleSheet, TextInput,TouchableWithoutFeedback } from 'react-native';
+import { Text, View ,StyleSheet, TextInput,TouchableWithoutFeedback, Keyboard } from 'react-native';
 import * as bleService from '../services/bleServiceFaker.js'
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../utils/util.js'
@@ -18,34 +18,14 @@ class WifiSetting extends React.Component {
     wifiPassReady: false,
   };
 
-  _getConnectStatus = () => {
-    if(this.props.bleStatus.deviceReady) {
-      if(this.props.bleInfo.wifiStatus==='connected') {
-        return '已连接';
-      } else {
-        return '未连接';
-      }
-    } else {
-      return '设备未连接';
-    }
-  };
+  //listen to hiding keyboard action
+  componentDidMount () {
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
 
-  _getWifiSSID = () => {
-    if(this.props.bleStatus.deviceReady) {
-      if(this.props.bleInfo.wifiStatus==='connected') {
-        return this.props.bleInfo.wifiSSID;
-      } else {
-        return '未连接';
-      }
-    } else {
-      return '设备未连接';
-    }
-  };
-
-  _connectWifi = (ssid, pass) => {
-    bleService.setWifi(ssid, pass);
-    this.props.navigation.goBack();
-  };
+  componentWillUnmount () {
+    this.keyboardDidHideListener.remove();
+  }
 
   _lengthCheck = (value) => {
     if (value !== '') {
@@ -78,12 +58,9 @@ class WifiSetting extends React.Component {
       } else {
         switch (value) {
           case this.state.wifiSSID:
-          console.log('wifiSSID ready')
             this.setState({wifiSSIDReady: true})
             break;
           case this.state.wifiPass:
-          console.log('wifiPass ready')
-
             this.setState({wifiPassReady: true})
             break;
           default:
@@ -91,7 +68,41 @@ class WifiSetting extends React.Component {
         }
       }
     }
-  }
+  };
+
+  _keyboardDidHide = () => {
+    this._lengthCheck(this.state.wifiSSID)
+    this._lengthCheck(this.state.wifiPass)
+  };
+
+  _getConnectStatus = () => {
+    if(this.props.bleStatus.deviceReady) {
+      if(this.props.bleInfo.wifiStatus==='connected') {
+        return '已连接';
+      } else {
+        return '未连接';
+      }
+    } else {
+      return '设备未连接';
+    }
+  };
+
+  _getWifiSSID = () => {
+    if(this.props.bleStatus.deviceReady) {
+      if(this.props.bleInfo.wifiStatus==='connected') {
+        return this.props.bleInfo.wifiSSID;
+      } else {
+        return '未连接';
+      }
+    } else {
+      return '设备未连接';
+    }
+  };
+
+  _connectWifi = (ssid, pass) => {
+    bleService.setWifi(ssid, pass);
+    this.props.navigation.goBack();
+  };
 
   render() {
     return (
@@ -107,10 +118,10 @@ class WifiSetting extends React.Component {
             <TextInput
               style={styles.input}
               value={this.state.wifiSSID}
-              onChangeText={(text) => {
-                this.setState({wifiSSID: text})
-                this._lengthCheck(this.state.wifiSSID)
-              }}
+              onChangeText={(text) => this.setState({wifiSSID: text})}
+              onBlur={() => this._lengthCheck(this.state.wifiSSID)}
+              onSubmitEditing={() => this._lengthCheck(this.state.wifiSSID)}
+              onKeyPress={() => this._lengthCheck(this.state.wifiSSID)}
               placeholder='请输入WiFi名称'
               underlineColorAndroid='transparent'
             />
@@ -120,10 +131,10 @@ class WifiSetting extends React.Component {
             <TextInput
               style={styles.input}
               value={this.state.wifiPass}
-              onChangeText={(text) => {
-                this.setState({wifiPass: text})
-                this._lengthCheck(this.state.wifiPass)
-              }}
+              onChangeText={(text) => this.setState({wifiPass: text})}
+              onBlur={() => this._lengthCheck(this.state.wifiPass)}
+              onSubmitEditing={() => this._lengthCheck(this.state.wifiPass)}
+              onKeyPress={() => this._lengthCheck(this.state.wifiPass)}
               underlineColorAndroid='transparent'
               keyboardType='numeric'
             />
