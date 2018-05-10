@@ -34,6 +34,7 @@ function init(store) {
     modelNum: 'TES04PL',
     serialNum: '30AEA41A2200',
     fwVersion: '0.80.20',
+    description: 'line-one\r\nline-two',
     batteryLevel: 3,
     wifiStatus: 'connected',
     wifiSSID: 'test'

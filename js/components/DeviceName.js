@@ -6,7 +6,7 @@ import { toUTF8Array } from '../utils/util.js'
 import Toast from 'react-native-root-toast';
 import * as bleService from '../services/bleServiceFaker.js'
 
-class DeviceName extends React.Component {
+export default class DeviceName extends React.Component {
   static navigationOptions = {
     title: '名称',
     tabBarVisible: false,
@@ -45,24 +45,3 @@ class DeviceName extends React.Component {
     );
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    bleInfo: state.bleInfo
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    bleOnDeviceInfoChange: info => {
-      dispatch(bleOnDeviceInfoChange(info))
-    },
-  }
-}
-
-const DeviceNameContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeviceName)
-
-export default DeviceNameContainer

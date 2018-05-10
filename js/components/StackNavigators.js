@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import IndexContainer from './Index';
-import AboutContainer from './About';
+import About from './About';
 import MineContainer from './Mine.js';
 import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
@@ -10,7 +10,7 @@ import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
 import DeviceSettingContainer from './DeviceSetting';
 import DeviceInfoContainer from './DeviceInfo';
-import DeviceNameContainer from './DeviceName';
+import DeviceName from './DeviceName';
 import DeviceUpgradeContainer from './DeviceUpgrade';
 import WifiSettingContainer from './WifiSetting';
 import SaveRecordContainer from './SaveRecord';
@@ -40,11 +40,11 @@ const HomeStack = StackNavigator({
 
 const MineStack = StackNavigator({
   Mine: { screen: MineContainer},
-  About: { screen: AboutContainer },
+  About: { screen: About },
   DeviceScan: { screen: DeviceScanContainer },
   DeviceSetting: { screen: DeviceSettingContainer },
   DeviceInfo: { screen: DeviceInfoContainer },
-  DeviceName: { screen: DeviceNameContainer },
+  DeviceName: { screen: DeviceName },
   DeviceUpgrade: { screen: DeviceUpgradeContainer },
   WifiSetting: { screen: WifiSettingContainer },
 },{

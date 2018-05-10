@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Text, View, Image, TouchableWithoutFeedback, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
 import {Svg, Circle} from 'react-native-svg';
 
-let descriptionString = 'test1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3\r\ntest1test1test1test1test1\r\ntest2test2test2test2\r\ntest3test3test3'
 class DeviceUpgrade extends React.Component {
   static navigationOptions = {
     title: '设备升级',
@@ -12,7 +11,7 @@ class DeviceUpgrade extends React.Component {
 
   state = {
     modalVisible: false,
-    description: descriptionString.split('\r\n'),
+    description: this.props.bleInfo.description.split('\r\n'),
     descriptionArray: [],
   };
 
@@ -56,6 +55,7 @@ class DeviceUpgrade extends React.Component {
                 <Text style={styles.descriptionContent}>{item.content}</Text>
               </View>
             )}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
 
@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 16,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    width: 295,
   },
   version:{
     height:26,

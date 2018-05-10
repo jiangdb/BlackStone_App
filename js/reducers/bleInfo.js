@@ -1,12 +1,13 @@
 const initialState = {
-  displayName: 'name',
+  displayName: null,
   manufacturerName: null,
-  modelNum: 'TES04PL',
-  serialNum: '0A3245ER12DQ',
-  fwVersion: '0.80.01',
+  modelNum: null,
+  serialNum: null,
+  fwVersion: null,
+  description: null,
   batteryLevel: null,
-  wifiStatus: '',
-  wifiSSID: ''
+  wifiStatus: null,
+  wifiSSID: null
 }
  
 import type { Action } from "../actions/types";
