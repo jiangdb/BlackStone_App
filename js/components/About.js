@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux'
 import { Text, View, Image, StyleSheet } from 'react-native';
 
 export default class About extends React.Component {
