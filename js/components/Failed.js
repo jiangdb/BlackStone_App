@@ -9,6 +9,12 @@ export default class Failed extends React.Component {
   };
 
   render() {
+
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Home' })],
+    });
+
     return (
       <View style={{flex: 1, flexDirection:'column', alignItems: 'center', backgroundColor: 'white'}}>
         <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>认证失败</Text>
@@ -20,7 +26,7 @@ export default class Failed extends React.Component {
               <Text style={[styles.btnText, styles.btnOutlineText]}>上一步</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Home')}>
+          <TouchableWithoutFeedback onPress={()=>this.props.navigation.dispatch(resetAction)}>
             <View style={styles.btn}>
               <Text style={styles.btnText}>略过</Text>
             </View>
@@ -33,7 +39,7 @@ export default class Failed extends React.Component {
 
 const styles = StyleSheet.create({
   btnContainer: {
-    marginTop:40,
+    marginTop:122,
     flexDirection:'row',
     marginLeft: 27,
     marginRight: 27,
@@ -67,6 +73,5 @@ const styles = StyleSheet.create({
     width:70,
     height:115,
     marginTop: 56,
-    marginBottom:60,
   }
 });

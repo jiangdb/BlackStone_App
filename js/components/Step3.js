@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableWithoutFeedback, FlatList } from 'react-native';
 import {Divider} from './Templates';
-import bleService from '../services/bleService.js'
+import bleService from '../services/bleServiceFaker.js'
+import { StackActions, NavigationActions } from 'react-navigation'
 
 class Step3 extends React.Component {
   static navigationOptions = {
@@ -14,13 +15,25 @@ class Step3 extends React.Component {
     selectedDevice: false
   };
 
+  //lifecycle method
+  componentDidMount = () => {
+    bleService.deviceScanStart();
+  };
+
+  //lifecycle method
+  componentWillUnmount = () => {
+    bleService.deviceScanStop();
+  };
+
   // render device list item
   _renderItem = ({item}) => {
     return (
-      <Text
-        style={styles.deviceList}
-        onPress={this._onPressItem.bind(this, item)}
-      >{ item.localName }</Text>
+      <TouchableWithoutFeedback onPress={this._onPressItem.bind(this, item)}>
+        <View style={styles.deviceList}>
+          <Text style={styles.deviceListText} >{ item.localName }</Text>
+          <Image style={styles.image} source={require('../../images/selected.png')}/>
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -30,21 +43,28 @@ class Step3 extends React.Component {
   };
 
   render() {
+
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Home' })],
+    });
+
     console.log(this.props.bleScan.deviceScanned.length)
     return (
-      <View style={{flexDirection:'column', alignItems: 'center',}}>
+      <View style={{flexDirection:'column', alignItems: 'center', flex: 1}}>
         <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>3/4 第三步</Text>
         <Text style={{fontSize: 17,color: '#232323',marginTop: 18.5}}>选择需要连接的设备</Text>
-        <FlatList
-          style={styles.deviceList}
-          data={this.props.bleScan.deviceScanned}
-          ItemSeparatorComponent={() => <Divider/> }
-          renderItem={this._renderItem}
-          refreshing={this.state.refreshing}
-          keyExtractor={item => item.id.toString()}
-        />
+        <View style={styles.deviceListContainer}>
+          <FlatList
+            data={this.props.bleScan.deviceScanned}
+            ItemSeparatorComponent={() => <Divider/> }
+            renderItem={this._renderItem}
+            refreshing={this.state.refreshing}
+            keyExtractor={item => item.id.toString()}
+          />
+        </View>
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate('Step4')}}>
+          <TouchableWithoutFeedback onPress={() => this.props.navigation.dispatch(resetAction)}>
             <View style={[styles.btn, styles.btnOutline]}>
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
@@ -61,14 +81,32 @@ class Step3 extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  deviceList: {
-    height:112.5,
+  deviceListContainer: {
     marginTop:71.5,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    height:112.5,
+    width:375
+  },
+  deviceList: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height:55,
+    paddingLeft:37,
+    paddingRight: 21,
+  },
+  deviceListText: {
+    fontSize:17,
+    color:'#232323',
+    lineHeight:55,
+  },
+  image: {
+    width:17,
+    height: 12.5,
   },
   btnContainer: {
     // flex:1,
-    marginTop:40,
+    marginTop:138,
     flexDirection:'row',
     marginLeft: 27,
     marginRight: 27,

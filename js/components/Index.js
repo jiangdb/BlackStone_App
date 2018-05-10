@@ -72,7 +72,7 @@ class Index extends React.Component {
         </TouchableWithoutFeedback>
         <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
 
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Step1')}>
+        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Step3')}>
           <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
             <Text style={styles.settingContent}>go</Text>
           </View>

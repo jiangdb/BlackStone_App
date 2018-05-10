@@ -79,3 +79,11 @@ const Step1Container = connect(
 )(Step1)
 
 export default Step1Container
+
+// export createStackNavigator({
+//   Step1: {
+//     screen: Step1Container,
+//   },
+// }, {
+//   headerMode: 'none',
+// });
