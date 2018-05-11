@@ -15,3 +15,5 @@ export type Action =
   | { type: "SAVE_RECORD", record: Object }
   | { type: "SAVE_ACCESSORIES", accessories: Object }
   | { type: "SAVE_TIMER", seconds: Object }
+  | { type: "REMOVE_RECORD", recordIndex: Object }
+

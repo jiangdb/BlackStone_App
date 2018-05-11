@@ -13,6 +13,8 @@ import DeviceInfoContainer from './DeviceInfo';
 import DeviceName from './DeviceName';
 import DeviceUpgradeContainer from './DeviceUpgrade';
 import WifiSettingContainer from './WifiSetting';
+import HistoryDetailContainer from './HistoryDetail';
+import HistoryContainer from './History';
 import SaveRecordContainer from './SaveRecord';
 import FlavorSelectContainer from './FlavorSelect';
 import AccessoriesSelectContainer from './AccessoriesSelect';
@@ -47,6 +49,8 @@ const MineStack = StackNavigator({
   DeviceName: { screen: DeviceName },
   DeviceUpgrade: { screen: DeviceUpgradeContainer },
   WifiSetting: { screen: WifiSettingContainer },
+  HistoryDetail: { screen: HistoryDetailContainer },
+  History: { screen: HistoryContainer },
 },{
   navigationOptions: {
     headerStyle: {
