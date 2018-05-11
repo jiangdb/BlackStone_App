@@ -71,12 +71,6 @@ class Index extends React.Component {
           </View>
         </TouchableWithoutFeedback>
         <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
-
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('Step3')}>
-          <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
-            <Text style={styles.settingContent}>go</Text>
-          </View>
-        </TouchableWithoutFeedback>
       </ScrollView>
     );
   }
@@ -88,7 +82,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection:'column',
     backgroundColor: '#fff',
-    flex: 1,
   },
   flexRow: {
     flexDirection:'row',

@@ -5,7 +5,6 @@ import { Text, View, Image, StyleSheet,TouchableWithoutFeedback } from 'react-na
 class Step2 extends React.Component {
   static navigationOptions = {
     title: '开机向导',
-    tabBarVisible: false,
   };
 
   render() {

@@ -5,7 +5,12 @@ import { Text, View, Image, StyleSheet,TouchableWithoutFeedback } from 'react-na
 class Step1 extends React.Component {
   static navigationOptions = {
     title: '开机向导',
-    tabBarVisible: false,
+    headerTitleStyle: {
+      flex: 1,
+      textAlign: 'center',
+      alignSelf: 'center',
+      fontWeight: 'normal',
+    },
   };
 
   render() {
@@ -79,11 +84,3 @@ const Step1Container = connect(
 )(Step1)
 
 export default Step1Container
-
-// export createStackNavigator({
-//   Step1: {
-//     screen: Step1Container,
-//   },
-// }, {
-//   headerMode: 'none',
-// });

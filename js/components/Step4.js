@@ -5,11 +5,11 @@ import { Divider } from './Templates';
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../utils/util.js'
 import bleService from '../services/bleServiceFaker.js'
+import { stepStateChange } from '../actions/showStep.js'
 
 class Step4 extends React.Component {
   static navigationOptions = {
     title: '开机向导',
-    tabBarVisible: false,
   };
 
   state= {
@@ -78,15 +78,10 @@ class Step4 extends React.Component {
 
   _connectWifi = (ssid, pass) => {
     bleService.setWifi(ssid, pass);
-    this.props.navigation.goBack();
+    this.props.onStepStateChange({show:false})
   };
 
   render() {
-
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Home' })],
-    });
 
     return (
       <View style={{ flex: 1, flexDirection:'column', alignItems: 'center',}}>
@@ -122,7 +117,7 @@ class Step4 extends React.Component {
           </View>
         </View>
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.dispatch(resetAction)}>
+          <TouchableWithoutFeedback onPress={()=>this.props.onStepStateChange({show:false})}>
             <View style={[styles.btn, styles.btnOutline]}>
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
@@ -171,6 +166,7 @@ const styles = StyleSheet.create({
     height: 35,
     width:152.5,
     borderRadius: 5,
+    marginLeft: 7,
   },
   btnDisabledText: {
     color: '#6a6a6a',
@@ -216,6 +212,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onStepStateChange: state => {
+      dispatch(stepStateChange(state))
+    }
   }
 }
 

@@ -1,19 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableWithoutFeedback } from 'react-native';
+import { stepStateChange } from '../actions/showStep.js'
 
-export default class Failed extends React.Component {
+class Failed extends React.Component {
   static navigationOptions = {
     title: 'TIMEMORE Labs',
     tabBarVisible: false,
   };
 
   render() {
-
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Home' })],
-    });
 
     return (
       <View style={{flex: 1, flexDirection:'column', alignItems: 'center', backgroundColor: 'white'}}>
@@ -26,7 +22,7 @@ export default class Failed extends React.Component {
               <Text style={[styles.btnText, styles.btnOutlineText]}>上一步</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.dispatch(resetAction)}>
+          <TouchableWithoutFeedback onPress={()=>this.props.onStepStateChange({show:false})}>
             <View style={styles.btn}>
               <Text style={styles.btnText}>略过</Text>
             </View>
@@ -75,3 +71,23 @@ const styles = StyleSheet.create({
     marginTop: 56,
   }
 });
+
+const mapStateToProps = state => {
+  return {
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onStepStateChange: state => {
+      dispatch(stepStateChange(state))
+    }
+  }
+}
+
+const FailedContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Failed)
+
+export default FailedContainer

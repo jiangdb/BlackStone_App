@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableWithoutFeedback, FlatList } from 'react-native';
 import {Divider} from './Templates';
 import bleService from '../services/bleServiceFaker.js'
-import { StackActions, NavigationActions } from 'react-navigation'
+import { stepStateChange } from '../actions/showStep.js'
 
 class Step3 extends React.Component {
   static navigationOptions = {
     title: '开机向导',
-    tabBarVisible: false,
   };
 
   state = {
@@ -43,13 +42,6 @@ class Step3 extends React.Component {
   };
 
   render() {
-
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Home' })],
-    });
-
-    console.log(this.props.bleScan.deviceScanned.length)
     return (
       <View style={{flexDirection:'column', alignItems: 'center', flex: 1}}>
         <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>3/4 第三步</Text>
@@ -64,12 +56,12 @@ class Step3 extends React.Component {
           />
         </View>
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={() => this.props.navigation.dispatch(resetAction)}>
+          <TouchableWithoutFeedback onPress={() => this.props.onStepStateChange({show:false})}>
             <View style={[styles.btn, styles.btnOutline]}>
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Failed')}>
+          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Step4')}>
             <View style={this.props.bleScan.deviceScanned.length == 0 ? styles.btnDisabled : styles.btn}>
               <Text style={this.props.bleScan.deviceScanned.length == 0 ? styles.btnTextDisabled : styles.btnText}>连接</Text>
             </View>
@@ -155,11 +147,15 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     bleScan: state.bleScan,
+    bleStatus: state.bleStatus
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    onStepStateChange: state => {
+      dispatch(stepStateChange(state))
+    }
   }
 }
 

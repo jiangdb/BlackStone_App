@@ -8,7 +8,7 @@ import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
-import Failed from './Failed';
+import FailedContainer from './Failed';
 import Step0 from './Step0';
 import Step1Container from './Step1';
 import Step2Container from './Step2';
@@ -22,12 +22,7 @@ const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
   BeanCategory: { screen: BeanCategoryContainer },
-  Failed: { screen: Failed },
   Step0: { screen: Step0 },
-  Step1: { screen: Step1Container },
-  Step2: { screen: Step2Container },
-  Step3: { screen: Step3Container },
-  Step4: { screen: Step4Container },
   CoffeeBuilder: { screen: CoffeeBuilderContainer },
   SaveRecord: { screen: SaveRecordContainer },
   FlavorSelect: { screen: FlavorSelectContainer },
@@ -62,8 +57,28 @@ const MineStack = StackNavigator({
   },
 });
 
+const StepStack = StackNavigator({
+  Step1: { screen: Step1Container },
+  Step2: { screen: Step2Container },
+  Step3: { screen: Step3Container },
+  Step4: { screen: Step4Container },
+  Failed: { screen: FailedContainer },
+},{
+  navigationOptions: {
+    headerStyle: {
+      backgroundColor: '#000',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'normal',
+      color: 'white',
+    },
+  },
+});
+
 module.exports = {
   Home: HomeStack,
   Mine: MineStack,
+  Step: StepStack,
 };
 
