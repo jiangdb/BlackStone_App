@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet,ImageBackground } from 'react-native';
+import { View, Image,Dimensions } from 'react-native';
 
 export default class Step0 extends React.Component {
   static navigationOptions = {
@@ -7,25 +7,18 @@ export default class Step0 extends React.Component {
     tabBarVisible: false,
   };
 
-  shouldComponentUpdate() {
-    setTimeout(function(){
-      // if () {
-      // }else{
-        // this.props.navigation.navigate('Step1');
-      // }
-    },2000);
-  }
-
   render() {
+    const width = Dimensions.get('window').width;
+    const height = Dimensions.get('window').height;
+
     return (
-      <View style={{ flex:1 }}>
-        <Image style={{ width:375 }} source={require('../../images/splashscreen.jpeg')} />
-        {/*<ImageBackground style={{width: 375}} source={require('../../images/splashscreen.jpeg')} >
-        </ImageBackground>*/}
+      <View >
+        <Image
+          style={{ width: width, height: height }}
+          source={require('../../images/splashscreen.jpeg')}
+          resizeMode='cover'
+        />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-});
