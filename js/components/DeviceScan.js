@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   deviceList: {
     lineHeight:55,
-    paddingLeft:20,
+    paddingLeft:32,
     fontSize:17,
     color:'#232323',
   }

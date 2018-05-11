@@ -48,7 +48,13 @@ export class ChoiceBar extends Component {
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
       break;
       case 'switch':
-        return <Switch onValueChange={this.props.toggleSwitch} value={this.props.switchValue} />;
+        return <Switch
+                onValueChange={this.props.toggleSwitch}
+                value={this.props.switchValue}
+                onTintColor='#DFB86F'
+                tintColor='#ccc'
+                thumbTintColor ='#fff'
+              />;
       break;
       default:
         return;

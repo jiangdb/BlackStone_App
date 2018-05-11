@@ -8,15 +8,22 @@ import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
+import DeviceSettingContainer from './DeviceSetting';
+import DeviceInfoContainer from './DeviceInfo';
+import DeviceName from './DeviceName';
+import DeviceUpgradeContainer from './DeviceUpgrade';
+import WifiSettingContainer from './WifiSetting';
+import HistoryDetailContainer from './HistoryDetail';
+import HistoryContainer from './History';
+import SaveRecordContainer from './SaveRecord';
+import FlavorSelectContainer from './FlavorSelect';
+import AccessoriesSelectContainer from './AccessoriesSelect';
 import FailedContainer from './Failed';
 import Step0 from './Step0';
 import Step1Container from './Step1';
 import Step2Container from './Step2';
 import Step3Container from './Step3';
 import Step4Container from './Step4';
-import SaveRecordContainer from './SaveRecord';
-import FlavorSelectContainer from './FlavorSelect';
-import AccessoriesSelectContainer from './AccessoriesSelect';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -44,6 +51,13 @@ const MineStack = StackNavigator({
   Mine: { screen: MineContainer},
   About: { screen: About },
   DeviceScan: { screen: DeviceScanContainer },
+  DeviceSetting: { screen: DeviceSettingContainer },
+  DeviceInfo: { screen: DeviceInfoContainer },
+  DeviceName: { screen: DeviceName },
+  DeviceUpgrade: { screen: DeviceUpgradeContainer },
+  WifiSetting: { screen: WifiSettingContainer },
+  HistoryDetail: { screen: HistoryDetailContainer },
+  History: { screen: HistoryContainer },
 },{
   navigationOptions: {
     headerStyle: {
