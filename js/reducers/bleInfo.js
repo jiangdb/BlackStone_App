@@ -4,9 +4,10 @@ const initialState = {
   modelNum: null,
   serialNum: null,
   fwVersion: null,
+  description: null,
   batteryLevel: null,
   wifiStatus: null,
-  wifiSSID: null 
+  wifiSSID: null
 }
  
 import type { Action } from "../actions/types";
