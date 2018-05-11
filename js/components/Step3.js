@@ -11,34 +11,43 @@ class Step3 extends React.Component {
   };
 
   state = {
-    selectedDevice: false
+    selectedDeviceId: null,
+    selectedDevice: null,
   };
 
   //lifecycle method
-  componentDidMount = () => {
+  componentDidMount() {
     bleService.deviceScanStart();
   };
 
   //lifecycle method
-  componentWillUnmount = () => {
+  componentWillUnmount() {
     bleService.deviceScanStop();
   };
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.bleStatus.connectionState == 'connecting' && nextProps.bleStatus.connectionState == 'disconnected') {
+      this.props.navigation.navigate('Failed')
+    } else if (this.props.bleStatus.connectionState == 'connecting' && nextProps.bleStatus.connectionState == 'connected') {
+      this.props.navigation.navigate('Step4')
+    }
+  }
 
   // render device list item
   _renderItem = ({item}) => {
     return (
-      <TouchableWithoutFeedback onPress={this._onPressItem.bind(this, item)}>
+      <TouchableWithoutFeedback onPress={() => {
+        this.setState({
+          selectedDeviceId: item.id,
+          selectedDevice: item
+        })
+      }}>
         <View style={styles.deviceList}>
           <Text style={styles.deviceListText} >{ item.localName }</Text>
-          <Image style={styles.image} source={require('../../images/selected.png')}/>
+          <Image style={this.state.selectedDeviceId == item.id ? styles.image : {display:'none'}} source={require('../../images/selected.png')}/>
         </View>
       </TouchableWithoutFeedback>
     );
-  };
-
-  // function when press on the device item
-  _onPressItem = (device) => {
-    bleService.deviceConnect(device);
   };
 
   render() {
@@ -61,9 +70,12 @@ class Step3 extends React.Component {
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Step4')}>
-            <View style={this.props.bleScan.deviceScanned.length == 0 ? styles.btnDisabled : styles.btn}>
-              <Text style={this.props.bleScan.deviceScanned.length == 0 ? styles.btnTextDisabled : styles.btnText}>连接</Text>
+          <TouchableWithoutFeedback onPress={() => {
+            if(this.state.selectedDeviceId == null) return
+              bleService.deviceConnect(this.state.selectedDevice)
+          }}>
+            <View style={this.state.selectedDeviceId == null ? styles.btnDisabled : styles.btn}>
+              <Text style={this.state.selectedDeviceId == null ? styles.btnTextDisabled : styles.btnText}>连接</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>

@@ -35,5 +35,4 @@ export default class App extends React.Component {
   componentWillUnmount() {
     bleService.deInit();
   }
-
 }
