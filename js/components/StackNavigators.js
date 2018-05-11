@@ -8,6 +8,8 @@ import CoffeeSettingsContainer from './CoffeeSettings';
 import BeanCategoryContainer from './BeanCategory';
 import CoffeeBuilderContainer from './CoffeeBuilder';
 import DeviceScanContainer from './DeviceScan';
+import HistoryDetailContainer from './HistoryDetail';
+import HistoryContainer from './History';
 import SaveRecordContainer from './SaveRecord';
 import FlavorSelectContainer from './FlavorSelect';
 import AccessoriesSelectContainer from './AccessoriesSelect';
@@ -37,6 +39,8 @@ const MineStack = StackNavigator({
   Mine: { screen: MineContainer},
   About: { screen: About },
   DeviceScan: { screen: DeviceScanContainer },
+  HistoryDetail: { screen: HistoryDetailContainer },
+  History: { screen: HistoryContainer },
 },{
   navigationOptions: {
     headerStyle: {

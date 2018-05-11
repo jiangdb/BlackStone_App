@@ -27,3 +27,8 @@ export const saveTimer = seconds => ({
   type: 'SAVE_TIMER',
   seconds
 });
+
+export const removeRecord = recordIndex => ({
+  type: 'REMOVE_RECORD',
+  recordIndex
+});
