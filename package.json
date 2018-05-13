@@ -19,15 +19,15 @@
   "dependencies": {
     "buffer": "^5.1.0",
     "eslint": "^4.19.1",
-    "react": "^16.3.1",
-    "react-native": "^0.55.3",
+    "react": "^16.3.2",
+    "react-native": "^0.55.4",
     "react-native-actionsheet": "^2.4.2",
     "react-native-ble-plx": "^0.9.0",
     "react-native-root-toast": "^3.0.1",
     "react-native-star-rating": "^1.0.9",
     "react-native-svg": "^6.3.1",
     "react-native-vector-icons": "^4.6.0",
-    "react-navigation": "^1.5.8",
+    "react-navigation": "^1.5.12",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0"
