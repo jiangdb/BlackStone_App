@@ -7,6 +7,7 @@ import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
 import BuildingButtonContainer from './common/BuildingButton.js'
 import { SingleDetail } from './Templates'
+import SplashScreen from 'react-native-splash-screen'
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 class Index extends React.Component {
@@ -22,6 +23,7 @@ class Index extends React.Component {
 
   componentDidMount() {
     // bleService.enableWeightNotify(true)
+    SplashScreen.hide();
   }
 
   componentWillUnmount() {

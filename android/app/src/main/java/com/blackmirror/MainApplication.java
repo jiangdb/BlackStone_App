@@ -3,6 +3,7 @@ package com.blackmirror;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.horcrux.svg.SvgPackage;
 import com.rncharts.MPAndroidChartPackage;
 import com.polidea.reactnativeble.BlePackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new SvgPackage(),
             new MPAndroidChartPackage(),
             new BlePackage()
