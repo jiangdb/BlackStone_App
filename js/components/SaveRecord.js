@@ -386,6 +386,7 @@ class SaveRecord extends React.Component {
                   value={this.state.newOption}
                   placeholder={this._getModalPlaceHolder()}
                   underlineColorAndroid='transparent'
+                  keyboardType={this.state.modalName == '研磨度'? 'numeric':'default'}
                 />
               </View>
               <View style={{flexDirection: 'row'}}>
