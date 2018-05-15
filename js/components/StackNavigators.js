@@ -19,7 +19,6 @@ import SaveRecordContainer from './SaveRecord';
 import FlavorSelectContainer from './FlavorSelect';
 import AccessoriesSelectContainer from './AccessoriesSelect';
 import FailedContainer from './Failed';
-import Step0 from './Step0';
 import Step1Container from './Step1';
 import Step2Container from './Step2';
 import Step3Container from './Step3';
@@ -29,7 +28,6 @@ const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
   CoffeeSettings: { screen: CoffeeSettingsContainer },
   BeanCategory: { screen: BeanCategoryContainer },
-  Step0: { screen: Step0 },
   CoffeeBuilder: { screen: CoffeeBuilderContainer },
   SaveRecord: { screen: SaveRecordContainer },
   FlavorSelect: { screen: FlavorSelectContainer },
