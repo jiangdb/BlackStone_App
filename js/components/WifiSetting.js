@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View ,StyleSheet, TextInput,TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Text, View ,StyleSheet, TextInput,TouchableOpacity, Keyboard } from 'react-native';
 import * as bleService from '../services/bleServiceFaker.js'
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../utils/util.js'
@@ -142,14 +142,17 @@ class WifiSetting extends React.Component {
         </View>
 
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={() => {
-            if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
-              this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
-          }}>
+          <TouchableOpacity 
+            onPress={() => {
+              if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
+                this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
+            }}
+            activeOpacity={1}
+          >
             <View style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btn : styles.btnDisabled}>
               <Text style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btnText : styles.btnDisabledText}>连接</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </View>
     );

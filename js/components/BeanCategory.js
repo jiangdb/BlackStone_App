@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet,TextInput, FlatList,Alert } from 'react-native';
+import { Text, View,StyleSheet,TextInput, FlatList,Alert,TouchableOpacity } from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { saveBeanCategory } from '../actions/coffeeSettings.js'
@@ -42,7 +42,16 @@ class BeanCategory extends React.Component {
           style={{backgroundColor: '#fff',flex: 1}}
           data={this.props.beanCategory.data}
           ItemSeparatorComponent={() => <Divider/> }
-          renderItem={({item}) => <Text style={styles.categoryList} onPress={this._onPressItem.bind(this, item.key)}>{item.key}</Text>}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity
+                onPress={this._onPressItem.bind(this, item.key)}
+                activeOpacity={0.6}
+              >
+                <Text style={styles.categoryList} >{item.key}</Text>
+              </TouchableOpacity>
+            );
+          }}
         />
       </View>
     );

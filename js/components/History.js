@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet,ScrollView ,FlatList,Image, TouchableWithoutFeedback, Modal} from 'react-native';
+import { Text, View,StyleSheet,ScrollView ,FlatList,Image, TouchableOpacity, Modal} from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
 import ActionSheet from 'react-native-actionsheet'
 import Toast from 'react-native-root-toast';
@@ -36,7 +36,7 @@ class History extends React.Component {
 
   _renderItem = (item) => {
     return (
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         onPress={() => {
           this.props.navigation.navigate('HistoryDetail', {
             itemIndex: item.index
@@ -46,6 +46,7 @@ class History extends React.Component {
           this.setState({deleteItemIndex: item.index})
           this.ActionSheet.show()
         }}
+        activeOpacity={1}
       >
         <View style={styles.singleList}>
           <View style={{flexDirection:'column'}}>
@@ -54,7 +55,7 @@ class History extends React.Component {
           </View>
           <Image style={styles.icon} source={require('../../images/more.png')} />
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   };
 
@@ -100,16 +101,19 @@ class History extends React.Component {
                   <Text style={{fontSize: 16, lineHeight: 30,}}>是否要删除此记录</Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
-                  <TouchableWithoutFeedback onPress={() => {this.setState({modalVisible:false})}}>
+                  <TouchableOpacity 
+                    onPress={() => {this.setState({modalVisible:false})}}
+                    activeOpacity={1}
+                  >
                     <View style={[styles.modalBtn,styles.withBorderRight]}>
                       <Text style={{fontSize: 18}}>取消</Text>
                     </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback onPress={ () => this._deleteItem()}>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={ () => this._deleteItem()} activeOpacity={1}>
                     <View style={styles.modalBtn}>
                       <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
                     </View>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

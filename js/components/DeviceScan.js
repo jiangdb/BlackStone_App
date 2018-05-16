@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, FlatList, ActivityIndicator, } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
@@ -29,10 +29,12 @@ class DeviceScan extends React.Component {
   // render device list item
   _renderItem = ({item}) => {
     return (
-      <Text
-        style={styles.deviceList}
+      <TouchableOpacity
         onPress={this._onPressItem.bind(this, item)}
-      >{ item.localName }</Text>
+        activeOpacity={0.6}
+      >
+        <Text style={styles.deviceList} >{ item.localName }</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -70,7 +72,7 @@ class DeviceScan extends React.Component {
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem}
           refreshing={this.state.refreshing}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()}
         />
       </View>
     );

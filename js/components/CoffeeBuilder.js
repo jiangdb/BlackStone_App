@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback,ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity,ScrollView } from 'react-native';
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
@@ -140,28 +140,34 @@ class CoffeeBuilder extends React.Component {
             <BuildingTimerContainer/>
 
             <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row',marginTop:19.5,marginBottom:46.5,}}>
-              <TouchableWithoutFeedback onPress={this._onRestart}>
+              <TouchableOpacity onPress={this._onRestart} activeOpacity={1}>
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
                 </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={this._stopBuilding}>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._stopBuilding} activeOpacity={1}>
                 <View style={[styles.button,styles.buttonEnd]}>
                   <Text style={{color:'#fff',fontSize:16}}>结束</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
             <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row',marginTop:19.5,marginBottom:46.5} : {display: 'none'}}>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
+              <TouchableOpacity 
+                onPress={() => this.props.navigation.goBack()}
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
                 </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.replace('SaveRecord')}>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => this.props.navigation.replace('SaveRecord')}
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonEnd,{width:215.5}]}>
                   <Text style={{color:'#fff',fontSize:16}}>保存</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
           </View>
         );

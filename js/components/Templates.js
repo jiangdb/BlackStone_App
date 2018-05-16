@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableOpacity} from 'react-native';
 
 // divider
 export class Divider extends Component {
@@ -19,11 +19,11 @@ export class SingleDetail extends Component {
         <Image style={styles.settingIcon} source={this.props.img} />
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
-        <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
+        <TouchableOpacity  onPress={() => {Alert.alert('pressed');}}>
           <View>
             <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -64,7 +64,7 @@ export class ChoiceBar extends Component {
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.props.onPress}>
+      <TouchableOpacity onPress={this.props.onPress} activeOpacity={1}>
         <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
           <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
@@ -78,7 +78,7 @@ export class ChoiceBar extends Component {
             {/*-- icon value can be 'more', 'check','switch' or none --*/}
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 }

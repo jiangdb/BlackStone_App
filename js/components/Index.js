@@ -1,6 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, YellowBox} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableOpacity,ScrollView, YellowBox} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleServiceFaker.js'
@@ -66,12 +66,15 @@ class Index extends React.Component {
           </View>
         </View>
 
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('CoffeeSettings')}>
+        <TouchableOpacity 
+          onPress={() => this.props.navigation.navigate('CoffeeSettings')}
+          activeOpacity={1}
+        >
           <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
             <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
             <Text style={styles.settingContent}>设置参数</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
       </ScrollView>
     );

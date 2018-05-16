@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, Image, TouchableWithoutFeedback, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
+import { Text, View, Image, TouchableOpacity, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
 import {Svg, Circle} from 'react-native-svg';
 
 class DeviceUpgrade extends React.Component {
@@ -60,23 +60,29 @@ class DeviceUpgrade extends React.Component {
         </View>
 
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-          <TouchableWithoutFeedback onPress={() => {
-            if(this.props.bleInfo.wifiStatus !=='connected') return
-            this._onUpgrade()
-          }}>
+          <TouchableOpacity 
+            onPress={() => {
+              if(this.props.bleInfo.wifiStatus !=='connected') return
+              this._onUpgrade()
+            }}
+            activeOpacity={1}
+          >
             <View style={this.props.bleInfo.wifiStatus ==='connected'? styles.btn : styles.btnDisabled}>
               <Text style={this.props.bleInfo.wifiStatus ==='connected'? styles.btnText : styles.btnTextDisabled}>立刻更新</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
 
         <View style={this.props.bleInfo.wifiStatus ==='connected'? {display: 'none'} : styles.warnWrapper}>
           <Text style={{fontSize:15,color:'#3E3E3E'}}>Wi-Fi未连接 , 无法更新</Text>
-          <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('WifiSetting')}>
+          <TouchableOpacity 
+            onPress={() => this.props.navigation.navigate('WifiSetting')}
+            activeOpacity={1}
+          >
             <View style={{width: 60, height: 30,marginLeft:10}}>
               <Text style={{fontSize:15,color:'#53B2F0'}}>去设置</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
 
         <Modal
@@ -93,11 +99,14 @@ class DeviceUpgrade extends React.Component {
                 <Text style={{fontSize: 18, color: '#0c0c0c', lineHeight: 30,}}>更新中</Text>
                 <Text style={{fontSize: 17, lineHeight: 30,}}>请查看机器上显示的更新状态</Text>
               </View>
-                <TouchableWithoutFeedback onPress={() => {this.setState({modalVisible: false})}}>
+                <TouchableOpacity 
+                  onPress={() => {this.setState({modalVisible: false})}}
+                  activeOpacity={1}
+                >
                   <View style={styles.modalBtn}>
                     <Text style={{fontSize: 18,color:'#3CC51F'}}>我知道了</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
             </View>
           </View>
         </Modal>
