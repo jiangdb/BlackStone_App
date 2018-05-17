@@ -39,14 +39,14 @@ class BeanCategory extends React.Component {
           <Text style={{lineHeight:41.5,fontSize: 12,color:'#8f8f8f'}}>或选择已有种类</Text>
       	</View>
         <FlatList
-          style={{backgroundColor: '#fff',flex: 1}}
+          style={{flex: 1}}
           data={this.props.beanCategory.data}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={({item}) => {
             return (
               <TouchableOpacity
                 onPress={this._onPressItem.bind(this, item.key)}
-                activeOpacity={0.6}
+                activeOpacity={0.5}
               >
                 <Text style={styles.categoryList} >{item.key}</Text>
               </TouchableOpacity>
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     paddingLeft:44,
     fontSize:17,
     color:'#232323',
+    backgroundColor: '#fff'
   }
 });
 

@@ -121,6 +121,48 @@ function log(log) {
   wx.setStorageSync('logs', logs)
 }
 
+function debounce(fn, delay) {
+  var timer
+
+  return function () {
+    var context = this
+    var args = arguments
+    clearTimeout(timer)
+
+    timer = setTimeout(function () {
+      fn.apply(context, args)
+    }, delay)
+  }
+}
+
+import { addNavigationHelpers, NavigationActions } from "react-navigation";
+
+function addNavigationWithDebounce(navigation) {
+  const original = addNavigationHelpers(navigation);
+  let debounce;
+  return {
+    ...original,
+    navigateWithDebounce: (routeName, params, action) => {
+      let func = () => {
+        if (debounce) {
+            return;
+        }
+
+        navigation.dispatch(NavigationActions.navigate({
+            routeName,
+            params,
+            action
+        }));
+
+        debounce = setTimeout(() => {
+            debounce = 0;
+        }, 1000)
+      };
+      return func();
+    }
+  }
+};
+
 module.exports = {
   convertRpxTpPx: convertRpxTpPx,
   formatTime: formatTime,
@@ -131,5 +173,7 @@ module.exports = {
   fromUTF8Array: fromUTF8Array,
   isInteger: isInteger,
   objToUrlParam: objToUrlParam,
-  log: log
+  log: log,
+  debounce: debounce,
+  addNavigationWithDebounce: addNavigationWithDebounce
 }

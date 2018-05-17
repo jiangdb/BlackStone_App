@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
-// import Picker from 'react-native-picker';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -30,7 +30,14 @@ class CoffeeSettings extends React.Component {
       [1, 2, 3, 4],
       [5, 6, 7, 8],
     ],
+    navigation: null,
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
@@ -71,7 +78,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>咖啡豆</Text>
               <TouchableOpacity
                 underlayColor='#f2f2f2'
-                onPress={() => this.props.navigation.navigate('BeanCategory')}
+                onPress={() => this.state.navigation.navigateWithDebounce('BeanCategory')}
                 activeOpacity={1}
               >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>

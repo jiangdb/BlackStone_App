@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, Image, TouchableOpacity, StyleSheet, Modal, FlatList, ScrollView  } from 'react-native';
 import {Svg, Circle} from 'react-native-svg';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class DeviceUpgrade extends React.Component {
   static navigationOptions = {
@@ -13,6 +14,7 @@ class DeviceUpgrade extends React.Component {
     modalVisible: false,
     description: this.props.bleInfo.description.split('\r\n'),
     descriptionArray: [],
+    navigation: null,
   };
 
   componentWillMount() {
@@ -29,6 +31,12 @@ class DeviceUpgrade extends React.Component {
       descriptionArray: descriptionArray
     })
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _onUpgrade = () => {
     this.setState({modalVisible: true})
@@ -76,7 +84,7 @@ class DeviceUpgrade extends React.Component {
         <View style={this.props.bleInfo.wifiStatus ==='connected'? {display: 'none'} : styles.warnWrapper}>
           <Text style={{fontSize:15,color:'#3E3E3E'}}>Wi-Fi未连接 , 无法更新</Text>
           <TouchableOpacity 
-            onPress={() => this.props.navigation.navigate('WifiSetting')}
+            onPress={() => this.state.navigation.navigateWithDebounce('WifiSetting')}
             activeOpacity={1}
           >
             <View style={{width: 60, height: 30,marginLeft:10}}>

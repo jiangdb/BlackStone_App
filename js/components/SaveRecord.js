@@ -7,6 +7,7 @@ import { saveRecord } from '../actions/coffeeBuilder.js'
 import WeightChartContainer from './common/WeightChart.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -34,6 +35,7 @@ class SaveRecord extends React.Component {
     legend: {},
     extract: [{x:0,y:0}],
     total: [{x:0,y:0}],
+    navigation: null,
   };
 
   componentWillMount() {
@@ -122,6 +124,7 @@ class SaveRecord extends React.Component {
           labels: ['注水总量', '咖啡萃取量']
         }
       },
+      navigation: addNavigationWithDebounce(this.props.navigation)
     })
   }
 
@@ -252,7 +255,7 @@ class SaveRecord extends React.Component {
 
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
-        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
+        <View style={{ flexDirection: 'column', marginTop: 8.5,}}>
           <TouchableOpacity activeOpacity={1}>
             <View style={styles.choiceBar}>
               <Text style={styles.choiceTitle}>评分</Text>
@@ -275,17 +278,17 @@ class SaveRecord extends React.Component {
             title='风味'
             value={this._getSelectedFlavor()}
             icon='more'
-            onPress={() => this.props.navigation.navigate('FlavorSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('FlavorSelect')}
           />
           <Divider/>
           <ChoiceBar
             title='设备'
             value={this._getSelectedAccessories()}
             icon='more'
-            onPress={() => this.props.navigation.navigate('AccessoriesSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('AccessoriesSelect')}
           />
           <Divider/>
-          <View style={{height:165.5}}>
+          <View style={{height:165.5,backgroundColor: '#fff'}}>
             <TextInput
               style={styles.comment}
               multiline={true}
@@ -297,7 +300,7 @@ class SaveRecord extends React.Component {
               underlineColorAndroid='transparent'
             />
           </View>
-          <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
+          <View style={{ flexDirection: 'row', justifyContent:'flex-end',backgroundColor: '#fff'}}>
             <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
           </View>
         </View>
@@ -447,8 +450,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:18,
-    marginRight: 16,
+    paddingLeft:18,
+    paddingRight: 16,
   },
   choiceTitle: {
     fontSize:17,

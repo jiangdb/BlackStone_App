@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Button, Text, View , Image } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class Mine extends React.Component {
   static navigationOptions = {
@@ -16,11 +17,18 @@ class Mine extends React.Component {
 
   state = {
     newVersion: true,
+    navigation: null,
   };
 
   componentWillMount() {
     //check if there is a new version of the device
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _getNewVersionChoiceBar = () => {
     if(this.state.newVersion) {
@@ -29,7 +37,7 @@ class Mine extends React.Component {
         <ChoiceBar
           title='机器升级'
           icon='more'
-          onPress={() => this.props.navigation.navigate('DeviceUpgrade')}
+          onPress={() => this.state.navigation.navigateWithDebounce('DeviceUpgrade')}
         />
         <Divider/>
         </View>
@@ -44,34 +52,34 @@ class Mine extends React.Component {
       <View style={{ flexDirection: 'column'}}>
         <View style={styles.userContainer}>
           <Image style={styles.userHeader} source={require('../../images/user-header.png')} />
-            <Text style={styles.userName}>用户名</Text>
+          <Text style={styles.userName}>用户名</Text>
         </View>
-        <View style={{backgroundColor:'#fff', marginBottom: 12}}>
+        <View style={{ marginBottom: 12}}>
           <ChoiceBar
             title='连接设备'
             value={this.props.bleStatus.deviceReady ? this.props.bleInfo.displayName : '未连接'}
             icon='more'
-            onPress={() => this.props.navigation.navigate('DeviceScan')}
+            onPress={() => this.state.navigation.navigateWithDebounce('DeviceScan')}
           />
         </View>
-        <View style={{backgroundColor:'#fff', flexDirection: 'column'}}>
+        <View style={{flexDirection: 'column'}}>
           <ChoiceBar
             title='冲煮记录'
             icon='more'
-            onPress={() => this.props.navigation.navigate('History')}
+            onPress={() => this.state.navigation.navigateWithDebounce('History')}
           />
           <Divider/>
           <ChoiceBar
             title='机器设置'
             icon='more'
-            onPress={() => this.props.navigation.navigate('DeviceSetting')}
+            onPress={() => this.state.navigation.navigateWithDebounce('DeviceSetting')}
           />
           <Divider/>
           {this._getNewVersionChoiceBar()}
           <ChoiceBar
             title='关于我们'
             icon='more'
-            onPress={() => this.props.navigation.navigate('About')}
+            onPress={() => this.state.navigation.navigateWithDebounce('About')}
           />
         </View>
       </View>

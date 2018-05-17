@@ -5,6 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import ActionSheet from 'react-native-actionsheet'
 import Toast from 'react-native-root-toast';
 import { removeRecord } from '../actions/coffeeBuilder.js';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class History extends React.Component {
   static navigationOptions = {
@@ -16,7 +17,14 @@ class History extends React.Component {
     modalVisible: false,
     toastVisible: false,
     deleteItemIndex: null,
+    navigation: null,
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _deleteItem = () => {
     this.setState({modalVisible: false});
@@ -38,7 +46,7 @@ class History extends React.Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate('HistoryDetail', {
+          this.state.navigation.navigateWithDebounce('HistoryDetail', {
             itemIndex: item.index
           })
         }}
@@ -46,7 +54,7 @@ class History extends React.Component {
           this.setState({deleteItemIndex: item.index})
           this.ActionSheet.show()
         }}
-        activeOpacity={1}
+        activeOpacity={0.5}
       >
         <View style={styles.singleList}>
           <View style={{flexDirection:'column'}}>
@@ -68,7 +76,7 @@ class History extends React.Component {
       )
     } else {
       return (
-        <View style={{backgroundColor: '#fff'}}>
+        <View>
           <FlatList
             data={this.props.history.historyList}
             ItemSeparatorComponent={() => <Divider/> }
@@ -143,7 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:32,
+    paddingLeft:32,
     paddingRight: 16,
   },
   listTitle: {

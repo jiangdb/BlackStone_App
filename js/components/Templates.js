@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, Switch, TextInput, TouchableHighlight,TouchableOpacity } from 'react-native';
 
 // divider
 export class Divider extends Component {
   render() {
     return (
-      <View style={styles.divider}>
+      <View style={{paddingLeft: 18, backgroundColor: '#fff'}}>
+        <View style={styles.divider}></View>
       </View>
     );
   }
@@ -19,10 +20,11 @@ export class SingleDetail extends Component {
         <Image style={styles.settingIcon} source={this.props.img} />
         <Text style={styles.settingName}>{this.props.name}</Text>
         <Text style={styles.settingValue}>{this.props.value}</Text>
-        <TouchableOpacity  onPress={() => {Alert.alert('pressed');}}>
-          <View>
-            <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
-          </View>
+        <TouchableOpacity 
+          onPress={this.props.onPress} 
+          activeOpacity={1}
+        >
+          <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -64,7 +66,11 @@ export class ChoiceBar extends Component {
 
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress} activeOpacity={1}>
+      <TouchableOpacity 
+        onPress={this.props.onPress} 
+        // underlayColor='#f3f3f3'
+        activeOpacity={0.5}
+      >
         <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
           <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
@@ -86,10 +92,9 @@ export class ChoiceBar extends Component {
 const styles = StyleSheet.create({
   divider: {
     height:1,
-    borderTopColor: '#E0DEDE',
+    borderColor: '#E0DEDE',
     borderStyle: 'solid',
-    borderTopWidth: 0.5,
-    marginLeft: 18,
+    borderWidth: 0.5,
   },
   choiceBar: {
     height: 55,
@@ -97,8 +102,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:18,
-    marginRight: 16,
+    paddingLeft:18,
+    paddingRight: 16,
   },
   choiceTitle: {
     fontSize:17,

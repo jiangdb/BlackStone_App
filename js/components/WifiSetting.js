@@ -136,7 +136,6 @@ class WifiSetting extends React.Component {
               onSubmitEditing={() => this._lengthCheck(this.state.wifiPass)}
               onKeyPress={() => this._lengthCheck(this.state.wifiPass)}
               underlineColorAndroid='transparent'
-              keyboardType='numeric'
             />
           </View>
         </View>

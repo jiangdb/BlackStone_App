@@ -31,7 +31,7 @@ class DeviceScan extends React.Component {
     return (
       <TouchableOpacity
         onPress={this._onPressItem.bind(this, item)}
-        activeOpacity={0.6}
+        activeOpacity={0.5}
       >
         <Text style={styles.deviceList} >{ item.localName }</Text>
       </TouchableOpacity>
@@ -67,7 +67,6 @@ class DeviceScan extends React.Component {
         <Text style={styles.listTitle}>可连接设备</Text>
         <Text style={styles.warnMessage}>如果设备已经与其它手机相连，请在另一台手机小程序中断开或者退出小程序</Text>
         <FlatList
-          style={{backgroundColor: '#fff'}}
           data={this.props.bleScan.deviceScanned}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem}
@@ -99,6 +98,7 @@ const styles = StyleSheet.create({
     paddingLeft:32,
     fontSize:17,
     color:'#232323',
+    backgroundColor: '#fff'
   }
 });
 
