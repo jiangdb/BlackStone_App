@@ -4,7 +4,6 @@ import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,A
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
-import WeightChartContainer from './common/WeightChart.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 
