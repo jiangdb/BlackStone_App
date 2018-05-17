@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, YellowBox} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
-import bleService from '../services/bleServiceFaker.js'
+import bleService from '../services/bleService.js'
 import BleMessageContainer from './common/BleWarning.js'
 import BuildingButtonContainer from './common/BuildingButton.js'
 import { SingleDetail } from './Templates'
@@ -21,13 +21,58 @@ class Index extends React.Component {
     },
   };
 
+  constructor(props) {
+    super(props);
+    this.willBlurSubscription = null
+    this.didFocusSubscription = null
+  }
+
   componentDidMount() {
-    // bleService.enableWeightNotify(true)
     SplashScreen.hide();
+    if (this.props.bleStatus.deviceReady) {
+      //start notify when component mounted
+      bleService.enableWeightNotify(true)
+    }
+
+    if ( !this.willBlurSubscription ) {
+      this.willBlurSubscription = this.props.navigation.addListener(
+        'willBlur',
+        payload => {
+          console.debug('index willBlur');
+          //start notify when component mounted
+          bleService.enableWeightNotify(false)
+        }
+      );
+    }
+    if ( !this.didFocusSubscription ) {
+      this.didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+          console.debug('index didFocus');
+          if (this.props.bleStatus.deviceReady) {
+            //start notify when component mounted
+            bleService.enableWeightNotify(true)
+          }
+        }
+      );
+    }
   }
 
   componentWillUnmount() {
-    // bleService.enableWeightNotify(false)
+    //stop notify when component umount
+    bleService.enableWeightNotify(false)
+    this.willBlurSubscription.remove()
+    this.didFocusSubscription.remove()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if ( !this.props.bleStatus.deviceReady  && nextProps.bleStatus.deviceReady) {
+      //device ready
+      bleService.enableWeightNotify(true)
+    } else if ( this.props.bleStatus.deviceReady  && !nextProps.bleStatus.deviceReady) {
+      //device disconnected
+      bleService.enableWeightNotify(false)
+    }
   }
 
   render() {
@@ -139,6 +184,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    bleStatus: state.bleStatus,
     coffeeSettings: state.coffeeSettings
   }
 }

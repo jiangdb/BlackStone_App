@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View, StyleSheet, Image, TouchableWithoutFeedback,ScrollView } from 'react-native';
 import { Divider } from './Templates';
-import bleService from '../services/bleServiceFaker.js'
+import bleService from '../services/bleService.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import WeightChartContainer from './common/WeightChart.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
@@ -15,10 +15,16 @@ class CoffeeBuilder extends React.Component {
     tabBarVisible: false,
   };
 
-  state = {
-    toastVisible: false,
-    timerCount: 3,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      toastVisible: false,
+      timerCount: 3,
+    };
+    this.willBlurSubscription = null
+    this.didFocusSubscription = null
+  }
 
   componentWillMount() {
     this.props.onModeChange('countDown')
@@ -26,14 +32,45 @@ class CoffeeBuilder extends React.Component {
 
   componentDidMount() {
     this._startCountDown()
+    this.willBlurSubscription = this.props.navigation.addListener(
+      'willBlur',
+      payload => {
+        console.debug('builder willBlur');
+        //start notify when component mounted
+        bleService.enableWeightNotify(false)
+      }
+    );
+    this.didFocusSubscription = this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        console.debug('builder willFocus');
+        if (this.props.bleStatus.deviceReady) {
+          //start notify when component mounted
+          bleService.enableWeightNotify(true)
+        }
+      }
+    );
   };
 
   componentWillUnmount() {
     this.props.onModeChange('idle')
+    this.willBlurSubscription.remove()
+    this.didFocusSubscription.remove()
   }
 
   componentWillReceiveProps(nextProps) {
     //console.log('coffeeBuilder componentWillReceiveProps')
+
+    // check ble status for enable/disable notify
+    if ( !this.props.bleStatus.deviceReady  && nextProps.bleStatus.deviceReady) {
+      //device ready
+      bleService.enableWeightNotify(true)
+    } else if ( this.props.bleStatus.deviceReady  && !nextProps.bleStatus.deviceReady) {
+      //device disconnected
+      bleService.enableWeightNotify(false)
+    }
+
+    //check weight to update mode and queue data
     if (this.props.bleWeightNotify.index != nextProps.bleWeightNotify.index) {
       if (this.props.coffeeBuilder.mode == "pending") {
         if ( nextProps.bleWeightNotify.total > 0.5 ) {
@@ -334,6 +371,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    bleStatus: state.bleStatus,
     bleWeightNotify: state.bleWeightNotify,
     coffeeBuilder: state.coffeeBuilder,
     coffeeSettings: state.coffeeSettings,

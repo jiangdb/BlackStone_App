@@ -12,6 +12,12 @@ function bleScan(state, action) {
  
   switch (action.type) {
     case "BLE_FIND_DEVICE":
+      let index = state.deviceScanned.findIndex( (e) => {
+        return e.id == action.device.id;
+      })
+
+      if (index !== -1) return state
+
       return {
         ...state,
         deviceScanned: [ ...state.deviceScanned, action.device],

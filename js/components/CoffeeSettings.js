@@ -45,6 +45,11 @@ class CoffeeSettings extends React.Component {
     this.props.navigation.goBack();
   };
 
+  _readBeanWeight = () => {
+    weight = bleService.readWeight();
+    this.setState({beanWeight:weight.total});
+  };
+
   _submitBeanWeight = () => {
     if (this.state.beanWeight.length <= 0) {
       this.setState({beanWeight:this.props.coffeeSettings.beanWeight.toString()});
@@ -92,7 +97,7 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
+                <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>

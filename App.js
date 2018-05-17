@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './js/reducers/index'
 import TabNavigator from './js/components/TabNavigator'
-import bleService from './js/services/bleServiceFaker.js'
+import bleService from './js/services/bleService.js'
  
 let store = createStore(reducer)
 console.log('init store', store.getState())

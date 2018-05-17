@@ -57,6 +57,7 @@ let SCALE_CONTROL_NOTIFY = {
 };
 
 let bleManager = null
+let appStore = null
 let dispatch = null
 /*
  * structure of connectedDevice
@@ -76,8 +77,9 @@ let dispatch = null
   },
  */
 let connectedDevice = null
+let stateSubscription = null
 let weightNotifyInterval = null
-let weightMeasureNotify = null
+let weightMeasureMonitor = null
 let weightMeasurement = {
   extract: 0,
   total: 0
@@ -85,21 +87,23 @@ let weightMeasurement = {
 
 function init(store) {
   bleManager = new BleManager()
+  appStore = store
   dispatch = store.dispatch
-  const subscription = bleManager.onStateChange((state) => {
+  stateSubscription = bleManager.onStateChange((state) => {
     console.log('ble state: ' + state)
     dispatch(bleActions.bleOnBtStateChange(state))
   }, true)
 }
 
 function deInit() {
+  stateSubscription.remove()
   bleManager.destroy()
 }
 
 function deviceScanStart() {
   console.log('start scan')
   dispatch(bleActions.bleStartScan())
-  bleManager.startDeviceScan([UUIDS.SERVICE_WEIGHT], null, (error, device) => {
+  bleManager.startDeviceScan([UUIDS.SERVICE_WEIGHT], {allowDuplicates: false}, (error, device) => {
     if (error) {
       // Handle error (scanning will be stopped automatically)
       console.log('error scan')
@@ -108,7 +112,7 @@ function deviceScanStart() {
       return
     }
 
-    console.log('find device: '+device.localName)
+    console.log('find device: ' + device.localName)
     dispatch(bleActions.bleFindDevice(device))
   })
 }
@@ -117,10 +121,6 @@ function deviceScanStop() {
   console.log('stop scan')
   bleManager.stopDeviceScan()
   dispatch(bleActions.bleStopScan())
-}
-
-function deviceAfterConnect() {
-
 }
 
 function deviceConnect(device) {
@@ -243,18 +243,14 @@ function deviceConnect(device) {
               }))
             }
           })
-          return deviceControl(SCALE_CONTROL.ALARM_WEIGHT, 10000)
+          return deviceControl(SCALE_CONTROL.ALARM_WEIGHT, appStore.getState().coffeeSettings.waterWeight * 10)
         }).then((characteristic)=>{
-          return deviceControl(SCALE_CONTROL.ALARM_TIME, 150)
+          let alarmTime = Number(appStore.getState().coffeeSettings.timeMintue) * 60 + Number(appStore.getState().coffeeSettings.timeSecond)
+          return deviceControl(SCALE_CONTROL.ALARM_TIME, alarmTime)
         }).then((characteristic)=>{
-          return deviceControl(SCALE_CONTROL.ALARM_ENABLE, true)
+          //TODO use device setting
+          return deviceControl(SCALE_CONTROL.ALARM_ENABLE, false)
         }).then((characteristic)=>{
-          weightMeasureNotify = bleManager.monitorCharacteristicForDevice(
-            connectedDevice.id,
-            connectedDevice.weightService.id,
-            connectedDevice.weightService.charWeightMeasurementId,
-            weightNotifyListener
-          )
           dispatch(bleActions.bleDeviceReady(deviceInfo))
         })
         .catch((error) => {
@@ -290,13 +286,14 @@ function strToBuffer(opt, str) {
   return buffer;
 }
 
+/**
+ * Send command to device, always suppose device is connected
+ * @param {number} opt operation code
+ */
 function deviceControl(opt) {
   console.log("deviceControl: " + opt +' '+arguments[1]);
 
-  if ( !connectedDevice ) {
-    console.error("device not connected");
-    return
-  }
+  if (appStore.getState().bleStatus.connectionState != 'connected') return
 
   let buffer = null
   let offset = 0;
@@ -386,11 +383,11 @@ function deviceControl(opt) {
   )
 }
 
-function weightNotifyListener( error, characteristic ) {
+function weightNotify( error, characteristic ) {
   //console.log('weight measurement notify:')
   if (error && (error.errorCode == 201)) {
-    weightMeasureNotify.remove()
-    weightMeasureNotify = null
+    weightMeasureMonitor.remove()
+    weightMeasureMonitor = null
     return;
   }
   let val = new Buffer(characteristic.value, 'base64')
@@ -409,11 +406,185 @@ function weightNotifyListener( error, characteristic ) {
     extract: extract,
     total: total
   }
-  dispatch(bleActions.bleOnWeightChange(weightMeasurement))
 }
 
-function scaleSetZero() {
+/**
+ * Enable scale's weight notify
+ * @param {boolean} enable enable or disable notify
+ */
+function enableWeightNotify(enable) {
+  if (enable) {
+
+    if (!appStore.getState().bleStatus.deviceReady) return
+
+    //turn on scale notify
+    if (!weightMeasureMonitor) {
+      weightMeasureMonitor = bleManager.monitorCharacteristicForDevice(
+        connectedDevice.id,
+        connectedDevice.weightService.id,
+        connectedDevice.weightService.charWeightMeasurementId,
+        weightNotify
+      )
+    }
+
+    //turn on notify interval
+    if (!weightNotifyInterval) {
+      weightNotifyInterval = setInterval( ()=> {
+        dispatch(bleActions.bleOnWeightChange(weightMeasurement))
+      }, 100)
+    }
+  } else {
+    //turn off scale notify
+    if (weightMeasureMonitor) {
+      weightMeasureMonitor.remove()
+      weightMeasureMonitor = null
+    }
+
+    //turn off notify interval
+    if (weightNotifyInterval) {
+      clearInterval(weightNotifyInterval)
+      weightNotifyInterval = null
+    }
+  }
+}
+
+/**
+ * Read current weight on scale
+ * @returns {object} object with extrat and total,
+ * if extract is null, means scale is in single scale mode
+ */
+function readWeight() {
+  return weight
+}
+
+/**
+ * Set scale alarm enble or disable
+ * @param {boolean} enable enable or disable alarm
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setAlarmEnable(enable) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.ALARM_ENABLE, enable)
+}
+
+/**
+ * Set scale alarm weight, exceed this weight, scale will alarm
+ * @param {number} weight weight in coffeesetting
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setAlarmWeight(weight) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.ALARM_WEIGHT, weight * 10)
+}
+
+/**
+ * Set scale alarm time, exceed this time, scale will alarm
+ * @param {number} time time in coffeesetting
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setAlarmTime(time) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.ALARM_TIME, time)
+}
+
+/**
+ * Set scale key sound enble or disable
+ * @param {boolean} enable enable or disable key sound
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setKeySound(enable) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.KEY_SOUND, enable)
+}
+
+/**
+ * Set scale key vibrate enble or disable
+ * @param {boolean} enable enable or disable key vibrate
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setKeyVibrate(enable) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.KEY_VIBRATE, enable)
+}
+
+/**
+ * Set scale device name, max length to 20 characters, state will update
+ * @param {string} name
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setName(name) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+  if (!name.length || name.length > 20) return
+
+  dispatch(bleActions.bleOnDeviceInfoChange({
+    displayName: name,
+  }))
+
+  return deviceControl(SCALE_CONTROL.DEVICE_NAME, name)
+}
+
+/**
+ * Set scale wifi ssid, pass, max length to 20 characters, state will update
+ * @param {string} ssid Wifi SSID
+ * @param {string} pass Wifi Pass
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setWifi(ssid, pass) {
+  if (!appStore.getState().bleStatus.deviceReady) return
+  if (!ssid.length || ssid.length > 20 || !pass.length || pass.length > 20) return
+
+  return deviceControl(SCALE_CONTROL.WIFI_SSID, ssid)
+          .then((characteristics) => {
+            return deviceControl(SCALE_CONTROL.WIFI_PASS, pass)
+          })
+          .then((characteristics) => {
+            return deviceControl(SCALE_CONTROL.WIFI_CONNECT)
+          })
+}
+
+/**
+ * Set zero on scale
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function setZero() {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
   return deviceControl(SCALE_CONTROL.SET_ZERO)
+}
+
+/**
+ * Start timer on scale
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function timerStart() {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.START_TIMER)
+}
+
+/**
+ * Pause timer on scale
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function timerPause() {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.PAUSE_TIMER)
+}
+
+/**
+ * Reset timer on scale
+ * @returns {object} return nothing or Promise<Characteristic>
+ */
+function timerReset() {
+  if (!appStore.getState().bleStatus.deviceReady) return
+
+  return deviceControl(SCALE_CONTROL.RESET_TIMER)
 }
 
 module.exports = {
@@ -423,7 +594,18 @@ module.exports = {
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
-  deviceControl: deviceControl,
-  scaleSetZero: scaleSetZero
+  enableWeightNotify: enableWeightNotify,
+  readWeight: readWeight,
+  setAlarmEnable: setAlarmEnable,
+  setAlarmWeight: setAlarmWeight,
+  setAlarmTime: setAlarmTime,
+  setKeySound: setKeySound,
+  setKeyVibrate: setKeyVibrate,
+  setName: setName,
+  setWifi: setWifi,
+  setZero: setZero,
+  timerStart: timerStart,
+  timerPause: timerPause,
+  timerReset: timerReset,
 }
 

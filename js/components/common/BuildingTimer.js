@@ -28,7 +28,7 @@ class BuildingTimer extends Component {
   }
 
   render() {
-    console.log('BuildingTimer render')
+    //console.log('BuildingTimer render')
     return (
       <View style={{flexDirection:'column', alignItems: 'center'}}>
         <Text style={styles.stopwatchTimer}>
