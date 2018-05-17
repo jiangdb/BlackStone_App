@@ -4,7 +4,8 @@ import { Text, View, StyleSheet, Image, TouchableWithoutFeedback,ScrollView } fr
 import { Divider } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import WeightReadingContainer from './common/WeightReading.js'
-import WeightChartContainer from './common/WeightChart.js'
+import WeightChartDualContainer from './common/WeightChartDual.js'
+import WeightChartSingleContainer from './common/WeightChartSingle.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
 import { coffeeBuilderModeChange, coffeeBuilderQueueData,saveChartData } from '../actions/coffeeBuilder.js'
 import Toast from 'react-native-root-toast';
@@ -15,10 +16,15 @@ class CoffeeBuilder extends React.Component {
     tabBarVisible: false,
   };
 
-  state = {
-    toastVisible: false,
-    timerCount: 3,
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      scaleNumber: 1,
+      toastVisible: false,
+      timerCount: 3,
+    };
+  }
 
   componentWillMount() {
     this.props.onModeChange('countDown')
@@ -26,6 +32,12 @@ class CoffeeBuilder extends React.Component {
 
   componentDidMount() {
     this._startCountDown()
+    let weight = bleService.readWeight();
+    if (weight.exptract !== null) {
+      this.setState({
+        scaleNumber: 2,
+      })
+    }
   };
 
   componentWillUnmount() {
@@ -98,6 +110,12 @@ class CoffeeBuilder extends React.Component {
   };
 
   _getBuilderComponent = () => {
+    const weightChart = (this.state.scaleNumber == 1)? (
+      <WeightChartSingleContainer/>
+    ) : (
+      <WeightChartDualContainer/>
+    );
+
     switch (this.props.coffeeBuilder.mode) {
       case 'idle':
       case 'countDown':
@@ -117,7 +135,7 @@ class CoffeeBuilder extends React.Component {
       default:
         return (
           <View style={{backgroundColor:'#fff',alignItems: 'center'}}>
-            <WeightChartContainer/>
+            {weightChart}
 
             <View style={styles.target}>
               <View style={styles.targetContainer}>

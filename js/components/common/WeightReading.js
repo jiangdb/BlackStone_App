@@ -1,7 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View } from 'react-native';
-import bleService from '../../services/bleServiceFaker.js'
 
 class WeightReading extends Component {
   render() {
@@ -19,6 +18,10 @@ class WeightReading extends Component {
           <Text style={[styles.reader,this.props.readerStyle]}>{this.props.bleWeightNotify.total >= 3000 ? 'FFFF': this.props.bleWeightNotify.total.toFixed(1)}</Text>
         </View>
       );
+
+    //default return nothing
+    return null
+    
   }
 }
 
