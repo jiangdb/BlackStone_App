@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Image, StyleSheet,TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Image, StyleSheet,TouchableOpacity } from 'react-native';
 
 class Step1 extends React.Component {
   static navigationOptions = {
@@ -19,14 +19,14 @@ class Step1 extends React.Component {
         <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>1/4 第一步</Text>
         <Text style={{fontSize: 17,color: '#232323',marginTop: 18.5}}>请在手机设置中打开蓝牙</Text>
         <Image style={styles.image} source={require('../../images/guide_1.png')}/>
-        <TouchableWithoutFeedback onPress={() => {
+        <TouchableOpacity onPress={() => {
           if(!this.props.bleStatus.btState == 'PoweredOn') return
           this.props.navigation.navigate('Step2')
-        }}>
+        }} activeOpacity={1}>
           <View style={this.props.bleStatus.btState == 'PoweredOn' ? styles.btn : styles.btnDisabled}>
             <Text style={this.props.bleStatus.btState == 'PoweredOn' ? styles.btnText : styles.btnTextDisabled}>下一步</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </View>
     );
   }

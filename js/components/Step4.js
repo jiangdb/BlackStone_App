@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View, Image, StyleSheet,TouchableWithoutFeedback,TextInput, Keyboard } from 'react-native';
+import { Text, View, Image, StyleSheet,TouchableOpacity,TextInput, Keyboard } from 'react-native';
 import { Divider } from './Templates';
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../utils/util.js'
@@ -117,19 +117,19 @@ class Step4 extends React.Component {
           </View>
         </View>
         <View style={styles.btnContainer}>
-          <TouchableWithoutFeedback onPress={()=>this.props.onStepStateChange({show:false})}>
+          <TouchableOpacity onPress={()=>this.props.onStepStateChange({show:false})} activeOpacity={1}>
             <View style={[styles.btn, styles.btnOutline]}>
               <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
             </View>
-          </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => {
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
             if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
               this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
-          }}>
+          }} activeOpacity={1}>
             <View style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btn : styles.btnDisabled}>
               <Text style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btnText : styles.btnDisabledText}>连接</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </View>
     );
