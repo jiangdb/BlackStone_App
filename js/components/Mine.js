@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Button, Text, View , Image } from 'react-native';
+import { StyleSheet, Text, View , Image } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 

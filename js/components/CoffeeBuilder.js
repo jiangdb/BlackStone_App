@@ -8,6 +8,7 @@ import WeightChartContainer from './common/WeightChart.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
 import { coffeeBuilderModeChange, coffeeBuilderQueueData,saveChartData } from '../actions/coffeeBuilder.js'
 import Toast from 'react-native-root-toast';
+import { debounce } from '../utils/util.js'
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -92,11 +93,6 @@ class CoffeeBuilder extends React.Component {
     this.props.onModeChange('done');
   };
 
-  _onRestart = () => {
-    this.props.onModeChange('countDown');
-    this._startCountDown();
-  };
-
   _getBuilderComponent = () => {
     switch (this.props.coffeeBuilder.mode) {
       case 'idle':
@@ -140,7 +136,13 @@ class CoffeeBuilder extends React.Component {
             <BuildingTimerContainer/>
 
             <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row',marginTop:19.5,marginBottom:46.5,}}>
-              <TouchableOpacity onPress={this._onRestart} activeOpacity={1}>
+              <TouchableOpacity 
+                onPress={debounce(()=>{
+                  this.props.onModeChange('countDown');
+                  this._startCountDown();
+                },300)} 
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
                 </View>
