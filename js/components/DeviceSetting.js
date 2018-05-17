@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
 import * as bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class DeviceSetting extends React.Component {
   static navigationOptions = {
@@ -15,7 +16,14 @@ class DeviceSetting extends React.Component {
     alarm: true,
     keySound: true,
     keyVibrate: true,
+    navigation: null,
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _toggleAlarm = () => {
     this.setState({alarm: !this.state.alarm});
@@ -46,14 +54,14 @@ class DeviceSetting extends React.Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column', marginTop: 12}}>
         <BleMessageContainer/>
-        <View style={{flexDirection: 'column', backgroundColor:'#fff', marginBottom: 12}}>
+        <View style={{flexDirection: 'column', marginBottom: 12}}>
           <ChoiceBar
             title='名称'
             value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: '蓝牙未连接'}
             icon={this.props.bleStatus.deviceReady? 'more' : ''}
             onPress={() => {
               if (!this.props.bleStatus.deviceReady) return
-              this.props.navigation.navigate('DeviceName')
+              this.state.navigation.navigateWithDebounce('DeviceName')
             }}
           />
           <Divider/>
@@ -63,11 +71,11 @@ class DeviceSetting extends React.Component {
             icon={this.props.bleStatus.deviceReady? 'more' : ''}
             onPress={() => {
               if (!this.props.bleStatus.deviceReady) return
-              this.props.navigation.navigate('WifiSetting')
+              this.state.navigation.navigateWithDebounce('WifiSetting')
             }}
           />
       	</View>
-      	<View style={{flexDirection: 'column', backgroundColor:'#fff', marginBottom: 12}}>
+      	<View style={{flexDirection: 'column', marginBottom: 12}}>
 	      	<ChoiceBar
             title='报警提示'
             icon='switch'
@@ -87,12 +95,10 @@ class DeviceSetting extends React.Component {
             toggleSwitch={this._toggleKeyVibrate}
           />
       	</View>
-      	<View style={{backgroundColor:'#fff'}}>
-	      	<ChoiceBar title='关于机器' onPress={() => {
-            if (!this.props.bleStatus.deviceReady) return
-            this.props.navigation.navigate('DeviceInfo')
-          }}/>
-      	</View>
+      	<ChoiceBar title='关于机器' onPress={() => {
+          if (!this.props.bleStatus.deviceReady) return
+          this.state.navigation.navigateWithDebounce('DeviceInfo')
+        }}/>
       </View>
 
     );

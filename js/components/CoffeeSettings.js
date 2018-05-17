@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
-// import Picker from 'react-native-picker';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -30,7 +30,14 @@ class CoffeeSettings extends React.Component {
       [1, 2, 3, 4],
       [5, 6, 7, 8],
     ],
+    navigation: null,
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
@@ -69,14 +76,16 @@ class CoffeeSettings extends React.Component {
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 underlayColor='#f2f2f2'
-                onPress={() => this.props.navigation.navigate('BeanCategory')}>
+                onPress={() => this.state.navigation.navigateWithDebounce('BeanCategory')}
+                activeOpacity={1}
+              >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
                   <Image style={styles.icon} source={require('../../images/more.png')} />
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
               <Divider/>
             </View>
 
@@ -92,11 +101,11 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableWithoutFeedback  onPress={() => {Alert.alert('pressed');}}>
+                <TouchableOpacity  onPress={() => {Alert.alert('pressed');}} activeOpacity={1}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               </View>
               <Divider/>
             </View>
@@ -202,11 +211,11 @@ class CoffeeSettings extends React.Component {
               <Divider/>
             </View>
 
-          <TouchableWithoutFeedback onPress={this._saveSetting}>
+          <TouchableOpacity onPress={this._saveSetting} activeOpacity={1}>
             <View style={styles.btnSave}>
               <Text style={styles.btnSaveText}>确认</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );

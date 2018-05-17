@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableOpacity, TextInput } from 'react-native';
 import { saveFlavor } from '../actions/coffeeBuilder.js'
 
 class FlavorSelect extends React.Component {
@@ -56,11 +56,11 @@ class FlavorSelect extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.flavorSelect}>
-          <TouchableWithoutFeedback onPress={() => {this._setModalVisible(true)}}>
+          <TouchableOpacity onPress={() => {this._setModalVisible(true)}} activeOpacity={1}>
             <View style={styles.flavorContainer}>
               <Text style={styles.addFlavor}>+添加风味</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
           <Modal
             animationType="fade"
             transparent={true}
@@ -84,16 +84,19 @@ class FlavorSelect extends React.Component {
                   />
                 </View>
                 <View style={{flexDirection: 'row'}}>
-                  <TouchableWithoutFeedback onPress={() => {this._setModalVisible(false)}}>
+                  <TouchableOpacity onPress={() => {this._setModalVisible(false)}} activeOpacity={1}>
                     <View style={[styles.modalBtn,styles.withBorderRight]}>
                       <Text style={{fontSize: 18}}>取消</Text>
                     </View>
-                  </TouchableWithoutFeedback>
-                  <TouchableWithoutFeedback onPress={ () => this._addFlavor(this.state.newFlavor)}>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={ () => this._addFlavor(this.state.newFlavor)}
+                    activeOpacity={1}
+                  >
                     <View style={styles.modalBtn}>
                       <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
                     </View>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -101,23 +104,24 @@ class FlavorSelect extends React.Component {
           {
             this.state.flavorOption.map((data) => {
               return (
-                <TouchableWithoutFeedback
+                <TouchableOpacity
                   key={data.key}
                   onPress={this._togglePress.bind(this, data.key)}
+                  activeOpacity={1}
                 >
                   <View style={[styles.flavorContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
                     <Text style={[styles.flavorName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               )
             })
           }
         </ScrollView>
-        <TouchableWithoutFeedback onPress={this._saveFlavor}>
+        <TouchableOpacity onPress={this._saveFlavor} activeOpacity={1}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>确认</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </View>
 
     );
