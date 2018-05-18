@@ -22,6 +22,10 @@ const bleOnWeightChange = weight => ({
 })
 const bleStartScan = () => ({ type: "BLE_START_SCAN"})
 const bleStopScan = () => ({ type: "BLE_STOP_SCAN"})
+const bleOnSaveDeviceSetting = settings => ({
+  type: "BLE_ON_SAVE_DEVICE_SETTING",
+  settings
+})
 
 module.exports = {
   bleDeviceReady,
@@ -32,4 +36,5 @@ module.exports = {
   bleOnWeightChange,
   bleStartScan,
   bleStopScan,
+  bleOnSaveDeviceSetting,
 };

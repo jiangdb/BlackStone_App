@@ -5,6 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import * as bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
+import { bleOnSaveDeviceSetting } from '../actions/ble.js'
 
 class DeviceSetting extends React.Component {
   static navigationOptions = {
@@ -13,15 +14,23 @@ class DeviceSetting extends React.Component {
   };
 
   state = {
-    alarm: true,
-    keySound: true,
-    keyVibrate: true,
+    alarm: this.props.deviceSetting.alarm,
+    keySound: this.props.deviceSetting.keySound,
+    keyVibrate: this.props.deviceSetting.keyVibrate,
     navigation: null,
   };
 
   componentDidMount() {
     this.setState({
       navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
+
+  componentWillUnmount() {
+    this.props.bleOnSaveDeviceSetting({
+      alarm: this.state.alarm,
+      keySound: this.state.keySound,
+      keyVibrate: this.state.keyVibrate,
     })
   }
 
@@ -109,11 +118,15 @@ const mapStateToProps = state => {
   return {
     bleStatus: state.bleStatus,
     bleInfo: state.bleInfo,
+    deviceSetting: state.deviceSetting
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    bleOnSaveDeviceSetting: settings => {
+      dispatch(bleOnSaveDeviceSetting(settings))
+    }
   }
 }
 
