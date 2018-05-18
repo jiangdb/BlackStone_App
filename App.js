@@ -4,7 +4,7 @@ import { createStore } from 'redux'
 import reducer from './js/reducers/index'
 import TabNavigator from './js/components/TabNavigator'
 import bleService from './js/services/bleServiceFaker.js'
-import ShowStepContainer from './js/components/ShowStep.js'
+import GetStartContainer from './js/components/getStart/GetStart.js'
  
 let store = createStore(reducer)
 console.log('init store', store.getState())
@@ -20,7 +20,7 @@ export default class App extends React.Component {
   };
 
   _getComponent = () => {
-    if(this.state.initialState) return <ShowStepContainer/>
+    if(this.state.initialState) return <GetStartContainer/>
       return <TabNavigator/>
   }
 

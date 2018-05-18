@@ -18,7 +18,7 @@ class Step1 extends React.Component {
       <View style={{flex: 1, flexDirection:'column', alignItems: 'center', backgroundColor: 'white'}}>
         <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>1/4 第一步</Text>
         <Text style={{fontSize: 17,color: '#232323',marginTop: 18.5}}>请在手机设置中打开蓝牙</Text>
-        <Image style={styles.image} source={require('../../images/guide_1.png')}/>
+        <Image style={styles.image} source={require('../../../images/guide_1.png')}/>
         <TouchableOpacity onPress={() => {
           if(!this.props.bleStatus.btState == 'PoweredOn') return
           this.props.navigation.navigate('Step2')

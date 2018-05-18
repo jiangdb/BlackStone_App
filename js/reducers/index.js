@@ -13,5 +13,5 @@ export default combineReducers({
     saveRecord: require('./saveRecord.js'),
     weightChart: require('./weightChart.js'),
     history: require('./history.js'),
-    showStep: require('./showStep.js'),
+    getStart: require('./getStart.js'),
 })

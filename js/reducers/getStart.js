@@ -4,7 +4,7 @@ const initialState = {
  
 import type { Action } from "../actions/types";
 
-function showStep(state, action) {
+function getStart(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
@@ -18,4 +18,4 @@ function showStep(state, action) {
   }
 }
 
-module.exports = showStep;
+module.exports = getStart;

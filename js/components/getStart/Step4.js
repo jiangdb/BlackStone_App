@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableOpacity,TextInput, Keyboard } from 'react-native';
-import { Divider } from './Templates';
+import { Divider } from '../Templates';
 import Toast from 'react-native-root-toast';
-import { toUTF8Array } from '../utils/util.js'
-import bleService from '../services/bleServiceFaker.js'
-import { stepStateChange } from '../actions/showStep.js'
+import { toUTF8Array } from '../../utils/util.js'
+import bleService from '../../services/bleServiceFaker.js'
+import { stepStateChange } from '../../actions/getStart.js'
 
 class Step4 extends React.Component {
   static navigationOptions = {
@@ -112,7 +112,6 @@ class Step4 extends React.Component {
               onSubmitEditing={() => this._lengthCheck(this.state.wifiPass)}
               onKeyPress={() => this._lengthCheck(this.state.wifiPass)}
               underlineColorAndroid='transparent'
-              keyboardType='numeric'
             />
           </View>
         </View>

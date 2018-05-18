@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableOpacity, FlatList } from 'react-native';
-import {Divider} from './Templates';
-import bleService from '../services/bleServiceFaker.js'
-import { stepStateChange } from '../actions/showStep.js'
+import {Divider} from '../Templates';
+import bleService from '../../services/bleServiceFaker.js'
+import { stepStateChange } from '../../actions/getStart.js'
 
 class Step3 extends React.Component {
   static navigationOptions = {
@@ -44,7 +44,7 @@ class Step3 extends React.Component {
       }} activeOpacity={1}>
         <View style={styles.deviceList}>
           <Text style={styles.deviceListText} >{ item.localName }</Text>
-          <Image style={this.state.selectedDeviceId == item.id ? styles.image : {display:'none'}} source={require('../../images/selected.png')}/>
+          <Image style={this.state.selectedDeviceId == item.id ? styles.image : {display:'none'}} source={require('../../../images/selected.png')}/>
         </View>
       </TouchableOpacity>
     );
