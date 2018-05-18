@@ -27,7 +27,6 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    // bleService.enableWeightNotify(true)
     SplashScreen.hide();
     this.setState({
       navigation: addNavigationWithDebounce(this.props.navigation)
@@ -35,7 +34,11 @@ class Index extends React.Component {
   }
 
   componentWillUnmount() {
-    // bleService.enableWeightNotify(false)
+  }
+
+  _onReadWeight = () => {
+    let weight = bleService.readWeight()
+    this.props.onSaveCoffeeSetting({beanWeight: weight.extract.toFixed(1)})
   }
 
   render() {
@@ -59,7 +62,7 @@ class Index extends React.Component {
             <SingleDetail/>
           </View>
           <View style={styles.flexRow}>
-            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤' onPress={() => {Alert.alert('pressed');}}/>
+            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤' onPress={this._onReadWeight}/>
             <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_waterweight.png')}/>
           </View>
 

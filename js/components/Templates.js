@@ -22,9 +22,9 @@ export class SingleDetail extends Component {
         <Text style={styles.settingValue}>{this.props.value}</Text>
         <TouchableOpacity 
           onPress={this.props.onPress} 
-          activeOpacity={1}
+          activeOpacity={0.5}
         >
-          <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
+          <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0',lineHeight:30, width:40}}>{this.props.text}</Text>
         </TouchableOpacity>
       </View>
     );
