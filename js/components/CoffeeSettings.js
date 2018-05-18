@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slid
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -70,6 +71,11 @@ class CoffeeSettings extends React.Component {
     }
   };
 
+  _onReadWeight = () => {
+    let weight = bleService.readWeight()
+    this.setState({beanWeight: weight.extract.toFixed(1)})
+  };
+
   render() {
     return (
       <ScrollView style={{ flex: 1, }}>
@@ -101,7 +107,7 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableOpacity  onPress={() => {Alert.alert('pressed');}} activeOpacity={1}>
+                <TouchableOpacity  onPress={this._onReadWeight} activeOpacity={1}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
