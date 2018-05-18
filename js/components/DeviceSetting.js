@@ -14,9 +14,6 @@ class DeviceSetting extends React.Component {
   };
 
   state = {
-    alarm: this.props.deviceSetting.alarm,
-    keySound: this.props.deviceSetting.keySound,
-    keyVibrate: this.props.deviceSetting.keyVibrate,
     navigation: null,
   };
 
@@ -26,27 +23,25 @@ class DeviceSetting extends React.Component {
     })
   }
 
-  componentWillUnmount() {
-    this.props.bleOnSaveDeviceSetting({
-      alarm: this.state.alarm,
-      keySound: this.state.keySound,
-      keyVibrate: this.state.keyVibrate,
-    })
-  }
-
   _toggleAlarm = () => {
-    this.setState({alarm: !this.state.alarm});
-    bleService.setAlarmEnable(this.state.alarm);
+    this.props.bleOnSaveDeviceSetting({
+      alarm: !this.props.deviceSetting.alarm
+    })
+    bleService.setAlarmEnable(this.props.deviceSetting.alarm);
   };
 
   _toggleKeySound = () => {
-    this.setState({keySound: !this.state.keySound});
-    bleService.setKeySound(this.state.keySound);
+    this.props.bleOnSaveDeviceSetting({
+      keySound: !this.props.deviceSetting.keySound
+    })
+    bleService.setKeySound(this.props.deviceSetting.keySound);
   };
 
   _toggleKeyVibrate = () => {
-    this.setState({keyVibrate: !this.state.keyVibrate});
-    bleService.setKeyVibrate(this.state.keyVibrate);
+    this.props.bleOnSaveDeviceSetting({
+      keyVibrate: !this.props.deviceSetting.keyVibrate
+    })
+    bleService.setKeyVibrate(this.props.deviceSetting.keyVibrate);
   };
 
   _getWifiChoiceBarValue = () => {
@@ -88,19 +83,19 @@ class DeviceSetting extends React.Component {
 	      	<ChoiceBar
             title='报警提示'
             icon='switch'
-            switchValue={this.state.alarm}
+            switchValue={this.props.deviceSetting.alarm}
             toggleSwitch={this._toggleAlarm}
           />
 	      	<ChoiceBar
             title='按键声音'
             icon='switch'
-            switchValue={this.state.keySound}
+            switchValue={this.props.deviceSetting.keySound}
             toggleSwitch={this._toggleKeySound}
           />
 	      	<ChoiceBar
             title='按键振动'
             icon='switch'
-            switchValue={this.state.keyVibrate}
+            switchValue={this.props.deviceSetting.keyVibrate}
             toggleSwitch={this._toggleKeyVibrate}
           />
       	</View>
