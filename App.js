@@ -12,7 +12,7 @@ console.log('init store', store.getState())
 export default class App extends React.Component {
 
   state = {
-    initialState: true
+    initialState: false
   }
 
   componentDidMount() {

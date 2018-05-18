@@ -236,7 +236,6 @@ const styles = StyleSheet.create({
     marginLeft: 35,
   },
   reader: {
-    fontWeight: 'bold',
     color: '#232323',
     fontSize: 45,
     marginBottom: 22.5,
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
     lineHeight:21,
     fontSize:18,
     color:'#232323',
-    fontWeight: 'bold'
+    fontFamily:'DINAlternate-Bold',
   },
   targetIcon: {
     width:20,
