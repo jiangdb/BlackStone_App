@@ -73,7 +73,7 @@ class CoffeeSettings extends React.Component {
 
   _onReadWeight = () => {
     let weight = bleService.readWeight()
-    this.setState({beanWeight: weight.extract.toFixed(1)})
+    this.setState({beanWeight: weight.total.toFixed(1)})
   };
 
   render() {

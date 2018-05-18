@@ -38,7 +38,7 @@ class Index extends React.Component {
 
   _onReadWeight = () => {
     let weight = bleService.readWeight()
-    this.props.onSaveCoffeeSetting({beanWeight: weight.extract.toFixed(1)})
+    this.props.onSaveCoffeeSetting({beanWeight: weight.total.toFixed(1)})
   }
 
   render() {
