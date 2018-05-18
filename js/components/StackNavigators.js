@@ -18,6 +18,11 @@ import HistoryContainer from './History';
 import SaveRecordContainer from './SaveRecord';
 import FlavorSelectContainer from './FlavorSelect';
 import AccessoriesSelectContainer from './AccessoriesSelect';
+import FailedContainer from './getStart/Failed';
+import Step1Container from './getStart/Step1';
+import Step2Container from './getStart/Step2';
+import Step3Container from './getStart/Step3';
+import Step4Container from './getStart/Step4';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -64,8 +69,28 @@ const MineStack = StackNavigator({
   },
 });
 
+const GetStartStack = StackNavigator({
+  Step1: { screen: Step1Container },
+  Step2: { screen: Step2Container },
+  Step3: { screen: Step3Container },
+  Step4: { screen: Step4Container },
+  Failed: { screen: FailedContainer },
+},{
+  navigationOptions: {
+    headerStyle: {
+      backgroundColor: '#000',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'normal',
+      color: 'white',
+    },
+  },
+});
+
 module.exports = {
   Home: HomeStack,
   Mine: MineStack,
+  GetStartStack: GetStartStack,
 };
 
