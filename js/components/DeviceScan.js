@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, FlatList, ActivityIndicator, } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
@@ -29,10 +29,12 @@ class DeviceScan extends React.Component {
   // render device list item
   _renderItem = ({item}) => {
     return (
-      <Text
-        style={styles.deviceList}
+      <TouchableOpacity
         onPress={this._onPressItem.bind(this, item)}
-      >{ item.localName }</Text>
+        activeOpacity={0.5}
+      >
+        <Text style={styles.deviceList} >{ item.localName }</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -65,7 +67,6 @@ class DeviceScan extends React.Component {
         <Text style={styles.listTitle}>可连接设备</Text>
         <Text style={styles.warnMessage}>如果设备已经与其它手机相连，请在另一台手机小程序中断开或者退出小程序</Text>
         <FlatList
-          style={{backgroundColor: '#fff'}}
           data={this.props.bleScan.deviceScanned}
           ItemSeparatorComponent={() => <Divider/> }
           renderItem={this._renderItem}
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
     paddingLeft:32,
     fontSize:17,
     color:'#232323',
+    backgroundColor: '#fff'
   }
 });
 

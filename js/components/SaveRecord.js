@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View,StyleSheet, TextInput, ScrollView,TouchableWithoutFeedback,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
+import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
-import WeightChartContainer from './common/WeightChart.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -34,6 +34,7 @@ class SaveRecord extends React.Component {
     legend: {},
     extract: [{x:0,y:0}],
     total: [{x:0,y:0}],
+    navigation: null,
   };
 
   componentWillMount() {
@@ -122,6 +123,7 @@ class SaveRecord extends React.Component {
           labels: ['注水总量', '咖啡萃取量']
         }
       },
+      navigation: addNavigationWithDebounce(this.props.navigation)
     })
   }
 
@@ -252,8 +254,8 @@ class SaveRecord extends React.Component {
 
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
-        <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
-          <TouchableWithoutFeedback>
+        <View style={{ flexDirection: 'column', marginTop: 8.5,}}>
+          <TouchableOpacity activeOpacity={1}>
             <View style={styles.choiceBar}>
               <Text style={styles.choiceTitle}>评分</Text>
               <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
@@ -269,23 +271,23 @@ class SaveRecord extends React.Component {
                 <Text style={styles.rateValue}>{this._renderRateValue(this.state.starCount)}</Text>
               </View>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
           <Divider/>
           <ChoiceBar
             title='风味'
             value={this._getSelectedFlavor()}
             icon='more'
-            onPress={() => this.props.navigation.navigate('FlavorSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('FlavorSelect')}
           />
           <Divider/>
           <ChoiceBar
             title='设备'
             value={this._getSelectedAccessories()}
             icon='more'
-            onPress={() => this.props.navigation.navigate('AccessoriesSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('AccessoriesSelect')}
           />
           <Divider/>
-          <View style={{height:165.5}}>
+          <View style={{height:165.5,backgroundColor: '#fff'}}>
             <TextInput
               style={styles.comment}
               multiline={true}
@@ -297,7 +299,7 @@ class SaveRecord extends React.Component {
               underlineColorAndroid='transparent'
             />
           </View>
-          <View style={{ flexDirection: 'row', justifyContent:'flex-end'}}>
+          <View style={{ flexDirection: 'row', justifyContent:'flex-end',backgroundColor: '#fff'}}>
             <Text style={styles.numberIndicate}>{this.state.comment.length}/100</Text>
           </View>
         </View>
@@ -307,7 +309,7 @@ class SaveRecord extends React.Component {
             <View style={styles.detailContainer}>
               <Image style={styles.settingIcon} source={require('../../images/icon_brand.png')} />
               <Text style={styles.settingName}>咖啡豆</Text>
-              <TouchableWithoutFeedback onPress={() => {this._showModal('咖啡豆')}}>
+              <TouchableOpacity onPress={() => {this._showModal('咖啡豆')}} activeOpacity={1}>
                 <View style={styles.settingValueContainer}>
                   <Text
                     style={styles.settingValue}
@@ -315,7 +317,7 @@ class SaveRecord extends React.Component {
                     ellipsizeMode='tail'
                   >{this.state.category}</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
             <View style={styles.detailContainer}></View>
           </View>
@@ -328,11 +330,11 @@ class SaveRecord extends React.Component {
             <View style={styles.detailContainer}>
               <Image style={styles.settingIcon} source={require('../../images/icon_grandsize.png')} />
               <Text style={styles.settingName}>研磨度</Text>
-              <TouchableWithoutFeedback onPress={() => {this._showModal('研磨度')}}>
+              <TouchableOpacity onPress={() => {this._showModal('研磨度')}} activeOpacity={1}>
                 <View style={styles.settingValueContainer}>
                   <Text style={styles.settingValue}>{this.state.grandSize}</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
             <SingleDetail name='水温' value={this.props.coffeeSettings.temperature+'℃'} img={require('../../images/icon_temp.png')}/>
           </View>
@@ -360,11 +362,11 @@ class SaveRecord extends React.Component {
             touchEnabled={false}
           />
         </View>
-        <TouchableWithoutFeedback onPress={this._onSaveRecord}>
+        <TouchableOpacity onPress={this._onSaveRecord} activeOpacity={1}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>保存</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         <Modal
           animationType="fade"
           transparent={true}
@@ -390,16 +392,19 @@ class SaveRecord extends React.Component {
                 />
               </View>
               <View style={{flexDirection: 'row'}}>
-                <TouchableWithoutFeedback onPress={() => {this._setModalVisible(false)}}>
+                <TouchableOpacity onPress={() => {this._setModalVisible(false)}} activeOpacity={1}>
                   <View style={[styles.modalBtn,styles.withBorderRight]}>
                     <Text style={{fontSize: 18}}>取消</Text>
                   </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={ () => this._changeValue(this.state.newOption)}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => this._changeValue(this.state.newOption)}
+                  activeOpacity={1}
+                >
                   <View style={styles.modalBtn}>
                     <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -445,8 +450,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginLeft:18,
-    marginRight: 16,
+    paddingLeft:18,
+    paddingRight: 16,
   },
   choiceTitle: {
     fontSize:17,

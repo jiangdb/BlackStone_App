@@ -94,7 +94,8 @@ public abstract class ChartBaseManager<T extends Chart, U extends Entry> extends
         }
 
         if (BridgeUtils.validate(propMap, ReadableType.String, "position")) {
-            legend.setPosition(Legend.LegendPosition.valueOf(propMap.getString("position").toUpperCase(Locale.ENGLISH)));
+            //legend.setPosition(Legend.LegendPosition.valueOf(propMap.getString("position").toUpperCase(Locale.ENGLISH)));
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         } 
 
         if (BridgeUtils.validate(propMap, ReadableType.String, "form")) {

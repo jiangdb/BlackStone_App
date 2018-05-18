@@ -21,7 +21,8 @@ let weight = {
 function init(store) {
   dispatch = store.dispatch
   dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
-  normalBuildData = generateBuildData()
+  normalBuildData = generateDualBuildData()
+  //normalBuildData = generateSingleBuildData()
   dispatch(bleActions.bleOnConnectionStateChange('connected', {
       id: 1,
       localName: 'test1',
@@ -138,7 +139,7 @@ function deviceControl(opt) {
 /**
  * Generate a normal build data
  */
-function generateBuildData() {
+function generateDualBuildData() {
   //two channel, 0 for extract, 1 for total, 29 seconds data.
   var rtn = [
     [],
@@ -160,6 +161,37 @@ function generateBuildData() {
   // last 11 seconds set 0
   for (var i = 180; i < 290; i++) {
     rtn[0][i] = 0;
+    rtn[1][i] = 0;
+  }
+  return rtn;
+}
+
+/**
+ * Generate a normal build data
+ * extract always be null
+ */
+function generateSingleBuildData() {
+  //two channel, 0 for extract, 1 for total, 29 seconds data.
+  var rtn = [
+    [],
+    []
+  ];
+
+  // first 2 seconds reamin 0
+  for (var i=0; i<20; i++) {
+    rtn[0][i] = null;
+    rtn[1][i] = 0
+  }
+
+  // next 16 seconds keep inscrease
+  for (var i = 20; i < 180; i++) {
+    rtn[0][i] = null
+    rtn[1][i] = Math.random() * 1 + 0.1 + rtn[1][i-1];   // add random 30～50g to extract weight
+  }
+
+  // last 11 seconds set 0
+  for (var i = 180; i < 290; i++) {
+    rtn[0][i] = null;
     rtn[1][i] = 0;
   }
   return rtn;

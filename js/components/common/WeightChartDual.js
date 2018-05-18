@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, processColor,LayoutAnimation } from 'react-native';
 import { LineChart } from "../../libs/rnmpandroidchart";
 
-class WeightChart extends React.Component {
+class WeightChartDual extends React.Component {
   constructor() {
     super();
 
@@ -194,8 +194,8 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const WeightChartContainer = connect(
+const WeightChartDualContainer = connect(
   mapStateToProps,
-)(WeightChart)
+)(WeightChartDual)
 
-export default WeightChartContainer
+export default WeightChartDualContainer

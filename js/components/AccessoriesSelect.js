@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableWithoutFeedback, TextInput } from 'react-native';
+import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableOpacity, TextInput } from 'react-native';
 import { saveAccessories } from '../actions/coffeeBuilder.js';
 import Toast from 'react-native-root-toast';
 
@@ -149,44 +149,46 @@ class AccessoriesSelect extends React.Component {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={{}}>
           <View style={styles.accessoriesSelect}>
-            <TouchableWithoutFeedback onPress={() => {this._showModal('滤杯')}}>
+            <TouchableOpacity onPress={() => {this._showModal('滤杯')}} activeOpacity={1}>
               <View style={styles.optionContainer}>
                 <Text style={styles.addOption}>+添加滤杯</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
             {
               this.state.filterOption.map((data) => {
                 return (
-                  <TouchableWithoutFeedback
+                  <TouchableOpacity
                     key={data.key}
                     onPress={this._onPressFilter.bind(this, data.key)}
+                    activeOpacity={1}
                   >
                     <View style={[styles.optionContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
                       <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
                     </View>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 )
               })
             }
           </View>
 
           <View style={styles.accessoriesSelect}>
-            <TouchableWithoutFeedback onPress={() => {this._showModal('手冲壶')}}>
+            <TouchableOpacity onPress={() => {this._showModal('手冲壶')}} activeOpacity={1}>
               <View style={styles.optionContainer}>
                 <Text style={styles.addOption}>+添加手冲壶</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
             {
               this.state.kettleOption.map((data) => {
                 return (
-                  <TouchableWithoutFeedback
+                  <TouchableOpacity
                     key={data.key}
                     onPress={this._onPressKettle.bind(this, data.key)}
+                    activeOpacity={1}
                   >
                     <View style={[styles.optionContainer,data.selected? {borderColor: '#DFB86F', backgroundColor:'rgba(223,184,111,0.50)'} : {}]}>
                       <Text style={[styles.optionName, data.selected? {color: '#76510C',} : {}]} >{data.name}</Text>
                     </View>
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 )
               })
             }
@@ -194,11 +196,11 @@ class AccessoriesSelect extends React.Component {
 
         </ScrollView>
 
-        <TouchableWithoutFeedback onPress={this._saveAccessories}>
+        <TouchableOpacity onPress={this._saveAccessories} activeOpacity={1}>
           <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>确认</Text>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
 
         <Modal
           animationType="fade"
@@ -224,16 +226,22 @@ class AccessoriesSelect extends React.Component {
                 />
               </View>
               <View style={{flexDirection: 'row'}}>
-                <TouchableWithoutFeedback onPress={() => {this._setModalVisible(false)}}>
+                <TouchableOpacity 
+                  onPress={() => {this._setModalVisible(false)}}
+                  activeOpacity={1}
+                >
                   <View style={[styles.modalBtn,styles.withBorderRight]}>
                     <Text style={{fontSize: 18}}>取消</Text>
                   </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={ () => this._addOption(this.state.newOption)}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => this._addOption(this.state.newOption)}
+                  activeOpacity={1}
+                >
                   <View style={styles.modalBtn}>
                     <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
