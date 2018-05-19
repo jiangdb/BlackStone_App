@@ -3,9 +3,11 @@
  */
 
 import * as bleActions from '../actions/ble.js'
+import { BleManager } from 'react-native-ble-plx';
 
+let bleManager = null
 let dataIndex = 0
-let deviceConnected = true;
+let deviceConnected = false;
 let dispatch = null
 let normalBuildData = null
 let weightNotifyInterval = null
@@ -19,29 +21,35 @@ let weight = {
  * @param {Object} redux store object
  */
 function init(store) {
+  bleManager = new BleManager()
   dispatch = store.dispatch
-  dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   normalBuildData = generateDualBuildData()
   //normalBuildData = generateSingleBuildData()
-  dispatch(bleActions.bleOnConnectionStateChange('connected', {
-      id: 1,
-      localName: 'test1',
-      name: 'test1'
-  }))
-  deviceConnected = true;
-  dispatch(bleActions.bleOnDeviceInfoChange({
-    displayName: 'Timemore',
-    manufacturerName: 'Timemore',
-    modelNum: 'TES04PL',
-    serialNum: '30AEA41A2200',
-    fwVersion: '0.80.20',
-    description: 'line-one\r\nline-two',
-    batteryLevel: 3,
-    wifiStatus: 'connected',
-    wifiSSID: 'test'
-  }))
-  dispatch(bleActions.bleDeviceReady())
-  enableWeightNotify(true)
+  const subscription = bleManager.onStateChange((state) => {
+    dispatch(bleActions.bleOnBtStateChange(state))
+
+    //if bt is powered on and we have device connected before, try to connect it
+    if (state == "PoweredOn") {
+      device = store.getState().bleDevice.device;
+      if (device) {
+        dispatch(bleActions.bleOnConnectionStateChange('connected', device))
+        deviceConnected = true;
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          displayName: 'Timemore',
+          manufacturerName: 'Timemore',
+          modelNum: 'TES04PL',
+          serialNum: '30AEA41A2200',
+          fwVersion: '0.80.20',
+          description: 'line-one\r\nline-two',
+          batteryLevel: 3,
+          wifiStatus: 'connected',
+          wifiSSID: 'test'
+        }))
+        dispatch(bleActions.bleDeviceReady())
+        enableWeightNotify(true)
+      }
+    }
+  }, true)
 }
 
 /**
@@ -110,6 +118,7 @@ function deviceConnect(device) {
       wifiStatus: 'connected',
       wifiSSID: 'test'
     }))
+    dispatch(bleActions.bleDeviceSave(device))
     dispatch(bleActions.bleDeviceReady())
     enableWeightNotify(true)
   }, 2000)

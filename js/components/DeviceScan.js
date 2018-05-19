@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity} 
 import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
+import { bleDeviceForget } from '../actions/ble.js'
 
 class DeviceScan extends React.Component {
   state = {
@@ -49,6 +50,7 @@ class DeviceScan extends React.Component {
       switchValue: false
     });
     bleService.deviceDisconnect(device);
+    this.props.forgetDevice();
   };
 
   render() {
@@ -113,6 +115,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    forgetDevice: () => {
+      dispatch(bleDeviceForget())
+    }
   }
 }
 
