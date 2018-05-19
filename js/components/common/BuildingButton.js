@@ -3,11 +3,18 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native';
 
 class BuildingButton extends Component {
+
+  _onPressButton = () => {
+    if (this.props.bleStatus.deviceReady) {
+      this.props.onPressButton()
+    }
+  }
+
   render() {
     return (
       <View style={{flexDirection: 'row',justifyContent:'center'}}>
         <TouchableOpacity
-          onPress={this.props.onPressButton}
+          onPress={this._onPressButton}
           activeOpacity={1}
         >
           <ImageBackground

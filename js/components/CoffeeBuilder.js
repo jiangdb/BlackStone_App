@@ -38,7 +38,6 @@ class CoffeeBuilder extends React.Component {
     this.willBlurSubscription = this.props.navigation.addListener(
       'willBlur',
       payload => {
-        console.debug('builder willBlur');
         //start notify when component mounted
         bleService.enableWeightNotify(false)
       }
@@ -46,7 +45,6 @@ class CoffeeBuilder extends React.Component {
     this.didFocusSubscription = this.props.navigation.addListener(
       'didFocus',
       payload => {
-        console.debug('builder willFocus');
         if (this.props.bleStatus.deviceReady) {
           //start notify when component mounted
           bleService.enableWeightNotify(true)

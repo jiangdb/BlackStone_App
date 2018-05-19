@@ -43,7 +43,6 @@ class Index extends React.Component {
       this.willBlurSubscription = this.props.navigation.addListener(
         'willBlur',
         payload => {
-          console.debug('index willBlur');
           //start notify when component mounted
           bleService.enableWeightNotify(false)
         }
@@ -53,7 +52,6 @@ class Index extends React.Component {
       this.didFocusSubscription = this.props.navigation.addListener(
         'didFocus',
         payload => {
-          console.debug('index didFocus');
           if (this.props.bleStatus.deviceReady) {
             //start notify when component mounted
             bleService.enableWeightNotify(true)

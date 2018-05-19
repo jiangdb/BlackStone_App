@@ -3,7 +3,10 @@
  */
 
 import * as bleActions from '../actions/ble.js'
+import { BleManager } from 'react-native-ble-plx';
 
+let bleManager = null
+let stateSubscription = null
 let dataIndex = 0
 let appStore = null
 let dispatch = null
@@ -19,34 +22,43 @@ let weight = {
  * @param {Object} redux store object
  */
 function init(store) {
+  bleManager = new BleManager()
   appStore = store
   dispatch = store.dispatch
-  dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   normalBuildData = generateDualBuildData()
   //normalBuildData = generateSingleBuildData()
-  dispatch(bleActions.bleOnConnectionStateChange('connected', {
-      id: 1,
-      localName: 'test1',
-      name: 'test1'
-  }))
-  dispatch(bleActions.bleOnDeviceInfoChange({
-    displayName: 'Timemore',
-    manufacturerName: 'Timemore',
-    modelNum: 'TES04PL',
-    serialNum: '30AEA41A2200',
-    fwVersion: '0.80.20',
-    description: 'line-one\r\nline-two',
-    batteryLevel: 3,
-    wifiStatus: 'connected',
-    wifiSSID: 'test'
-  }))
-  dispatch(bleActions.bleDeviceReady())
+  stateSubscription = bleManager.onStateChange((state) => {
+    dispatch(bleActions.bleOnBtStateChange(state))
+
+    //if bt is powered on and we have device connected before, try to connect it
+    if (state == "PoweredOn") {
+      device = store.getState().bleDevice.device;
+      if (device) {
+        dispatch(bleActions.bleOnConnectionStateChange('connected', device))
+        deviceConnected = true;
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          displayName: 'Timemore',
+          manufacturerName: 'Timemore',
+          modelNum: 'TES04PL',
+          serialNum: '30AEA41A2200',
+          fwVersion: '0.80.20',
+          description: 'line-one\r\nline-two',
+          batteryLevel: 3,
+          wifiStatus: 'connected',
+          wifiSSID: 'test'
+        }))
+        dispatch(bleActions.bleDeviceReady())
+        enableWeightNotify(true)
+      }
+    }
+  }, true)
 }
 
 /**
  * Deinitiate function
  */
 function deInit() {
+  stateSubscription.remove()
 }
 
 /**
@@ -108,6 +120,7 @@ function deviceConnect(device) {
       wifiStatus: 'connected',
       wifiSSID: 'test'
     }))
+    dispatch(bleActions.bleDeviceSave(device))
     dispatch(bleActions.bleDeviceReady())
   }, 2000)
 }
@@ -190,10 +203,8 @@ function generateSingleBuildData() {
  * @param {boolean} enable enable or disable notify
  */
 function enableWeightNotify(enable) {
-  console.log('enableWeightNotify(' + enable + ')')
   if (enable) {
     if (!appStore.getState().bleStatus.deviceReady) return
-    console.log('start timer')
 
     if (weightNotifyInterval == null ) {
       weightNotifyInterval = setInterval( ()=> {
@@ -226,9 +237,9 @@ function readWeight() {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmEnable(enable) {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -237,9 +248,9 @@ function setAlarmEnable(enable) {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmWeight(weight) {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -248,9 +259,9 @@ function setAlarmWeight(weight) {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmTime(time) {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -259,9 +270,9 @@ function setAlarmTime(time) {
  * @returns {boolean} boolean for success or fail
  */
 function setKeySound(enable) {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -270,9 +281,9 @@ function setKeySound(enable) {
  * @returns {boolean} boolean for success or fail
  */
 function setKeyVibrate(enable) {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -314,10 +325,10 @@ function setWifi(ssid, pass) {
  * @returns {boolean} boolean for success or fail
  */
 function setZero() {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
   dataIndex = 0
-  return true
+  return
 }
 
 /**
@@ -325,9 +336,9 @@ function setZero() {
  * @returns {boolean} boolean for success or fail
  */
 function timerStart() {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -335,9 +346,9 @@ function timerStart() {
  * @returns {boolean} boolean for success or fail
  */
 function timerPause() {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -345,9 +356,9 @@ function timerPause() {
  * @returns {boolean} boolean for success or fail
  */
 function timerReset() {
-  if (!appStore.getState().bleStatus.deviceReady) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 module.exports = {
