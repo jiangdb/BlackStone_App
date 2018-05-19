@@ -4,7 +4,7 @@ import { View,TextInput } from 'react-native';
 import { bleOnDeviceInfoChange } from '../actions/ble.js'
 import { toUTF8Array } from '../utils/util.js'
 import Toast from 'react-native-root-toast';
-import * as bleService from '../services/bleServiceFaker.js'
+import * as bleService from '../services/bleService.js'
 
 export default class DeviceName extends React.Component {
   static navigationOptions = {

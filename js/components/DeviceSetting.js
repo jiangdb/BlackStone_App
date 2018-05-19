@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View } from 'react-native';
 import { ChoiceBar, Divider } from './Templates';
-import * as bleService from '../services/bleServiceFaker.js'
+import * as bleService from '../services/bleService.js'
 import BleMessageContainer from './common/BleWarning.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
 import { bleOnSaveDeviceSetting } from '../actions/ble.js'

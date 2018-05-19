@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View, Image, StyleSheet,TouchableOpacity, FlatList } from 'react-native';
 import {Divider} from '../Templates';
-import bleService from '../../services/bleServiceFaker.js'
+import bleService from '../../services/bleService.js'
 import { stepStateChange } from '../../actions/getStart.js'
 
 class Step3 extends React.Component {

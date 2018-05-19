@@ -4,7 +4,7 @@ import { Text, View, Image, StyleSheet,TouchableOpacity,TextInput, Keyboard } fr
 import { Divider } from '../Templates';
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../../utils/util.js'
-import bleService from '../../services/bleServiceFaker.js'
+import bleService from '../../services/bleService.js'
 import { stepStateChange } from '../../actions/getStart.js'
 
 class Step4 extends React.Component {

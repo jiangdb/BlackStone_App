@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View ,StyleSheet, TextInput,TouchableOpacity, Keyboard } from 'react-native';
-import * as bleService from '../services/bleServiceFaker.js'
+import * as bleService from '../services/bleService.js'
 import Toast from 'react-native-root-toast';
 import { toUTF8Array } from '../utils/util.js'
 
