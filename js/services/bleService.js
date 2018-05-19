@@ -251,7 +251,8 @@ function deviceConnect(device) {
           //TODO use device setting
           return deviceControl(SCALE_CONTROL.ALARM_ENABLE, false)
         }).then((characteristic)=>{
-          dispatch(bleActions.bleDeviceReady(deviceInfo))
+          dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
+          dispatch(bleActions.bleDeviceReady())
         })
         .catch((error) => {
            // Handle errors
