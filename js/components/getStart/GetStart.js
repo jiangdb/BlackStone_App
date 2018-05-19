@@ -9,6 +9,10 @@ class GetStart extends React.Component {
     SplashScreen.hide();
   }
 
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+
   render() {
     if(this.props.getStart.show) {
       return <GetStartStack/>
