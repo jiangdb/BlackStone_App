@@ -27,21 +27,21 @@ class DeviceSetting extends React.Component {
     this.props.bleOnSaveDeviceSetting({
       alarm: !this.props.deviceSetting.alarm
     })
-    bleService.setAlarmEnable(this.props.deviceSetting.alarm);
+    bleService.setAlarmEnable(!this.props.deviceSetting.alarm);
   };
 
   _toggleKeySound = () => {
     this.props.bleOnSaveDeviceSetting({
       keySound: !this.props.deviceSetting.keySound
     })
-    bleService.setKeySound(this.props.deviceSetting.keySound);
+    bleService.setKeySound(!this.props.deviceSetting.keySound);
   };
 
   _toggleKeyVibrate = () => {
     this.props.bleOnSaveDeviceSetting({
       keyVibrate: !this.props.deviceSetting.keyVibrate
     })
-    bleService.setKeyVibrate(this.props.deviceSetting.keyVibrate);
+    bleService.setKeyVibrate(!this.props.deviceSetting.keyVibrate);
   };
 
   _getWifiChoiceBarValue = () => {
