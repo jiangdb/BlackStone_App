@@ -38,10 +38,10 @@ const styles = StyleSheet.create({
     marginTop: 17,
   },
   reader: {
-    fontWeight: 'bold',
+    fontFamily:'DINAlternate-Bold',
     color: '#232323',
     fontSize: 45,
-    height: 52,
+    lineHeight: 52,
   },
 });
 

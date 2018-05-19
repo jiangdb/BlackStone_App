@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, Image, TouchableWithoutFeedback,ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity,ScrollView } from 'react-native';
 import { Divider } from './Templates';
 import bleService from '../services/bleService.js'
 import WeightReadingContainer from './common/WeightReading.js'
@@ -9,6 +9,7 @@ import WeightChartSingleContainer from './common/WeightChartSingle.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
 import { coffeeBuilderModeChange, coffeeBuilderQueueData,saveChartData } from '../actions/coffeeBuilder.js'
 import Toast from 'react-native-root-toast';
+import { debounce } from '../utils/util.js'
 
 class CoffeeBuilder extends React.Component {
   static navigationOptions = {
@@ -137,11 +138,6 @@ class CoffeeBuilder extends React.Component {
     this.props.onModeChange('done');
   };
 
-  _onRestart = () => {
-    this.props.onModeChange('countDown');
-    this._startCountDown();
-  };
-
   _getBuilderComponent = () => {
     const weightChart = (this.state.scaleNumber == 1)? (
       <WeightChartSingleContainer/>
@@ -191,28 +187,40 @@ class CoffeeBuilder extends React.Component {
             <BuildingTimerContainer/>
 
             <View style={this.props.coffeeBuilder.mode==='done' ? {display: 'none'} : {flexDirection: 'row',marginTop:19.5,marginBottom:46.5,}}>
-              <TouchableWithoutFeedback onPress={this._onRestart}>
+              <TouchableOpacity 
+                onPress={debounce(()=>{
+                  this.props.onModeChange('countDown');
+                  this._startCountDown();
+                },300)} 
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonRestart]}>
                   <Text style={{color:'#353535',fontSize:16}}>重新开始</Text>
                 </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={this._stopBuilding}>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this._stopBuilding} activeOpacity={1}>
                 <View style={[styles.button,styles.buttonEnd]}>
                   <Text style={{color:'#fff',fontSize:16}}>结束</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
             <View style={this.props.coffeeBuilder.mode==='done' ? {flexDirection: 'row',marginTop:19.5,marginBottom:46.5} : {display: 'none'}}>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
+              <TouchableOpacity 
+                onPress={() => this.props.navigation.goBack()}
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonRestart,{width:86}]}>
                   <Text style={{color:'#353535',fontSize:16}}>放弃</Text>
                 </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback onPress={() => this.props.navigation.replace('SaveRecord')}>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => this.props.navigation.replace('SaveRecord')}
+                activeOpacity={1}
+              >
                 <View style={[styles.button,styles.buttonEnd,{width:215.5}]}>
                   <Text style={{color:'#fff',fontSize:16}}>保存</Text>
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             </View>
           </View>
         );
@@ -261,7 +269,6 @@ const styles = StyleSheet.create({
     marginLeft: 35,
   },
   reader: {
-    fontWeight: 'bold',
     color: '#232323',
     fontSize: 45,
     marginBottom: 22.5,
@@ -301,7 +308,7 @@ const styles = StyleSheet.create({
     lineHeight:21,
     fontSize:18,
     color:'#232323',
-    fontWeight: 'bold'
+    fontFamily:'DINAlternate-Bold',
   },
   targetIcon: {
     width:20,

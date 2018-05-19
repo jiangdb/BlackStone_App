@@ -1,6 +1,6 @@
 import React, {Component}  from 'react';
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableWithoutFeedback,ScrollView, YellowBox} from 'react-native';
+import { StyleSheet, Text, View, PixelRatio, Image, Button, Alert, TouchableOpacity,ScrollView, YellowBox} from 'react-native';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import WeightReadingContainer from './common/WeightReading.js'
 import bleService from '../services/bleService.js'
@@ -8,6 +8,7 @@ import BleMessageContainer from './common/BleWarning.js'
 import BuildingButtonContainer from './common/BuildingButton.js'
 import { SingleDetail } from './Templates'
 import SplashScreen from 'react-native-splash-screen'
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 class Index extends React.Component {
@@ -25,10 +26,14 @@ class Index extends React.Component {
     super(props);
     this.willBlurSubscription = null
     this.didFocusSubscription = null
+    state = {
+      navigation: null,
+    }
   }
 
   componentDidMount() {
     SplashScreen.hide();
+
     if (this.props.bleStatus.deviceReady) {
       //start notify when component mounted
       bleService.enableWeightNotify(true)
@@ -56,6 +61,9 @@ class Index extends React.Component {
         }
       );
     }
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
   }
 
   componentWillUnmount() {
@@ -96,7 +104,7 @@ class Index extends React.Component {
             <SingleDetail/>
           </View>
           <View style={styles.flexRow}>
-            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤'/>
+            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤' onPress={() => {Alert.alert('pressed');}}/>
             <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_waterweight.png')}/>
           </View>
 
@@ -111,13 +119,16 @@ class Index extends React.Component {
           </View>
         </View>
 
-        <TouchableWithoutFeedback onPress={() => this.props.navigation.navigate('CoffeeSettings')}>
+        <TouchableOpacity
+          onPress={() => this.state.navigation.navigateWithDebounce('CoffeeSettings')}
+          activeOpacity={1}
+        >
           <View style={{flexDirection: 'row',justifyContent: 'center',alignItems:'center', height: 40}}>
             <Image style={styles.settingImg} source={require('../../images/index_btn_setting.jpg')} />
             <Text style={styles.settingContent}>设置参数</Text>
           </View>
-        </TouchableWithoutFeedback>
-        <BuildingButtonContainer onPressButton={() => this.props.navigation.navigate('CoffeeBuilder')}/>
+        </TouchableOpacity>
+        <BuildingButtonContainer onPressButton={() => this.state.navigation.navigateWithDebounce('CoffeeBuilder')}/>
       </ScrollView>
     );
   }
@@ -129,7 +140,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection:'column',
     backgroundColor: '#fff',
-    flex: 1,
   },
   flexRow: {
     flexDirection:'row',

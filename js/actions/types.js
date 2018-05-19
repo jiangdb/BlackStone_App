@@ -16,4 +16,5 @@ export type Action =
   | { type: "SAVE_ACCESSORIES", accessories: Object }
   | { type: "SAVE_TIMER", seconds: Object }
   | { type: "REMOVE_RECORD", recordIndex: Object }
-
+  | { type: "STEP_STATE_CHANGE", state: Object }
+  | { type: "BLE_ON_SAVE_DEVICE_SETTING", settings: Object }

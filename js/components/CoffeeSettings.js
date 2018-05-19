@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableWithoutFeedback, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
-// import Picker from 'react-native-picker';
+import { addNavigationWithDebounce } from '../utils/util.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -30,7 +30,14 @@ class CoffeeSettings extends React.Component {
       [1, 2, 3, 4],
       [5, 6, 7, 8],
     ],
+    navigation: null,
   };
+
+  componentDidMount() {
+    this.setState({
+      navigation: addNavigationWithDebounce(this.props.navigation)
+    })
+  }
 
   _saveSetting = () => {
     this.props.onSaveCoffeeSetting({
@@ -74,14 +81,16 @@ class CoffeeSettings extends React.Component {
         <View style={{ flexDirection: 'column', justifyContent: 'space-between',backgroundColor: 'white' }}>
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>咖啡豆</Text>
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 underlayColor='#f2f2f2'
-                onPress={() => this.props.navigation.navigate('BeanCategory')}>
+                onPress={() => this.state.navigation.navigateWithDebounce('BeanCategory')}
+                activeOpacity={1}
+              >
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                   <Text style={styles.settingInput}>{this.props.coffeeSettings.category}</Text>
                   <Image style={styles.icon} source={require('../../images/more.png')} />
                 </View>
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
               <Divider/>
             </View>
 
@@ -89,7 +98,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>粉重（g）</Text>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <TextInput
-                  style={styles.settingInput}
+                  style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                   value={this.state.beanWeight}
                   onChangeText={(text) => this.setState({beanWeight: text})}
                   onSubmitEditing={this._submitBeanWeight}
@@ -97,11 +106,11 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableWithoutFeedback onPress={() => {Alert.alert('pressed');}}>
+                <TouchableOpacity  onPress={() => {Alert.alert('pressed');}} activeOpacity={1}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
-                </TouchableWithoutFeedback>
+                </TouchableOpacity>
               </View>
               <Divider/>
             </View>
@@ -110,7 +119,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>粉液比（1：N）</Text>
               <View style={styles.slider}>
                 <View style={styles.sliderText}>
-                  <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.state.ratioWater}</Text>
+                  <Text style={{fontSize: 18, color:'#232323',fontFamily:'DINAlternate-Bold'}}>1 ：{this.state.ratioWater}</Text>
                 </View>
                 <Slider
                   minimumTrackTintColor='#C29F6C'
@@ -129,7 +138,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
-                style={[styles.settingInput,styles.settingInputGray]}
+                style={[styles.settingInput,styles.settingInputGray,{fontFamily:'DINAlternate-Bold'}]}
                 value={(this.state.ratioWater*this.state.beanWeight).toString()}
                 editable={false}
                 underlineColorAndroid='transparent'
@@ -181,7 +190,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>水温（℃）</Text>
               <TextInput
-                style={styles.settingInput}
+                style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.temperature.toString()}
                 onChangeText={ (text) => this.setState({temperature: text})}
                 onSubmitEditing={this._submitTemperature}
@@ -196,7 +205,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>研磨度</Text>
               <TextInput
-                style={styles.settingInput}
+                style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.grandSize}
                 onChangeText={ (text) => this.setState({grandSize: text})}
                 onSubmitEditing={this._submitGrandSize}
@@ -207,11 +216,11 @@ class CoffeeSettings extends React.Component {
               <Divider/>
             </View>
 
-          <TouchableWithoutFeedback onPress={this._saveSetting}>
+          <TouchableOpacity onPress={this._saveSetting} activeOpacity={1}>
             <View style={styles.btnSave}>
               <Text style={styles.btnSaveText}>确认</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );
@@ -354,6 +363,7 @@ const styles = StyleSheet.create({
     height:14,
     fontSize:12,
     color:'#D9D9D9',
+    fontFamily:'DINAlternate-Bold',
   },
 });
 

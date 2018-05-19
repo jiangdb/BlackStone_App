@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     lineHeight:37,
     fontSize:32,
     color:'#232323',
+    fontFamily:'DINAlternate-Bold'
   },
   textTimer:{
     lineHeight:24,

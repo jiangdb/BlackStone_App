@@ -1,14 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux'
-import { Text, View ,StyleSheet, TextInput,TouchableOpacity, Keyboard } from 'react-native';
-import * as bleService from '../services/bleServiceFaker.js'
+import { connect } from 'react-redux';
+import { Text, View, Image, StyleSheet,TouchableOpacity,TextInput, Keyboard } from 'react-native';
+import { Divider } from '../Templates';
 import Toast from 'react-native-root-toast';
-import { toUTF8Array } from '../utils/util.js'
+import { toUTF8Array } from '../../utils/util.js'
+import bleService from '../../services/bleServiceFaker.js'
+import { stepStateChange } from '../../actions/getStart.js'
 
-class WifiSetting extends React.Component {
+class Step4 extends React.Component {
   static navigationOptions = {
-    title: '无线连接',
-    tabBarVisible: false,
+    title: '开机向导',
   };
 
   state= {
@@ -75,44 +76,18 @@ class WifiSetting extends React.Component {
     this._lengthCheck(this.state.wifiPass)
   };
 
-  _getConnectStatus = () => {
-    if(this.props.bleStatus.deviceReady) {
-      if(this.props.bleInfo.wifiStatus==='connected') {
-        return '已连接';
-      } else {
-        return '未连接';
-      }
-    } else {
-      return '设备未连接';
-    }
-  };
-
-  _getWifiSSID = () => {
-    if(this.props.bleStatus.deviceReady) {
-      if(this.props.bleInfo.wifiStatus==='connected') {
-        return this.props.bleInfo.wifiSSID;
-      } else {
-        return '未连接';
-      }
-    } else {
-      return '设备未连接';
-    }
-  };
-
   _connectWifi = (ssid, pass) => {
     bleService.setWifi(ssid, pass);
-    this.props.navigation.goBack();
+    this.props.onStepStateChange({show:false})
   };
 
   render() {
-    return (
-      <View style={{flexDirection: 'column'}}>
-        <View style={styles.currentWifi}>
-          <Text style={{fontSize:17, color:'#232323'}}>{this._getConnectStatus()}</Text>
-          <Text style={{fontSize:17, color:'#878787'}}>{this._getWifiSSID()}</Text>
-        </View>
 
-        <View style={{ flexDirection: 'column', marginTop: 12, backgroundColor: '#fff',}}>
+    return (
+      <View style={{ flex: 1, flexDirection:'column', alignItems: 'center',}}>
+        <Text style={{fontSize: 24,color: '#232323',marginTop: 59}}>4/4 第四步</Text>
+        <Text style={{fontSize: 17,color: '#232323',marginTop: 18.5}}>输入WiFi信息</Text>
+        <View style={{flexDirection: 'column', marginTop: 72, backgroundColor: '#fff', width: 375}}>
           <View style={styles.choiceBar}>
             <Text style={styles.choiceTitle}>名称</Text>
             <TextInput
@@ -126,6 +101,7 @@ class WifiSetting extends React.Component {
               underlineColorAndroid='transparent'
             />
           </View>
+          <Divider />
           <View style={styles.choiceBar}>
             <Text style={styles.choiceTitle}>密码</Text>
             <TextInput
@@ -139,15 +115,16 @@ class WifiSetting extends React.Component {
             />
           </View>
         </View>
-
         <View style={styles.btnContainer}>
-          <TouchableOpacity 
-            onPress={() => {
-              if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
-                this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
-            }}
-            activeOpacity={1}
-          >
+          <TouchableOpacity onPress={()=>this.props.onStepStateChange({show:false})} activeOpacity={1}>
+            <View style={[styles.btn, styles.btnOutline]}>
+              <Text style={[styles.btnText, styles.btnOutlineText]}>略过</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            if(!this.props.bleStatus.deviceReady || !this.state.wifiSSIDReady || !this.state.wifiSSIDReady) return
+              this._connectWifi(this.state.wifiSSID, this.state.wifiPass)
+          }} activeOpacity={1}>
             <View style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btn : styles.btnDisabled}>
               <Text style={this.props.bleStatus.deviceReady && this.state.wifiSSIDReady && this.state.wifiPassReady ? styles.btnText : styles.btnDisabledText}>连接</Text>
             </View>
@@ -159,20 +136,12 @@ class WifiSetting extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  currentWifi: {
-    flexDirection: 'row',
-    marginTop: 12,
-    backgroundColor: '#fff',
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: 20,
-    paddingRight: 18,
-  },
   btnContainer: {
-    marginTop:200,
+    marginTop:138.5,
     flexDirection:'row',
-    justifyContent: 'center'
+    marginLeft: 27,
+    marginRight: 27,
+    justifyContent: 'space-between'
   },
   btn: {
     flexDirection:'row',
@@ -180,8 +149,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#383838',
     height: 35,
-    width:152.5,
+    width:153.5,
     borderRadius: 5,
+    marginLeft: 7,
   },
   btnText: {
     color:'#FFFFFF',
@@ -195,28 +165,40 @@ const styles = StyleSheet.create({
     height: 35,
     width:152.5,
     borderRadius: 5,
+    marginLeft: 7,
   },
   btnDisabledText: {
     color: '#6a6a6a',
     fontSize: 16,
   },
+  btnOutline: {
+    borderWidth: 1,
+    borderColor:'#353535',
+    borderStyle: 'solid',
+    backgroundColor: 'transparent',
+    marginRight: 7,
+  },
+  btnOutlineText: {
+    color: '#353535',
+  },
   choiceBar: {
     height: 55,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: 18,
+    marginLeft:18,
+    paddingRight: 38,
   },
   choiceTitle: {
     fontSize:17,
     color:'#232323',
-    marginLeft:20,
+    marginLeft:19,
   },
   input:{
     width:250,
     fontSize:17,
     color:'#878787',
-    marginLeft: 25
+    textAlign: 'right'
   }
 });
 
@@ -229,12 +211,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onStepStateChange: state => {
+      dispatch(stepStateChange(state))
+    }
   }
 }
 
-const WifiSettingContainer = connect(
+const Step4Container = connect(
   mapStateToProps,
   mapDispatchToProps
-)(WifiSetting)
+)(Step4)
 
-export default WifiSettingContainer
+export default Step4Container
