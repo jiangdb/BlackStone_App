@@ -18,6 +18,10 @@ export const coffeeBuilderQueueData = data => ({
   data
 });
 
+export const removeLastSecondData = () => ({
+  type: 'COFFEE_BUILDER_DATA_REMOVE_LAST_SECOND'
+});
+
 export const coffeeBuilderModeChange = mode => ({
   type: 'COFFEE_BUILDER_MODE_CHANGE',
   mode
