@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slid
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -13,6 +14,7 @@ class CoffeeSettings extends React.Component {
 
   state = {
     beanWeight: this.props.coffeeSettings.beanWeight.toString(),
+    waterWeight: this.props.coffeeSettings.waterWeight,
     ratioWater: this.props.coffeeSettings.ratioWater,
     timeMintue: this.props.coffeeSettings.timeMintue,
     timeSecond: this.props.coffeeSettings.timeSecond,
@@ -40,10 +42,11 @@ class CoffeeSettings extends React.Component {
   }
 
   _saveSetting = () => {
+    let beanWeight = Number.parseFloat(this.state.beanWeight)
     this.props.onSaveCoffeeSetting({
-      beanWeight: this.state.beanWeight,
+      beanWeight: beanWeight,
       ratioWater: this.state.ratioWater,
-      waterWeight: this.state.ratioWater*this.state.beanWeight,
+      waterWeight: this.state.ratioWater * beanWeight,
       timeMintue: this.state.timeMintue,
       timeSecond: this.state.timeSecond,
       temperature: this.state.temperature,
@@ -52,10 +55,29 @@ class CoffeeSettings extends React.Component {
     this.props.navigation.goBack();
   };
 
-  _readBeanWeight = () => {
-    weight = bleService.readWeight();
-    this.setState({beanWeight:weight.total});
+  _onBeanWeightChange = weight => {
+    let beanWeight = Number.parseFloat(weight)
+    if (isNaN(beanWeight)) {
+      return this.setState({
+        beanWeight: weight,
+        waterWeight: 0
+      })
+    }
+    
+    let waterWeight = beanWeight * this.state.ratioWater
+    this.setState({
+      beanWeight: Number.isInteger(beanWeight) ? beanWeight.toString() : beanWeight.toFixed(1),
+      waterWeight: waterWeight
+    })
   };
+
+  _onRatioChange = ratio => {
+    let beanWeight = Number.parseFloat(this.state.beanWeight)
+    this.setState({
+      ratioWater: ratio,
+      waterWeight: beanWeight * ratio
+    })
+  }
 
   _submitBeanWeight = () => {
     if (this.state.beanWeight.length <= 0) {
@@ -73,6 +95,11 @@ class CoffeeSettings extends React.Component {
     if (this.state.grandSize.length <= 0) {
       this.setState({grandSize:this.props.coffeeSettings.grandSize.toString()});
     }
+  };
+
+  _onReadWeight = () => {
+    let weight = bleService.readWeight()
+    this.setState({beanWeight: weight.total.toFixed(1)})
   };
 
   render() {
@@ -100,13 +127,13 @@ class CoffeeSettings extends React.Component {
                 <TextInput
                   style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                   value={this.state.beanWeight}
-                  onChangeText={(text) => this.setState({beanWeight: text})}
+                  onChangeText={this._onBeanWeightChange}
                   onSubmitEditing={this._submitBeanWeight}
                   onBlur={this._submitBeanWeight}
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableOpacity  onPress={() => {Alert.alert('pressed');}} activeOpacity={1}>
+                <TouchableOpacity  onPress={this._onReadWeight} activeOpacity={1}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
@@ -127,8 +154,8 @@ class CoffeeSettings extends React.Component {
                   minimumValue={1}
                   maximumValue={24}
                   step={1}
-                  value={this.state.ratioWater}
-                  onValueChange={(value) => this.setState({ratioWater: value})}
+                  value={this.props.coffeeSettings.ratioWater}
+                  onValueChange={ this._onRatioChange }
                   thumbImage={require('../../images/user-head.jpg')}
                   style={{marginLeft: -10,marginRight: -10,}}
                 />
@@ -139,7 +166,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
                 style={[styles.settingInput,styles.settingInputGray,{fontFamily:'DINAlternate-Bold'}]}
-                value={(this.state.ratioWater*this.state.beanWeight).toString()}
+                value={ Number.isInteger(this.state.waterWeight)? this.state.waterWeight.toString():this.state.waterWeight.toFixed(1)}
                 editable={false}
                 underlineColorAndroid='transparent'
               />

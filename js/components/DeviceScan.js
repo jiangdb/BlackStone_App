@@ -5,11 +5,13 @@ import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleService.js'
 import BleMessageContainer from './common/BleWarning.js'
 import { bleDeviceForget } from '../actions/ble.js'
+import Loader from './common/Loader.js'
 
 class DeviceScan extends React.Component {
   state = {
+    loading: false,
     refreshing: true,
-    switchValue: true,
+    switchValue: false,
   };
 
   static navigationOptions = {
@@ -19,6 +21,12 @@ class DeviceScan extends React.Component {
 
   //lifecycle method
   componentDidMount = () => {
+    if (this.props.bleStatus.deviceReady) { 
+      this.setState({
+        switchValue: true
+      });
+    }
+
     bleService.deviceScanStart();
   };
 
@@ -26,6 +34,19 @@ class DeviceScan extends React.Component {
   componentWillUnmount = () => {
     bleService.deviceScanStop();
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.bleStatus.deviceReady && nextProps.bleStatus.deviceReady) {
+      this.setState({
+        switchValue: true,
+        loading: false
+      });
+    } else if (this.props.bleStatus.connectionState != 'disconnected' && nextProps.bleStatus.connectionState == 'disconnected') {
+      this.setState({
+        loading: false
+      });
+    }
+  }
 
   // render device list item
   _renderItem = ({item}) => {
@@ -41,13 +62,17 @@ class DeviceScan extends React.Component {
 
   // function when press on the device item
   _onPressItem = (device) => {
+    this.setState({
+      loading: true
+    });
     bleService.deviceConnect(device);
   };
 
   //function user turn off the switch
   _onSwitchOff = (device) => {
     this.setState({
-      switchValue: false
+      switchValue: false,
+      loading: true
     });
     bleService.deviceDisconnect(device);
     this.props.forgetDevice();
@@ -56,13 +81,14 @@ class DeviceScan extends React.Component {
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
+        <Loader loading={this.state.loading} onClose={()=>{ this.setState({loading: false})}}/>
         <BleMessageContainer/>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
-            title={this.props.bleStatus.deviceReady? '已连接' : '未连接'}
-            value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: ''}
-            icon={this.props.bleStatus.deviceReady? 'switch' : ''}
-            switchValue={this.props.bleStatus.deviceReady}
+            title={this.props.bleStatus.connectionState == 'connected' ? '已连接' : '未连接'}
+            value={this.props.bleInfo.displayName}
+            icon={this.props.bleInfo.displayName ? 'switch' : ''}
+            switchValue={this.state.switchValue}
             toggleSwitch={this._onSwitchOff}
           />
         </View>

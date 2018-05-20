@@ -10,6 +10,7 @@ export type Action =
   | { type: "BLE_ON_SAVE_DEVICE_SETTING", settings: Object }
   | { type: "BLE_START_SCAN" }
   | { type: "BLE_STOP_SCAN" }
+  | { type: "COFFEE_BUILDER_DATA_REMOVE_LAST_SECOND" }
   | { type: "COFFEE_BUILDER_MODE_CHANGE", mode: Object }
   | { type: "COFFEE_BUILDER_QUEUE_DATA", data: Object }
   | { type: "REMOVE_RECORD", recordIndex: Object }

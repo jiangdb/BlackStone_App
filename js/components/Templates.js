@@ -22,9 +22,9 @@ export class SingleDetail extends Component {
         <Text style={styles.settingValue}>{this.props.value}</Text>
         <TouchableOpacity 
           onPress={this.props.onPress} 
-          activeOpacity={1}
+          activeOpacity={0.5}
         >
-          <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0'}}>{this.props.text}</Text>
+          <Text style={{marginLeft:10, fontSize:13, color:'#53B2F0',lineHeight:30, width:40}}>{this.props.text}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -44,11 +44,10 @@ export class ChoiceBar extends Component {
   //   this.setState({switchValue: !this.state.switchValue});
   // }
 
-  getIcon = () => {
+  _getIcon = () => {
     switch (this.props.icon) {
       case 'more':
         return <Image style={styles.icon} source={require('../../images/more.png')} />;
-      break;
       case 'switch':
         return <Switch
                 onValueChange={this.props.toggleSwitch}
@@ -57,11 +56,24 @@ export class ChoiceBar extends Component {
                 tintColor='#ccc'
                 thumbTintColor ='#fff'
               />;
-      break;
       default:
-        return;
-      break;
+        return null;
     }
+  }
+
+  _getChoiceValue = () => {
+    if (this.props.value) 
+      return (
+        <Text
+          style={styles.choiceValue}
+          numberOfLines={1}
+          ellipsizeMode='tail'
+        >
+          {this.props.value}
+        </Text>
+      )
+
+    return null
   }
 
   render() {
@@ -74,14 +86,8 @@ export class ChoiceBar extends Component {
         <View style={styles.choiceBar}>
           <Text style={styles.choiceTitle}>{this.props.title}</Text>
           <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
-            <Text
-              style={styles.choiceValue}
-              numberOfLines={1}
-              ellipsizeMode='tail'
-            >{this.props.value}</Text>
-            {/*-- value next to icon, eg:'未连接' --*/}
-            {this.getIcon()}
-            {/*-- icon value can be 'more', 'check','switch' or none --*/}
+            { this._getChoiceValue() }
+            { this._getIcon() }
           </View>
         </View>
       </TouchableOpacity>

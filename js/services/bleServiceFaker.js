@@ -134,6 +134,17 @@ function deviceDisconnect(device) {
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
+    dispatch(bleActions.bleOnDeviceInfoChange({
+      displayName: null,
+      manufacturerName: null,
+      modelNum: null,
+      serialNum: null,
+      fwVersion: null,
+      description: null,
+      batteryLevel: null,
+      wifiStatus: null,
+      wifiSSID: null
+    }))
   }, 1000)
 }
 

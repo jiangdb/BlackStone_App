@@ -1,4 +1,4 @@
-const bleDeviceReady = info => ({ type: "BLE_DEVICE_READY" })
+const bleDeviceReady = () => ({ type: "BLE_DEVICE_READY" })
 const bleDeviceForget = () => ({ type: "BLE_DEVICE_FORGET" })
 const bleDeviceSave = device => ({
   type: "BLE_DEVICE_SAVE",
