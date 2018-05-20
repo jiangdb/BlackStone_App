@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slid
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
+import bleService from '../services/bleServiceFaker.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -70,6 +71,11 @@ class CoffeeSettings extends React.Component {
     }
   };
 
+  _onReadWeight = () => {
+    let weight = bleService.readWeight()
+    this.setState({beanWeight: weight.total.toFixed(1)})
+  };
+
   render() {
     return (
       <ScrollView style={{ flex: 1, }}>
@@ -93,7 +99,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>粉重（g）</Text>
               <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                 <TextInput
-                  style={styles.settingInput}
+                  style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                   value={this.state.beanWeight}
                   onChangeText={(text) => this.setState({beanWeight: text})}
                   onSubmitEditing={this._submitBeanWeight}
@@ -101,7 +107,7 @@ class CoffeeSettings extends React.Component {
                   underlineColorAndroid='transparent'
                   keyboardType='numeric'
                 />
-                <TouchableOpacity  onPress={() => {Alert.alert('pressed');}} activeOpacity={1}>
+                <TouchableOpacity  onPress={this._onReadWeight} activeOpacity={1}>
                   <View style={styles.btnReadWeight}>
                     <Text style={styles.btnReadWeightText}>读秤</Text>
                   </View>
@@ -114,7 +120,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>粉液比（1：N）</Text>
               <View style={styles.slider}>
                 <View style={styles.sliderText}>
-                  <Text style={{fontSize: 18, color:'#232323',}}>1 ：{this.state.ratioWater}</Text>
+                  <Text style={{fontSize: 18, color:'#232323',fontFamily:'DINAlternate-Bold'}}>1 ：{this.state.ratioWater}</Text>
                 </View>
                 <Slider
                   minimumTrackTintColor='#C29F6C'
@@ -133,8 +139,8 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
-                style={[styles.settingInput,styles.settingInputGray]}
-                value={(this.state.ratioWater*this.state.beanWeight).toString()}
+                style={[styles.settingInput,styles.settingInputGray,{fontFamily:'DINAlternate-Bold'}]}
+                value={(this.state.ratioWater*this.state.beanWeight).fixed(1)}
                 editable={false}
                 underlineColorAndroid='transparent'
               />
@@ -185,7 +191,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>水温（℃）</Text>
               <TextInput
-                style={styles.settingInput}
+                style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.temperature.toString()}
                 onChangeText={ (text) => this.setState({temperature: text})}
                 onSubmitEditing={this._submitTemperature}
@@ -200,7 +206,7 @@ class CoffeeSettings extends React.Component {
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>研磨度</Text>
               <TextInput
-                style={styles.settingInput}
+                style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.grandSize}
                 onChangeText={ (text) => this.setState({grandSize: text})}
                 onSubmitEditing={this._submitGrandSize}
@@ -358,6 +364,7 @@ const styles = StyleSheet.create({
     height:14,
     fontSize:12,
     color:'#D9D9D9',
+    fontFamily:'DINAlternate-Bold',
   },
 });
 

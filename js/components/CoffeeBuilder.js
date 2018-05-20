@@ -25,6 +25,8 @@ class CoffeeBuilder extends React.Component {
       toastVisible: false,
       timerCount: 3,
     };
+    this.willBlurSubscription = null
+    this.didFocusSubscription = null
   }
 
   componentWillMount() {
@@ -33,6 +35,22 @@ class CoffeeBuilder extends React.Component {
 
   componentDidMount() {
     this._startCountDown()
+    this.willBlurSubscription = this.props.navigation.addListener(
+      'willBlur',
+      payload => {
+        //start notify when component mounted
+        bleService.enableWeightNotify(false)
+      }
+    );
+    this.didFocusSubscription = this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        if (this.props.bleStatus.deviceReady) {
+          //start notify when component mounted
+          bleService.enableWeightNotify(true)
+        }
+      }
+    );
     let weight = bleService.readWeight();
     if (weight.exptract !== null) {
       this.setState({
@@ -43,10 +61,23 @@ class CoffeeBuilder extends React.Component {
 
   componentWillUnmount() {
     this.props.onModeChange('idle')
+    this.willBlurSubscription.remove()
+    this.didFocusSubscription.remove()
   }
 
   componentWillReceiveProps(nextProps) {
     //console.log('coffeeBuilder componentWillReceiveProps')
+
+    // check ble status for enable/disable notify
+    if ( !this.props.bleStatus.deviceReady  && nextProps.bleStatus.deviceReady) {
+      //device ready
+      bleService.enableWeightNotify(true)
+    } else if ( this.props.bleStatus.deviceReady  && !nextProps.bleStatus.deviceReady) {
+      //device disconnected
+      bleService.enableWeightNotify(false)
+    }
+
+    //check weight to update mode and queue data
     if (this.props.bleWeightNotify.index != nextProps.bleWeightNotify.index) {
       if (this.props.coffeeBuilder.mode == "pending") {
         if ( nextProps.bleWeightNotify.total > 0.5 ) {
@@ -237,7 +268,6 @@ const styles = StyleSheet.create({
     marginLeft: 35,
   },
   reader: {
-    fontWeight: 'bold',
     color: '#232323',
     fontSize: 45,
     marginBottom: 22.5,
@@ -277,7 +307,7 @@ const styles = StyleSheet.create({
     lineHeight:21,
     fontSize:18,
     color:'#232323',
-    fontWeight: 'bold'
+    fontFamily:'DINAlternate-Bold',
   },
   targetIcon: {
     width:20,
@@ -361,6 +391,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    bleStatus: state.bleStatus,
     bleWeightNotify: state.bleWeightNotify,
     coffeeBuilder: state.coffeeBuilder,
     coffeeSettings: state.coffeeSettings,

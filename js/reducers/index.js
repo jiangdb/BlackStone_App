@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
  
 export default combineReducers({
+    bleDevice: require('./bleDevice.js'),
     bleInfo: require('./bleInfo.js'),
     bleScan: require('./bleScan.js'),
     bleStatus: require('./bleStatus.js'),
@@ -14,4 +15,5 @@ export default combineReducers({
     weightChart: require('./weightChart.js'),
     history: require('./history.js'),
     getStart: require('./getStart.js'),
+    deviceSetting: require('./deviceSetting.js'),
 })

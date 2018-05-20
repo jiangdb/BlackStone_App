@@ -5,6 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import * as bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
+import { bleOnSaveDeviceSetting } from '../actions/ble.js'
 
 class DeviceSetting extends React.Component {
   static navigationOptions = {
@@ -13,9 +14,6 @@ class DeviceSetting extends React.Component {
   };
 
   state = {
-    alarm: true,
-    keySound: true,
-    keyVibrate: true,
     navigation: null,
   };
 
@@ -26,18 +24,24 @@ class DeviceSetting extends React.Component {
   }
 
   _toggleAlarm = () => {
-    this.setState({alarm: !this.state.alarm});
-    bleService.setAlarmEnable(this.state.alarm);
+    this.props.bleOnSaveDeviceSetting({
+      alarm: !this.props.deviceSetting.alarm
+    })
+    bleService.setAlarmEnable(this.props.deviceSetting.alarm);
   };
 
   _toggleKeySound = () => {
-    this.setState({keySound: !this.state.keySound});
-    bleService.setKeySound(this.state.keySound);
+    this.props.bleOnSaveDeviceSetting({
+      keySound: !this.props.deviceSetting.keySound
+    })
+    bleService.setKeySound(this.props.deviceSetting.keySound);
   };
 
   _toggleKeyVibrate = () => {
-    this.setState({keyVibrate: !this.state.keyVibrate});
-    bleService.setKeyVibrate(this.state.keyVibrate);
+    this.props.bleOnSaveDeviceSetting({
+      keyVibrate: !this.props.deviceSetting.keyVibrate
+    })
+    bleService.setKeyVibrate(this.props.deviceSetting.keyVibrate);
   };
 
   _getWifiChoiceBarValue = () => {
@@ -79,19 +83,19 @@ class DeviceSetting extends React.Component {
 	      	<ChoiceBar
             title='报警提示'
             icon='switch'
-            switchValue={this.state.alarm}
+            switchValue={this.props.deviceSetting.alarm}
             toggleSwitch={this._toggleAlarm}
           />
 	      	<ChoiceBar
             title='按键声音'
             icon='switch'
-            switchValue={this.state.keySound}
+            switchValue={this.props.deviceSetting.keySound}
             toggleSwitch={this._toggleKeySound}
           />
 	      	<ChoiceBar
             title='按键振动'
             icon='switch'
-            switchValue={this.state.keyVibrate}
+            switchValue={this.props.deviceSetting.keyVibrate}
             toggleSwitch={this._toggleKeyVibrate}
           />
       	</View>
@@ -109,11 +113,15 @@ const mapStateToProps = state => {
   return {
     bleStatus: state.bleStatus,
     bleInfo: state.bleInfo,
+    deviceSetting: state.deviceSetting
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    bleOnSaveDeviceSetting: settings => {
+      dispatch(bleOnSaveDeviceSetting(settings))
+    }
   }
 }
 
