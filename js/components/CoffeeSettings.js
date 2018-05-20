@@ -14,6 +14,7 @@ class CoffeeSettings extends React.Component {
 
   state = {
     beanWeight: this.props.coffeeSettings.beanWeight.toString(),
+    waterWeight: this.props.coffeeSettings.waterWeight,
     ratioWater: this.props.coffeeSettings.ratioWater,
     timeMintue: this.props.coffeeSettings.timeMintue,
     timeSecond: this.props.coffeeSettings.timeSecond,
@@ -41,16 +42,34 @@ class CoffeeSettings extends React.Component {
   }
 
   _saveSetting = () => {
+    let beanWeight = Number.parseFloat(this.state.beanWeight)
     this.props.onSaveCoffeeSetting({
-      beanWeight: this.state.beanWeight,
+      beanWeight: beanWeight,
       ratioWater: this.state.ratioWater,
-      waterWeight: this.state.ratioWater*this.state.beanWeight,
+      waterWeight: this.state.ratioWater * beanWeight,
       timeMintue: this.state.timeMintue,
       timeSecond: this.state.timeSecond,
       temperature: this.state.temperature,
       grandSize: this.state.grandSize,
     });
     this.props.navigation.goBack();
+  };
+
+  _onBeanWeightChange = weight => {
+    console.log('onweightchange ' + weight)
+    let beanWeight = Number.parseFloat(weight)
+    if (isNaN(beanWeight)) {
+      return this.setState({
+        beanWeight: weight,
+        waterWeight: 0
+      })
+    }
+    
+    let waterWeight = beanWeight * this.state.ratioWater
+    this.setState({
+      beanWeight: Number.isInteger(beanWeight) ? beanWeight.toString() : beanWeight.toFixed(1),
+      waterWeight: waterWeight
+    })
   };
 
   _submitBeanWeight = () => {
@@ -101,7 +120,7 @@ class CoffeeSettings extends React.Component {
                 <TextInput
                   style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                   value={this.state.beanWeight}
-                  onChangeText={(text) => this.setState({beanWeight: text})}
+                  onChangeText={this._onBeanWeightChange}
                   onSubmitEditing={this._submitBeanWeight}
                   onBlur={this._submitBeanWeight}
                   underlineColorAndroid='transparent'
@@ -140,7 +159,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
                 style={[styles.settingInput,styles.settingInputGray,{fontFamily:'DINAlternate-Bold'}]}
-                value={(this.state.ratioWater*this.state.beanWeight).fixed(1)}
+                value={ Number.isInteger(this.state.waterWeight)? this.state.waterWeight.toString():this.state.waterWeight.toFixed(1)}
                 editable={false}
                 underlineColorAndroid='transparent'
               />
