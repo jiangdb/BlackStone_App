@@ -29,6 +29,17 @@ function coffeeBuilder(state, action) {
         mode: action.mode
       });
 
+    case "COFFEE_BUILDER_DATA_REMOVE_LAST_SECOND":
+      console.log('remove last second data')
+      console.log('before remove ' + state.datas.length)
+      if (state.datas.length <= 10) return state;
+
+      console.log('after remove ' + state.datas.slice(0, -10).length)
+      return {
+        ...state,
+        datas: state.datas.slice(0, -10),
+      };
+
     case "COFFEE_BUILDER_QUEUE_DATA":
       return {
         ...state,

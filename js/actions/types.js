@@ -7,6 +7,7 @@ export type Action =
   | { type: "BLE_DEVICE_READY"}
   | { type: "BLE_START_SCAN" }
   | { type: "BLE_STOP_SCAN" }
+  | { type: "COFFEE_BUILDER_DATA_REMOVE_LAST_SECOND" }
   | { type: "COFFEE_BUILDER_MODE_CHANGE", mode: Object }
   | { type: "COFFEE_BUILDER_QUEUE_DATA", data: Object }
   | { type: "SAVE_COFFEE_SETTINGS", settings: Object }

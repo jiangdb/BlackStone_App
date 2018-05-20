@@ -7,7 +7,7 @@ import WeightReadingContainer from './common/WeightReading.js'
 import WeightChartDualContainer from './common/WeightChartDual.js'
 import WeightChartSingleContainer from './common/WeightChartSingle.js'
 import BuildingTimerContainer from './common/BuildingTimer.js'
-import { coffeeBuilderModeChange, coffeeBuilderQueueData,saveChartData } from '../actions/coffeeBuilder.js'
+import { coffeeBuilderModeChange,coffeeBuilderQueueData,removeLastSecondData,saveChartData } from '../actions/coffeeBuilder.js'
 import Toast from 'react-native-root-toast';
 import { debounce } from '../utils/util.js'
 
@@ -54,10 +54,11 @@ class CoffeeBuilder extends React.Component {
           this.props.onDataChange(nextProps.bleWeightNotify)
         }
       } else if (this.props.coffeeBuilder.mode == "working") {
+        this.props.onDataChange(nextProps.bleWeightNotify)
         if ( nextProps.bleWeightNotify.total <= 0 ) {
           this.props.onModeChange('done');
+          this.props.autoFinish()
         }
-        this.props.onDataChange(nextProps.bleWeightNotify)
       }
     }
   }
@@ -373,6 +374,9 @@ const mapDispatchToProps = dispatch => {
     },
     onDataChange: data => {
       dispatch(coffeeBuilderQueueData(data))
+    },
+    autoFinish: () => {
+      dispatch(removeLastSecondData())
     }
   }
 }

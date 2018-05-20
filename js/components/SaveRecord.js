@@ -38,18 +38,8 @@ class SaveRecord extends React.Component {
   };
 
   componentWillMount() {
-
     let length = this.props.coffeeBuilder.datas.length
-    let lastTotal = this.props.coffeeBuilder.datas[ length - 1 ].total
-
-    if(lastTotal == 0) {
-      length = length - 10
-      this.setState({
-        actualWaterWeight: this.props.coffeeBuilder.datas[length - 1].total.toFixed(1),
-        actualRatioWater: Math.round(this.props.coffeeBuilder.datas[length - 1].total / this.props.coffeeBuilder.datas[length - 1].extract),
-      })
-    }
-
+    console.log('total data length' + length)
     for( let i = 0; i<length; i++) {
       let data = this.props.coffeeBuilder.datas[ i ]
       this.state.extract.push({
