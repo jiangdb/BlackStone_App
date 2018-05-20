@@ -140,7 +140,7 @@ class CoffeeSettings extends React.Component {
               <Text style={styles.settingTitle}>萃取量（g）</Text>
               <TextInput
                 style={[styles.settingInput,styles.settingInputGray]}
-                value={(this.state.ratioWater*this.state.beanWeight).toString()}
+                value={(this.state.ratioWater*this.state.beanWeight).fixed(1)}
                 editable={false}
                 underlineColorAndroid='transparent'
               />

@@ -38,7 +38,10 @@ class Index extends React.Component {
 
   _onReadWeight = () => {
     let weight = bleService.readWeight()
-    this.props.onSaveCoffeeSetting({beanWeight: weight.total.toFixed(1)})
+    this.props.onSaveCoffeeSetting({
+      beanWeight: weight.total,
+      waterWeight: this.props.coffeeSettings.ratioWater*weight.total,
+    })
   }
 
   render() {
@@ -62,8 +65,8 @@ class Index extends React.Component {
             <SingleDetail/>
           </View>
           <View style={styles.flexRow}>
-            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')} text='读秤' onPress={this._onReadWeight}/>
-            <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_waterweight.png')}/>
+            <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight.toFixed(1) +'g'} img={require('../../images/icon_beanweight.png')} text='读秤' onPress={this._onReadWeight}/>
+            <SingleDetail name='萃取量' value={this.props.coffeeSettings.waterWeight.toFixed(1)+'g'} img={require('../../images/icon_waterweight.png')}/>
           </View>
 
           <View style={styles.flexRow}>
