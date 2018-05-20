@@ -9,7 +9,7 @@ import { bleDeviceForget } from '../actions/ble.js'
 class DeviceScan extends React.Component {
   state = {
     refreshing: true,
-    switchValue: true,
+    switchValue: false,
   };
 
   static navigationOptions = {
@@ -19,6 +19,12 @@ class DeviceScan extends React.Component {
 
   //lifecycle method
   componentDidMount = () => {
+    if (this.props.bleStatus.deviceReady) { 
+      this.setState({
+        switchValue: true
+      });
+    }
+
     bleService.deviceScanStart();
   };
 
@@ -26,6 +32,14 @@ class DeviceScan extends React.Component {
   componentWillUnmount = () => {
     bleService.deviceScanStop();
   };
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.bleStatus.deviceReady && nextProps.bleStatus.deviceReady) {
+      this.setState({
+        switchValue: true
+      });
+    }
+  }
 
   // render device list item
   _renderItem = ({item}) => {
@@ -59,10 +73,10 @@ class DeviceScan extends React.Component {
         <BleMessageContainer/>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
-            title={this.props.bleStatus.deviceReady? '已连接' : '未连接'}
-            value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: ''}
-            icon={this.props.bleStatus.deviceReady? 'switch' : ''}
-            switchValue={this.props.bleStatus.deviceReady}
+            title={this.props.bleStatus.connectionState == 'connected' ? '已连接' : '未连接'}
+            value={this.props.bleInfo.displayName}
+            icon={this.props.bleInfo.displayName ? 'switch' : ''}
+            switchValue={this.state.switchValue}
             toggleSwitch={this._onSwitchOff}
           />
         </View>
