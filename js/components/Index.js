@@ -22,18 +22,63 @@ class Index extends React.Component {
     },
   };
 
-  state = {
-    navigation: null,
+  constructor(props) {
+    super(props);
+    this.willBlurSubscription = null
+    this.didFocusSubscription = null
+    state = {
+      navigation: null,
+    }
   }
 
   componentDidMount() {
     SplashScreen.hide();
+
+    if (this.props.bleStatus.deviceReady) {
+      //start notify when component mounted
+      bleService.enableWeightNotify(true)
+    }
+
+    if ( !this.willBlurSubscription ) {
+      this.willBlurSubscription = this.props.navigation.addListener(
+        'willBlur',
+        payload => {
+          //start notify when component mounted
+          bleService.enableWeightNotify(false)
+        }
+      );
+    }
+    if ( !this.didFocusSubscription ) {
+      this.didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+          if (this.props.bleStatus.deviceReady) {
+            //start notify when component mounted
+            bleService.enableWeightNotify(true)
+          }
+        }
+      );
+    }
     this.setState({
       navigation: addNavigationWithDebounce(this.props.navigation)
     })
   }
 
   componentWillUnmount() {
+    //stop notify when component umount
+    bleService.enableWeightNotify(false)
+    this.willBlurSubscription.remove()
+    this.didFocusSubscription.remove()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if ( !this.props.bleStatus.deviceReady  && nextProps.bleStatus.deviceReady) {
+      //device ready
+      bleService.enableWeightNotify(true)
+    } else if ( this.props.bleStatus.deviceReady  && !nextProps.bleStatus.deviceReady) {
+      //device disconnected
+      bleService.enableWeightNotify(false)
+    }
   }
 
   _onReadWeight = () => {
@@ -155,6 +200,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
+    bleStatus: state.bleStatus,
     coffeeSettings: state.coffeeSettings
   }
 }

@@ -3,9 +3,12 @@
  */
 
 import * as bleActions from '../actions/ble.js'
+import { BleManager } from 'react-native-ble-plx';
 
+let bleManager = null
+let stateSubscription = null
 let dataIndex = 0
-let deviceConnected = true;
+let appStore = null
 let dispatch = null
 let normalBuildData = null
 let weightNotifyInterval = null
@@ -19,35 +22,43 @@ let weight = {
  * @param {Object} redux store object
  */
 function init(store) {
+  bleManager = new BleManager()
+  appStore = store
   dispatch = store.dispatch
-  dispatch(bleActions.bleOnBtStateChange("PoweredOn"))
   normalBuildData = generateDualBuildData()
   //normalBuildData = generateSingleBuildData()
-  dispatch(bleActions.bleOnConnectionStateChange('connected', {
-      id: 1,
-      localName: 'test1',
-      name: 'test1'
-  }))
-  deviceConnected = true;
-  dispatch(bleActions.bleOnDeviceInfoChange({
-    displayName: 'Timemore',
-    manufacturerName: 'Timemore',
-    modelNum: 'TES04PL',
-    serialNum: '30AEA41A2200',
-    fwVersion: '0.80.20',
-    description: 'line-one\r\nline-two',
-    batteryLevel: 3,
-    wifiStatus: 'connected',
-    wifiSSID: 'test'
-  }))
-  dispatch(bleActions.bleDeviceReady())
-  enableWeightNotify(true)
+  stateSubscription = bleManager.onStateChange((state) => {
+    dispatch(bleActions.bleOnBtStateChange(state))
+
+    //if bt is powered on and we have device connected before, try to connect it
+    if (state == "PoweredOn") {
+      device = store.getState().bleDevice.device;
+      if (device) {
+        dispatch(bleActions.bleOnConnectionStateChange('connected', device))
+        deviceConnected = true;
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          displayName: 'Timemore',
+          manufacturerName: 'Timemore',
+          modelNum: 'TES04PL',
+          serialNum: '30AEA41A2200',
+          fwVersion: '0.80.20',
+          description: 'line-one\r\nline-two',
+          batteryLevel: 3,
+          wifiStatus: 'connected',
+          wifiSSID: 'test'
+        }))
+        dispatch(bleActions.bleDeviceReady())
+        enableWeightNotify(true)
+      }
+    }
+  }, true)
 }
 
 /**
  * Deinitiate function
  */
 function deInit() {
+  stateSubscription.remove()
 }
 
 /**
@@ -99,7 +110,6 @@ function deviceConnect(device) {
   dispatch(bleActions.bleOnConnectionStateChange('connecting', device))
   setTimeout(()=>{
     dispatch(bleActions.bleOnConnectionStateChange('connected', device))
-    deviceConnected = true;
     dispatch(bleActions.bleOnDeviceInfoChange({
       displayName: 'Timemore',
       manufacturerName: 'Timemore',
@@ -110,8 +120,8 @@ function deviceConnect(device) {
       wifiStatus: 'connected',
       wifiSSID: 'test'
     }))
+    dispatch(bleActions.bleDeviceSave(device))
     dispatch(bleActions.bleDeviceReady())
-    enableWeightNotify(true)
   }, 2000)
 }
 
@@ -123,17 +133,19 @@ function deviceDisconnect(device) {
   console.log('device cancelConnection')
   dispatch(bleActions.bleOnConnectionStateChange('disconnecting', device))
   setTimeout(()=>{
-    enableWeightNotify(false)
-    deviceConnected = false;
     dispatch(bleActions.bleOnConnectionStateChange('disconnected', device))
+    dispatch(bleActions.bleOnDeviceInfoChange({
+      displayName: null,
+      manufacturerName: null,
+      modelNum: null,
+      serialNum: null,
+      fwVersion: null,
+      description: null,
+      batteryLevel: null,
+      wifiStatus: null,
+      wifiSSID: null
+    }))
   }, 1000)
-}
-
-/**
- * Write command to scale
- * @param {number} opt commander
- */
-function deviceControl(opt) {
 }
 
 /**
@@ -202,9 +214,9 @@ function generateSingleBuildData() {
  * @param {boolean} enable enable or disable notify
  */
 function enableWeightNotify(enable) {
-  if (!deviceConnected) return
-
   if (enable) {
+    if (!appStore.getState().bleStatus.deviceReady) return
+
     if (weightNotifyInterval == null ) {
       weightNotifyInterval = setInterval( ()=> {
         weight.extract = normalBuildData[0][dataIndex]
@@ -236,9 +248,9 @@ function readWeight() {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmEnable(enable) {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -247,9 +259,9 @@ function setAlarmEnable(enable) {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmWeight(weight) {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -258,9 +270,9 @@ function setAlarmWeight(weight) {
  * @returns {boolean} boolean for success or fail
  */
 function setAlarmTime(time) {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -269,9 +281,9 @@ function setAlarmTime(time) {
  * @returns {boolean} boolean for success or fail
  */
 function setKeySound(enable) {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -280,9 +292,9 @@ function setKeySound(enable) {
  * @returns {boolean} boolean for success or fail
  */
 function setKeyVibrate(enable) {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -290,7 +302,8 @@ function setKeyVibrate(enable) {
  * @param {string} name
  */
 function setName(name) {
-  if (!deviceConnected || !name.length || name.length > 20) return
+  if (!appStore.getState().bleStatus.deviceReady) return
+  if (!name.length || name.length > 20) return
 
   dispatch(bleActions.bleOnDeviceInfoChange({
     displayName: name,
@@ -303,7 +316,8 @@ function setName(name) {
  * @param {string} pass Wifi Pass
  */
 function setWifi(ssid, pass) {
-  if (!deviceConnected || !ssid.length || ssid.length > 20 || !pass.length || pass.length > 20) return
+  if (!appStore.getState().bleStatus.deviceReady) return 
+  if (!ssid.length || ssid.length > 20 || !pass.length || pass.length > 20) return
 
   dispatch(bleActions.bleOnDeviceInfoChange({
     wifiSSID: ssid,
@@ -322,10 +336,10 @@ function setWifi(ssid, pass) {
  * @returns {boolean} boolean for success or fail
  */
 function setZero() {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
   dataIndex = 0
-  return true
+  return
 }
 
 /**
@@ -333,9 +347,9 @@ function setZero() {
  * @returns {boolean} boolean for success or fail
  */
 function timerStart() {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -343,9 +357,9 @@ function timerStart() {
  * @returns {boolean} boolean for success or fail
  */
 function timerPause() {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 /**
@@ -353,9 +367,9 @@ function timerPause() {
  * @returns {boolean} boolean for success or fail
  */
 function timerReset() {
-  if (!deviceConnected) return false
+  if (!appStore.getState().bleStatus.deviceReady) return
 
-  return true
+  return
 }
 
 module.exports = {
@@ -365,7 +379,7 @@ module.exports = {
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
   deviceScanStop: deviceScanStop,
-  deviceControl: deviceControl,
+  enableWeightNotify: enableWeightNotify,
   readWeight: readWeight,
   setAlarmEnable: setAlarmEnable,
   setAlarmWeight: setAlarmWeight,
