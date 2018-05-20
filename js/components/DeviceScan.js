@@ -5,9 +5,11 @@ import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleServiceFaker.js'
 import BleMessageContainer from './common/BleWarning.js'
 import { bleDeviceForget } from '../actions/ble.js'
+import Loader from './common/Loader.js'
 
 class DeviceScan extends React.Component {
   state = {
+    loading: false,
     refreshing: true,
     switchValue: false,
   };
@@ -36,7 +38,12 @@ class DeviceScan extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.bleStatus.deviceReady && nextProps.bleStatus.deviceReady) {
       this.setState({
-        switchValue: true
+        switchValue: true,
+        loading: false
+      });
+    } else if (this.props.bleStatus.connectionState != 'disconnected' && nextProps.bleStatus.connectionState == 'disconnected') {
+      this.setState({
+        loading: false
       });
     }
   }
@@ -55,13 +62,17 @@ class DeviceScan extends React.Component {
 
   // function when press on the device item
   _onPressItem = (device) => {
+    this.setState({
+      loading: true
+    });
     bleService.deviceConnect(device);
   };
 
   //function user turn off the switch
   _onSwitchOff = (device) => {
     this.setState({
-      switchValue: false
+      switchValue: false,
+      loading: true
     });
     bleService.deviceDisconnect(device);
     this.props.forgetDevice();
@@ -70,6 +81,7 @@ class DeviceScan extends React.Component {
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
+        <Loader loading={this.state.loading} onClose={()=>{ this.setState({loading: false})}}/>
         <BleMessageContainer/>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
