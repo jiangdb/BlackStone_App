@@ -56,7 +56,6 @@ class CoffeeSettings extends React.Component {
   };
 
   _onBeanWeightChange = weight => {
-    console.log('onweightchange ' + weight)
     let beanWeight = Number.parseFloat(weight)
     if (isNaN(beanWeight)) {
       return this.setState({
@@ -71,6 +70,14 @@ class CoffeeSettings extends React.Component {
       waterWeight: waterWeight
     })
   };
+
+  _onRatioChange = ratio => {
+    let beanWeight = Number.parseFloat(this.state.beanWeight)
+    this.setState({
+      ratioWater: ratio,
+      waterWeight: beanWeight * ratio
+    })
+  }
 
   _submitBeanWeight = () => {
     if (this.state.beanWeight.length <= 0) {
@@ -147,8 +154,8 @@ class CoffeeSettings extends React.Component {
                   minimumValue={1}
                   maximumValue={24}
                   step={1}
-                  value={this.state.ratioWater}
-                  onValueChange={(value) => this.setState({ratioWater: value})}
+                  value={this.props.coffeeSettings.ratioWater}
+                  onValueChange={ this._onRatioChange }
                   thumbImage={require('../../images/user-head.jpg')}
                   style={{marginLeft: -10,marginRight: -10,}}
                 />
