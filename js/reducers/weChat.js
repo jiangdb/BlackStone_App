@@ -1,7 +1,7 @@
 const initialState = {
   userInfo: { 
     openid: '',
-    nickname: '用户名',
+    nickname: '登录',
     sex: null,
     language: '',
     city: '',

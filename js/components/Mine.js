@@ -164,7 +164,7 @@ class Mine extends React.Component {
       <View style={{ flexDirection: 'column'}}>
         <View style={styles.userContainer}>
           <TouchableOpacity onPress={()=> this.ActionSheet.show()}>
-            <Image style={styles.userHeader} source={require('../../images/user-header.png')} />
+            <Image style={styles.userHeader} source={this.props.weChat.userInfo.headimgurl == ''? require('../../images/user-header.png') : {uri:this.props.weChat.userInfo.headimgurl}} />
           </TouchableOpacity>
           <Text style={styles.userName}>{this.props.weChat.userInfo.nickname}</Text>
         </View>
