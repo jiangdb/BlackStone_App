@@ -16,4 +16,5 @@ export default combineReducers({
     history: require('./history.js'),
     getStart: require('./getStart.js'),
     deviceSetting: require('./deviceSetting.js'),
+    weChat: require('./weChat.js'),
 })

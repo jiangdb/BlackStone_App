@@ -5,6 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
+import { saveWechatUserInfo } from '../actions/weChat.js'
 
 const appId = 'wx85d6b9dedc701086'
 const secretId = '692442ff78837aa6e128df87e8184b4f'
@@ -88,13 +89,15 @@ class Mine extends React.Component {
   };
 
   _getAccessToken = (responseCode) => {
-    let AccessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx85d6b9dedc701086&secret=692442ff78837aa6e128df87e8184b4f&code='+responseCode+'&grant_type=authorization_code';
+    let AccessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='+appId+'&secret='+secretId+'&code='+responseCode+'&grant_type=authorization_code';
+
+    console.log(AccessTokenUrl)
 
     fetch(AccessTokenUrl,{
       method:'GET',
       timeout: 2000,
       headers:{
-          'Content-Type':'application/json; charset=utf-8',
+        'Content-Type':'application/json; charset=utf-8',
       },
     })
     .then((response)=>response.json())
@@ -110,7 +113,7 @@ class Mine extends React.Component {
   };
 
   _getRefreshToken = (refreshtoken) => {
-    let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx85d6b9dedc701086&grant_type=refresh_token&refresh_token='+refreshtoken;
+    let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+refreshtoken;
 
     fetch(getRefreshTokenUrl,{
       method:'GET',
@@ -146,6 +149,8 @@ class Mine extends React.Component {
     .then((response)=>response.json())
     .then((responseData)=>{
         console.log('getUserInfo=',responseData);
+      this.props.onSaveWechatUserInfo(responseData)
+
     })
     .catch((error)=>{
       if(error){
@@ -161,7 +166,7 @@ class Mine extends React.Component {
           <TouchableOpacity onPress={()=> this.ActionSheet.show()}>
             <Image style={styles.userHeader} source={require('../../images/user-header.png')} />
           </TouchableOpacity>
-          <Text style={styles.userName}>用户名</Text>
+          <Text style={styles.userName}>{this.props.weChat.userInfo.nickname}</Text>
         </View>
         <View style={{ marginBottom: 12}}>
           <ChoiceBar
@@ -241,11 +246,15 @@ const mapStateToProps = state => {
     deviceScan: state.deviceScan,
     bleStatus: state.bleStatus,
     bleInfo: state.bleInfo,
+    weChat: state.weChat
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    onSaveWechatUserInfo: userInfo => {
+      dispatch(saveWechatUserInfo(userInfo))
+    }
   }
 }
 

@@ -21,3 +21,4 @@ export type Action =
   | { type: "SAVE_ACCESSORIES", accessories: Object }
   | { type: "SAVE_TIMER", seconds: Object }
   | { type: "STEP_STATE_CHANGE", state: Object }
+  | { type: "SAVE_WECHAT_USER_INFO", state: userInfo }
