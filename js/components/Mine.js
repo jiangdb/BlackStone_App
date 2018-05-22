@@ -5,7 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
-import { saveWechatUserInfo } from '../actions/weChat.js'
+import { saveWechatUserInfo, weChatLoginRequest } from '../actions/weChat.js'
 
 const appId = 'wx85d6b9dedc701086'
 const secretId = '692442ff78837aa6e128df87e8184b4f'
@@ -64,17 +64,7 @@ class Mine extends React.Component {
     wechat.isWXAppInstalled()
     .then((isInstalled) => {
       if (isInstalled) {
-        //发送授权请求
-        wechat.sendAuthRequest(scope, state)
-          .then(responseCode => {
-            //返回code码，通过code获取access_token
-            this._getAccessToken(responseCode.code);
-          })
-          .catch(err => {
-            Alert.alert('登录授权发生错误：', err.message, [
-              {text: '确定'}
-            ]);
-          })
+        this.props.onWeChatLoginRequest();
       } else {
         Platform.OS == 'ios' ?
         Alert.alert('没有安装微信', '是否安装微信？', [
@@ -162,22 +152,19 @@ class Mine extends React.Component {
   async  _shareToSession() {
     try {
       let result = await wechat.shareToSession({
-        type: 'imageUrl',
-        title: 'web image',
-        description: 'share web image to time line',
-        mediaTagName: 'email signature',
-        messageAction: undefined,
-        messageExt: undefined,
-        imageUrl: 'http://www.ncloud.hk/email-signature-262x100.png'
+        type: 'news',
+        title: 'web page',
+        description: 'share web page to time line',
+        webpageUrl: 'https://www.baidu.com/'
       });
       console.log('share image url to time line successful:', result);
     } catch (e) {
-      console.log('error:'+e)
-      // if (e instanceof wechat.WechatError) {
-      //   console.error(e.stack);
-      // } else {
-      //   throw e;
-      // }
+      // console.log('error:'+e)
+      if (e instanceof wechat.WechatError) {
+        console.error(e.stack);
+      } else {
+        throw e;
+      }
     }
   }
 
@@ -186,9 +173,9 @@ class Mine extends React.Component {
       <View style={{ flexDirection: 'column'}}>
         <View style={styles.userContainer}>
           <TouchableOpacity onPress={()=> this.ActionSheet.show()}>
-            <Image style={styles.userHeader} source={this.props.weChat.userInfo.headimgurl == ''? require('../../images/user-header.png') : {uri:this.props.weChat.userInfo.headimgurl}} />
+            <Image style={styles.userHeader} source={this.props.weChat.userInfo == null ? require('../../images/user-header.png') : {uri:this.props.weChat.userInfo.headimgurl}} />
           </TouchableOpacity>
-          <Text style={styles.userName}>{this.props.weChat.userInfo.nickname}</Text>
+          <Text style={styles.userName}>{this.props.weChat.userInfo == null ? ' 登录' : this.props.weChat.userInfo.nickname}</Text>
         </View>
         <View style={{ marginBottom: 12}}>
           <ChoiceBar
@@ -283,6 +270,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveWechatUserInfo: userInfo => {
       dispatch(saveWechatUserInfo(userInfo))
+    },
+    onWeChatLoginRequest: () => {
+      dispatch(weChatLoginRequest())
     }
   }
 }
