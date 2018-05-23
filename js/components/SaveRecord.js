@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
@@ -243,7 +244,11 @@ class SaveRecord extends React.Component {
       actualRatioWater: this.state.actualRatioWater
     });
 
-    this.props.navigation.goBack();
+    let index = this.props.history.historyList.length
+
+    this.props.navigation.replace('HistoryDetail', {
+      itemIndex: index
+    })
   };
 
   render() {

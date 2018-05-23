@@ -149,25 +149,6 @@ class Mine extends React.Component {
     })
   }
 
-  async  _shareToSession() {
-    try {
-      let result = await wechat.shareToSession({
-        type: 'news',
-        title: 'web page',
-        description: 'share web page to time line',
-        webpageUrl: 'https://www.baidu.com/'
-      });
-      console.log('share image url to time line successful:', result);
-    } catch (e) {
-      // console.log('error:'+e)
-      if (e instanceof wechat.WechatError) {
-        console.error(e.stack);
-      } else {
-        throw e;
-      }
-    }
-  }
-
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
@@ -208,19 +189,10 @@ class Mine extends React.Component {
 
         <ActionSheet
           ref={o => this.ActionSheet = o}
-          options={['微信登录', '取消', '分享']}
+          options={['微信登录', '取消']}
           cancelButtonIndex={1}
-          destructiveButtonIndex={0}
           onPress={(index) => {
             if(index == 0 ) this._WXLogin()
-            if(index == 2)  {
-              try{
-                this._shareToSession()
-              }
-              catch(e) {
-                console.log('error2:'+e)
-              }
-            }
          }}
         />
       </View>

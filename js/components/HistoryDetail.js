@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, ScrollView, processColor } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, processColor,TouchableOpacity } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { LineChart } from "../libs/rnmpandroidchart";
+import ActionSheet from 'react-native-actionsheet'
+import *as wechat from 'react-native-wechat'
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
@@ -151,6 +153,46 @@ class HistoryDetail extends React.Component {
       }
   };
 
+  async  _shareToSession() {
+    try {
+      let result = await wechat.shareToSession({
+        type: 'news',
+        title: 'web page',
+        description: 'share web page to session',
+        thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+        webpageUrl: 'https://www.shanghaieye.com.cn/barack-and-michelles-next-act-tv-deal-with-netflix/'
+      });
+      console.log('share image url to time line successful:', result);
+    } catch (e) {
+      // console.log('error:'+e)
+      if (e instanceof wechat.WechatError) {
+        console.error(e.stack);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  async  _shareToTimeline() {
+    try {
+      let result = await wechat.shareToTimeline({
+        type: 'news',
+        title: 'web page',
+        description: 'share web page to time line',
+        thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+        webpageUrl: 'https://www.shanghaieye.com.cn/barack-and-michelles-next-act-tv-deal-with-netflix/'
+      });
+      console.log('share image url to time line successful:', result);
+    } catch (e) {
+      // console.log('error:'+e)
+      if (e instanceof wechat.WechatError) {
+        console.error(e.stack);
+      } else {
+        throw e;
+      }
+    }
+  }
+
   render() {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
 
@@ -222,6 +264,22 @@ class HistoryDetail extends React.Component {
             touchEnabled={false}
           />
         </View>
+
+        <TouchableOpacity onPress={()=> this.ActionSheet.show()} activeOpacity={1}>
+          <View style={styles.btnSave}>
+            <Text style={styles.btnSaveText}>分享</Text>
+          </View>
+        </TouchableOpacity>
+
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          options={['发送给朋友', '分享到朋友圈', '取消 ']}
+          cancelButtonIndex={2}
+          onPress={(index) => {
+            if(index == 0 ) this._shareToSession()
+            if(index == 1 )  this._shareToTimeline()
+         }}
+        />
       </ScrollView>
     );
   }
@@ -267,7 +325,18 @@ const styles = StyleSheet.create({
     marginLeft: 7.5,
     marginRight: 7.5,
     backgroundColor: '#fff'
-  }
+  },
+  btnSave: {
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    height: 55,
+    backgroundColor: '#383838',
+  },
+  btnSaveText: {
+    color: '#fff',
+    fontSize: 18,
+  },
 })
 
 const mapStateToProps = state => {
