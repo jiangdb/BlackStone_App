@@ -21,7 +21,5 @@ export type Action =
   | { type: "SAVE_ACCESSORIES", accessories: Object }
   | { type: "SAVE_TIMER", seconds: Object }
   | { type: "STEP_STATE_CHANGE", state: Object }
-  | { type: "SAVE_WECHAT_USER_INFO", userInfo: Object }
-  // | { type: "WECHAT_LOGIN_REQUEST"}
   | { type: "WECHAT_LOGIN_FAIL", error: Object }
   | { type: "WECHAT_LOGIN_SUCCESS", userInfo: Object }

@@ -5,7 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
-import { saveWechatUserInfo, weChatLoginRequest } from '../actions/weChat.js'
+import { weChatLoginRequest } from '../actions/weChat.js'
 
 const appId = 'wx85d6b9dedc701086'
 const secretId = '692442ff78837aa6e128df87e8184b4f'
@@ -77,77 +77,6 @@ class Mine extends React.Component {
       }
     })
   };
-
-  _getAccessToken = (responseCode) => {
-    let AccessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='+appId+'&secret='+secretId+'&code='+responseCode+'&grant_type=authorization_code';
-
-    console.log(AccessTokenUrl)
-
-    fetch(AccessTokenUrl,{
-      method:'GET',
-      timeout: 2000,
-      headers:{
-        'Content-Type':'application/json; charset=utf-8',
-      },
-    })
-    .then((response)=>response.json())
-    .then((responseData)=>{
-      console.log('responseData.refresh_token=',responseData);
-      this._getRefreshToken(responseData.refresh_token);
-    })
-    .catch((error)=>{
-      if(error){
-        console.log('error=',error);
-      }
-    })
-  };
-
-  _getRefreshToken = (refreshtoken) => {
-    let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+refreshtoken;
-
-    fetch(getRefreshTokenUrl,{
-      method:'GET',
-      timeout: 2000,
-      headers:{
-        'Content-Type':'application/json; charset=utf-8',
-      },
-    })
-    .then((response)=>response.json())
-    .then((responseData)=>{
-        console.log('responseData.accesstoken=',responseData);
-        this._getUserInfo(responseData);
-    })
-    .catch((error)=>{
-      if(error){
-          console.log('error=',error);
-      }
-    })
-  };
-
-  _getUserInfo = (responseData) => {
-    // console.log(responseData);
-    let getUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token='+responseData.access_token+'&openid='+responseData.openid;
-    // console.log('getUserInfoUrl=',getUserInfoUrl);
-
-    fetch(getUserInfoUrl,{
-      method:'GET',
-      timeout: 2000,
-      headers:{
-        'Content-Type':'application/json; charset=utf-8',
-      },
-    })
-    .then((response)=>response.json())
-    .then((responseData)=>{
-        console.log('getUserInfo=',responseData);
-      this.props.onSaveWechatUserInfo(responseData)
-
-    })
-    .catch((error)=>{
-      if(error){
-        console.log('error=',error);
-      }
-    })
-  }
 
   render() {
     return (
@@ -240,9 +169,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSaveWechatUserInfo: userInfo => {
-      dispatch(saveWechatUserInfo(userInfo))
-    },
     onWeChatLoginRequest: () => {
       dispatch(weChatLoginRequest())
     }

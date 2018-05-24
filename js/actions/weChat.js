@@ -1,12 +1,3 @@
-export const saveWechatUserInfo = userInfo => ({
-  type: 'SAVE_WECHAT_USER_INFO',
-  userInfo
-});
-
-// export const weChatLoginRequest = () => ({
-//   type: 'WECHAT_LOGIN_REQUEST',
-// });
-
 export const weChatLoginFail = error => ({
   type: 'WECHAT_LOGIN_FAIL',
   error

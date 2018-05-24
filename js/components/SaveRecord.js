@@ -223,6 +223,8 @@ class SaveRecord extends React.Component {
 
   _onSaveRecord = () => {
     let date = new Date();
+    let index = this.props.history.historyList.length
+
     this.props.onSaveRecord({
       date: formatTime(date),
       starCount: this.state.starCount,
@@ -243,8 +245,6 @@ class SaveRecord extends React.Component {
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
     });
-
-    let index = this.props.history.historyList.length
 
     this.props.navigation.replace('HistoryDetail', {
       itemIndex: index

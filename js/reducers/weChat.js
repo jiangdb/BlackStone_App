@@ -11,10 +11,6 @@ function weChat(state, action) {
   }
  
   switch (action.type) {
-    case "SAVE_WECHAT_USER_INFO":
-      return Object.assign({}, state, {
-        userInfo: action.userInfo
-      })
 
     case "WECHAT_LOGIN_FAIL":
       return Object.assign({}, state, {
