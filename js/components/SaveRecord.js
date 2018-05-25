@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
-import { saveRecord } from '../actions/coffeeBuilder.js'
+import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
+import { saveSelectedFlavor } from '../actions/saveRecord.js'
+import { saveSelectedAccessories } from '../actions/saveRecord.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import { addNavigationWithDebounce } from '../utils/util.js'
@@ -17,8 +19,9 @@ class SaveRecord extends React.Component {
   state = {
     starCount: 5,
     comment: '',
-    flavor:[],
-    accessories: null,
+    flavorOption:this.props.flavor.flavorOption,
+    filterOption:this.props.accessories.filterOption,
+    kettleOption:this.props.accessories.kettleOption,
     actualWaterWeight: this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total.toFixed(1),
     actualRatioWater: Math.round(this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total / this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].extract),
     category: this.props.coffeeSettings.category,
@@ -125,6 +128,40 @@ class SaveRecord extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    //change saveRecord reducer back to initial state
+    this.props.onSaveSelectedFlavor({flavor:[]});
+    this.props.onSaveSelectedAccessories({accessories:[]});
+
+    //deselected  flavors and accessories in reducer 
+    this.setState({
+      flavorOption: this.state.flavorOption.map((flavor) => {
+        return Object.assign({}, flavor, {
+                  ...flavor,
+                  selected: false
+                })
+      }),
+      filterOption: this.state.filterOption.map((filter) => {
+        return Object.assign({}, filter, {
+                  ...filter,
+                  selected: false,
+                });
+      }),
+      kettleOption: this.state.kettleOption.map((kettle) => {
+        return Object.assign({}, kettle, {
+                ...kettle,
+                selected: false,
+              });
+      })
+    });
+
+    this.props.onSaveFlavor(this.state.flavorOption);
+    this.props.onSaveAccessories({
+      filterOption:this.state.filterOption,
+      kettleOption:this.state.kettleOption
+    });
+  }
+
   onBackButtonPressAndroid = () => {
       console.log('back');
   };
@@ -158,24 +195,18 @@ class SaveRecord extends React.Component {
   };
 
   _getSelectedFlavor = () => {
-    let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
-
-    if(selectedFlavorObject.length === 0) {
+    if(this.props.saveRecord.flavor.length === 0) {
       return '请选择';
     } else {
-      return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
+      return this.props.saveRecord.flavor.join(',')
     }
   };
 
   _getSelectedAccessories = () => {
-    let selectedFilter = this.props.accessories.filterOption.filter((filter) => filter.selected);
-    let selectedKettle = this.props.accessories.kettleOption.filter((kettle) => kettle.selected);
-
-    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+    if(this.props.saveRecord.accessories.length === 0) {
       return '请选择';
     } else {
-      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return selectedAccessories.join(" ");
+      return this.props.saveRecord.accessories.join(',')
     }
   };
 
@@ -225,11 +256,8 @@ class SaveRecord extends React.Component {
     this.props.onSaveRecord({
       date: formatTime(date),
       starCount: this.state.starCount,
-      flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
-      accessories: {
-        filter: this.props.accessories.filterOption.filter((filter) => filter.selected),
-        kettle: this.props.accessories.kettleOption.filter((kettle) => kettle.selected)
-      },
+      flavor: this.props.saveRecord.flavor,
+      accessories: this.props.saveRecord.accessories,
       comment: this.state.comment,
       category: this.state.category,
       ratioWater: this.props.coffeeSettings.ratioWater,
@@ -273,14 +301,14 @@ class SaveRecord extends React.Component {
             title='风味'
             value={this._getSelectedFlavor()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('FlavorSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Flavor')}
           />
           <Divider/>
           <ChoiceBar
             title='设备'
             value={this._getSelectedAccessories()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('AccessoriesSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Accessories')}
           />
           <Divider/>
           <View style={{height:165.5,backgroundColor: '#fff'}}>
@@ -543,10 +571,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     coffeeSettings: state.coffeeSettings,
-    flavor: state.flavorSelect,
-    accessories: state.accessoriesSelect,
+    flavor: state.flavor,
+    accessories: state.accessories,
     coffeeBuilder: state.coffeeBuilder,
     history: state.history,
+    saveRecord: state.saveRecord
   }
 }
 
@@ -554,6 +583,18 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
+    },
+    onSaveFlavor: flavor => {
+      dispatch(saveFlavor(flavor))
+    },
+    onSaveAccessories: (accessories) => {
+      dispatch(saveAccessories(accessories))
+    },
+    onSaveSelectedFlavor: flavor => {
+      dispatch(saveSelectedFlavor(flavor))
+    },
+    onSaveSelectedAccessories: (accessories) => {
+      dispatch(saveSelectedAccessories(accessories))
     }
   }
 }

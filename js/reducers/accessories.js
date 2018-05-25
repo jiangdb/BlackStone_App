@@ -67,7 +67,7 @@ const initialState = {
  
 import type { Action } from "../actions/types";
 
-function accessoriesSelect(state, action) {
+function accessories(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
@@ -80,4 +80,4 @@ function accessoriesSelect(state, action) {
   }
 }
 
-module.exports = accessoriesSelect;
+module.exports = accessories;
