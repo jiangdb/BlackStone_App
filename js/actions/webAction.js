@@ -11,25 +11,25 @@ let API_WORK_DELETE = "/work/"
 let API_OTA = "/device/ota/"
 let API_DEVICE_ONLINE = "/device/online"
 
-// let token = null;
-let tokenExpireAt = null;
+let token = null
+let tokenExpireAt = null
 
-import *as wechat from 'react-native-wechat';
+function init(store) {
+	token = store.getState().weChat.token
+}
 
-
-function checkUpgrade(model, version, token) {
-  // if (!token) return;
+function checkUpgrade(model, version) {
+  	// if (!token) return;
 
 	return function (dispatch) {
-	  	return fetch(HOST + API_OTA + model,{
+  console.log(HOST + API_OTA + model + '?' + version)
+
+	  	return fetch(HOST + API_OTA + model + '?version=' + version,{
 		    method: 'GET',
 		    header: {
 		      'content-type': 'application/json',
 		      'Authorization': token
-		    },
-		    body: JSON.stringify({
-				version: version,
-			})
+		    }
 	  	})
 	  	.then((response)=>response.json())
 	    .then((responseData)=>{
@@ -41,6 +41,46 @@ function checkUpgrade(model, version, token) {
 	}
 }
 
+function storeWork(work) {
+  // if (!token) return;
+	return function (dispatch) {
+		console.log('storeWork')
+	  	return fetch(HOST + API_WORK_STORE,{
+		    method: 'POST',
+		    header: {
+		      'content-type': 'application/json',
+		      'Authorization': token
+		    },
+		    body: JSON.stringify({
+				device: work.device,
+      			bean_category: work.category,
+				bean_weight: work.beanWeight,
+				water_ratio: work.ratioWater,
+				water_weight: work.waterWeight,
+				grand_size: work.grandSize,
+				temperature: work.temperature,
+				work_time: work.totalSeconds,
+				rating: work.starCount,
+				flavor: work.flavor,
+				accessories: work.accessories,
+				feeling:  work.comment,
+				data: work.chartDatas,
+				started_at: work.date,
+			})
+	  	})
+	  	.then((response)=>response.json())
+	    .then((responseData)=>{
+	    	console.log('success')
+	    	console.log(responseData)
+	    })
+	    .catch(err => {
+			console.log(err.message)
+		})
+	}
+}
+
 module.exports = {
-  checkUpgrade: checkUpgrade,
+	init: init,
+  	checkUpgrade: checkUpgrade,
+	storeWork: storeWork,
 }

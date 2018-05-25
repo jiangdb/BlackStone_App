@@ -5,7 +5,7 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
-import *as historyAction from '../actions/history.js'
+import {storeWork} from '../actions/webAction.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import { addNavigationWithDebounce } from '../utils/util.js'
@@ -248,7 +248,7 @@ class SaveRecord extends React.Component {
     }
 
     this.props.onSaveRecord(work);
-    historyAction.storeWork(work);
+    this.props.onStoreWork(work);
 
     this.props.navigation.replace('HistoryDetail', {
       itemIndex: index
@@ -564,7 +564,10 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
-    }
+    },
+    onStoreWork: work => {
+      dispatch(storeWork(work))
+    },
   }
 }
 
