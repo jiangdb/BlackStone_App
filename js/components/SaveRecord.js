@@ -158,24 +158,18 @@ class SaveRecord extends React.Component {
   };
 
   _getSelectedFlavor = () => {
-    let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
-
-    if(selectedFlavorObject.length === 0) {
+    if(this.props.saveRecord.flavor.length === 0) {
       return '请选择';
     } else {
-      return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
+      return this.props.saveRecord.flavor.join(',')
     }
   };
 
   _getSelectedAccessories = () => {
-    let selectedFilter = this.props.accessories.filterOption.filter((filter) => filter.selected);
-    let selectedKettle = this.props.accessories.kettleOption.filter((kettle) => kettle.selected);
-
-    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+    if(this.props.saveRecord.accessories.length === 0) {
       return '请选择';
     } else {
-      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return selectedAccessories.join(" ");
+      return this.props.saveRecord.accessories.join(',')
     }
   };
 
@@ -225,11 +219,8 @@ class SaveRecord extends React.Component {
     this.props.onSaveRecord({
       date: formatTime(date),
       starCount: this.state.starCount,
-      flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
-      accessories: {
-        filter: this.props.accessories.filterOption.filter((filter) => filter.selected),
-        kettle: this.props.accessories.kettleOption.filter((kettle) => kettle.selected)
-      },
+      flavor: this.props.saveRecord.flavor,
+      accessories: this.props.saveRecord.accessories,
       comment: this.state.comment,
       category: this.state.category,
       ratioWater: this.props.coffeeSettings.ratioWater,
@@ -273,14 +264,14 @@ class SaveRecord extends React.Component {
             title='风味'
             value={this._getSelectedFlavor()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('FlavorSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Flavor')}
           />
           <Divider/>
           <ChoiceBar
             title='设备'
             value={this._getSelectedAccessories()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('AccessoriesSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Accessories')}
           />
           <Divider/>
           <View style={{height:165.5,backgroundColor: '#fff'}}>
@@ -543,10 +534,11 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     coffeeSettings: state.coffeeSettings,
-    flavor: state.flavorSelect,
-    accessories: state.accessoriesSelect,
+    flavor: state.flavor,
+    accessories: state.accessories,
     coffeeBuilder: state.coffeeBuilder,
     history: state.history,
+    saveRecord: state.saveRecord
   }
 }
 

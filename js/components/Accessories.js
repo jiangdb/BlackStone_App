@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableOpacity, TextInput } from 'react-native';
 import { saveAccessories } from '../actions/coffeeBuilder.js';
+import { saveSelectedAccessories } from '../actions/saveRecord.js'
 import Toast from 'react-native-root-toast';
 
-class AccessoriesSelect extends React.Component {
+class Accessories extends React.Component {
   static navigationOptions = {
     title: '选择设备',
     tabBarVisible: false,
@@ -18,6 +19,7 @@ class AccessoriesSelect extends React.Component {
     newOption:'',
     filterOption: this.props.accessories.filterOption,
     kettleOption: this.props.accessories.kettleOption,
+    selectedAccessories:[],
   };
 
   _addOption = (text) => {
@@ -120,6 +122,14 @@ class AccessoriesSelect extends React.Component {
   _saveAccessories = () => {
     console.log(this._selectedFilterConfirm());
     if(this._selectedFilterConfirm() && this._selectedKettleConfirm()) {
+      let selectedFilter = this.state.filterOption.filter((filter) => filter.selected);
+      let selectedKettle = this.state.kettleOption.filter((kettle) => kettle.selected);
+      this.state.selectedAccessories.push(selectedFilter[0].name);
+      this.state.selectedAccessories.push(selectedKettle[0].name);
+
+      this.props.onSaveSelectedAccessories({
+        accessories:this.state.selectedAccessories
+      });
       this.props.onSaveAccessories({
         filterOption:this.state.filterOption,
         kettleOption:this.state.kettleOption
@@ -142,6 +152,8 @@ class AccessoriesSelect extends React.Component {
         hideOnPress: true,
       });
     }
+
+
   }
 
   render() {
@@ -347,7 +359,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    accessories: state.accessoriesSelect
+    accessories: state.accessories
   }
 }
 
@@ -355,13 +367,16 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveAccessories: (accessories) => {
       dispatch(saveAccessories(accessories))
+    },
+    onSaveSelectedAccessories: (accessories) => {
+      dispatch(saveSelectedAccessories(accessories))
     }
   }
 }
 
-const AccessoriesSelectContainer = connect(
+const AccessoriesContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(AccessoriesSelect)
+)(Accessories)
 
-export default AccessoriesSelectContainer
+export default AccessoriesContainer

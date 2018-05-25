@@ -1,53 +1,65 @@
 const initialState = {
-  flavorOption: [
+  filterOption: [
     {
       key: 1,
-      name:'茉莉',
+      name:'泰摩冰瞳滤杯',
       selected: false
     },
     {
       key: 2,
-      name:'莓果',
+      name:'扇形滤杯',
       selected: false
     },
     {
       key: 3,
-      name:'柠檬',
+      name:'蛋糕滤杯',
       selected: false
     },
     {
       key: 4,
-      name:'柚子',
+      name:'法兰绒',
       selected: false
     },
     {
       key: 5,
-      name:'苹果',
+      name:'Chemex',
       selected: false
     },
     {
       key: 6,
-      name:'番茄',
+      name:'Kono',
       selected: false
     },
     {
       key: 7,
-      name:'葡萄',
+      name:'V60',
+      selected: false
+    },
+  ],
+  kettleOption: [
+    {
+      key: 1,
+      name:'泰摩鱼03',
       selected: false
     },
     {
-      key: 8,
-      name:'茶感',
+      key: 2,
+      name:'泰摩鱼04',
       selected: false
     },
     {
-      key: 9,
-      name:'青草',
+      key: 3,
+      name:'Bonavita',
       selected: false
     },
     {
-      key: 10,
-      name:'蜂蜜',
+      key: 4,
+      name:'Hario',
+      selected: false
+    },
+    {
+      key: 5,
+      name:'Kalita',
       selected: false
     },
   ],
@@ -55,19 +67,17 @@ const initialState = {
  
 import type { Action } from "../actions/types";
 
-function flavorSelect(state, action) {
+function accessories(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
  
   switch (action.type) {
-    case "SAVE_FLAVOR":
-      return Object.assign({}, state, {flavorOption: action.flavor});
-      console.log(state.flavorOption)
-
+    case "SAVE_ACCESSORIES":
+      return Object.assign({}, state, action.accessories);
     default:
       return state;
   }
 }
 
-module.exports = flavorSelect;
+module.exports = accessories;

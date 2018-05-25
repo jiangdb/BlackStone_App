@@ -1,7 +1,6 @@
 const initialState = {
-  historyList: [
-
-  ],
+  flavor:[],
+  accessories:[],
 }
  
 import type { Action } from "../actions/types";
@@ -12,13 +11,13 @@ function saveRecord(state, action) {
   }
  
   switch (action.type) {
-    case "SAVE_RECORD":
-      return Object.assign({}, state, {
-        beanCategoryData: [
-          ...state.historyList,
-          action.record
-        ]
-      })
+    case "SAVE_SELECTED_FLAVOR":
+      console.log(state.flavor)
+    
+      return Object.assign({}, state, action.flavor);
+
+    case "SAVE_SELECTED_ACCESSORIES":
+      return Object.assign({}, state, action.accessories)
 
     default:
       return state;
