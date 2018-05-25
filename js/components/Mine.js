@@ -6,6 +6,7 @@ import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
 import { weChatLoginRequest } from '../actions/weChat.js'
+import *as webAction from '../actions/webAction.js'
 
 const appId = 'wx85d6b9dedc701086'
 const secretId = '692442ff78837aa6e128df87e8184b4f'
@@ -36,6 +37,10 @@ class Mine extends React.Component {
       navigation: addNavigationWithDebounce(this.props.navigation)
     })
 
+    let model = this.props.bleInfo.modelNum 
+    let version = this.props.bleInfo.fwVersion
+    let token = this.props.weChat.token
+    webAction.checkUpgrade(model, version, token)
     wechat.registerApp(appId)
   }
 

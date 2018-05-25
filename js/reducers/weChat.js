@@ -1,6 +1,10 @@
 const initialState = {
   error: null,
   userInfo: null,
+  openId: null,
+  token: null,
+  expireAt: null,
+  refreshExpireAt: null
 }
  
 import type { Action } from "../actions/types";
@@ -18,9 +22,7 @@ function weChat(state, action) {
       })
 
     case "WECHAT_LOGIN_SUCCESS":
-      return Object.assign({}, state, {
-        userInfo: action.userInfo
-      })
+      return Object.assign({}, state, action.info)
 
     default:
       return state;

@@ -22,4 +22,4 @@ export type Action =
   | { type: "SAVE_TIMER", seconds: Object }
   | { type: "STEP_STATE_CHANGE", state: Object }
   | { type: "WECHAT_LOGIN_FAIL", error: Object }
-  | { type: "WECHAT_LOGIN_SUCCESS", userInfo: Object }
+  | { type: "WECHAT_LOGIN_SUCCESS", info: Object }

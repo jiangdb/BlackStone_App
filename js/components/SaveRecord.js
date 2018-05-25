@@ -5,6 +5,7 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { saveRecord } from '../actions/coffeeBuilder.js'
+import *as historyAction from '../actions/history.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import { addNavigationWithDebounce } from '../utils/util.js'
@@ -224,8 +225,8 @@ class SaveRecord extends React.Component {
   _onSaveRecord = () => {
     let date = new Date();
     let index = this.props.history.historyList.length
-
-    this.props.onSaveRecord({
+    let work = {
+      device: this.props.bleInfo.displayName,
       date: formatTime(date),
       starCount: this.state.starCount,
       flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
@@ -244,7 +245,10 @@ class SaveRecord extends React.Component {
       chartDatas:this.props.coffeeBuilder.datas,
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
-    });
+    }
+
+    this.props.onSaveRecord(work);
+    historyAction.storeWork(work);
 
     this.props.navigation.replace('HistoryDetail', {
       itemIndex: index
@@ -552,6 +556,7 @@ const mapStateToProps = state => {
     accessories: state.accessoriesSelect,
     coffeeBuilder: state.coffeeBuilder,
     history: state.history,
+    bleInfo: state.bleInfo,
   }
 }
 
