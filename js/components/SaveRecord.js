@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
-import { saveRecord } from '../actions/coffeeBuilder.js'
+import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
+import { saveSelectedFlavor } from '../actions/saveRecord.js'
+import { saveSelectedAccessories } from '../actions/saveRecord.js'
 import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import { addNavigationWithDebounce } from '../utils/util.js'
@@ -17,8 +19,9 @@ class SaveRecord extends React.Component {
   state = {
     starCount: 5,
     comment: '',
-    flavor:[],
-    accessories: null,
+    flavorOption:this.props.flavor.flavorOption,
+    filterOption:this.props.accessories.filterOption,
+    kettleOption:this.props.accessories.kettleOption,
     actualWaterWeight: this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total.toFixed(1),
     actualRatioWater: Math.round(this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total / this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].extract),
     category: this.props.coffeeSettings.category,
@@ -123,6 +126,40 @@ class SaveRecord extends React.Component {
       },
       navigation: addNavigationWithDebounce(this.props.navigation)
     })
+  }
+
+  componentWillUnmount() {
+    //change saveRecord reducer back to initial state
+    this.props.onSaveSelectedFlavor({flavor:[]});
+    this.props.onSaveSelectedAccessories({accessories:[]});
+
+    //deselected  flavors and accessories in reducer 
+    this.setState({
+      flavorOption: this.state.flavorOption.map((flavor) => {
+        return Object.assign({}, flavor, {
+                  ...flavor,
+                  selected: false
+                })
+      }),
+      filterOption: this.state.filterOption.map((filter) => {
+        return Object.assign({}, filter, {
+                  ...filter,
+                  selected: false,
+                });
+      }),
+      kettleOption: this.state.kettleOption.map((kettle) => {
+        return Object.assign({}, kettle, {
+                ...kettle,
+                selected: false,
+              });
+      })
+    });
+
+    this.props.onSaveFlavor(this.state.flavorOption);
+    this.props.onSaveAccessories({
+      filterOption:this.state.filterOption,
+      kettleOption:this.state.kettleOption
+    });
   }
 
   onBackButtonPressAndroid = () => {
@@ -546,6 +583,18 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
+    },
+    onSaveFlavor: flavor => {
+      dispatch(saveFlavor(flavor))
+    },
+    onSaveAccessories: (accessories) => {
+      dispatch(saveAccessories(accessories))
+    },
+    onSaveSelectedFlavor: flavor => {
+      dispatch(saveSelectedFlavor(flavor))
+    },
+    onSaveSelectedAccessories: (accessories) => {
+      dispatch(saveSelectedAccessories(accessories))
     }
   }
 }

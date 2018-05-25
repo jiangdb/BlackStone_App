@@ -63,7 +63,6 @@ function flavor(state, action) {
   switch (action.type) {
     case "SAVE_FLAVOR":
       return Object.assign({}, state, {flavorOption: action.flavor});
-      console.log(state.flavorOption)
 
     default:
       return state;
