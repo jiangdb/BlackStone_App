@@ -23,3 +23,5 @@ export type Action =
   | { type: "STEP_STATE_CHANGE", state: Object }
   | { type: "WECHAT_LOGIN_FAIL", error: Object }
   | { type: "WECHAT_LOGIN_SUCCESS", info: Object }
+  | { type: "SAVE_SELECTED_FLAVOR", flavor: Object }
+  | { type: "SAVE_SELECTED_ACCESSORIES", accessories: Object }

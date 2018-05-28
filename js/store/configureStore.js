@@ -10,12 +10,12 @@ const persistConfig = {
   key: 'root',
   storage,
   whitelist: [
-    'accessoriesSelect',
+    'accessories',
     'beanCategory',
     'bleDevice',
     'coffeeSettings',
     'deviceSetting',
-    'flavorSelect',
+    'flavor',
     'getStart',
     'history',
     'weChat'

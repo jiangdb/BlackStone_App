@@ -1,10 +1,10 @@
 import fetch from 'cross-fetch';
 import * as bleActions from '../actions/ble.js'
+import * as weChat from './weChat.js'
 
 let HOST = "https://bs.ziipoo.com.cn/api/v2"
 let API_VERSION = "v1"
 let API_TOKEN_REFRESH = "/token/refresh"
-let API_USER_UPDATE = "/user/update"
 let API_WORK_STORE = "/work"
 let API_WORK_LIST = "/work"
 let API_WORK_SHOW = "/work/"
@@ -47,10 +47,10 @@ function checkUpgrade(model, version) {
 function storeWork(work) {
   // if (!token) return;
 	return function (dispatch) {
-		console.log('storeWork')
+		console.log(work)
 	  	return fetch(HOST + API_WORK_STORE,{
 		    method: 'POST',
-		    header: {
+		    headers: {
 		      'content-type': 'application/json',
 		      'Authorization': token
 		    },
@@ -59,7 +59,7 @@ function storeWork(work) {
       			bean_category: work.category,
 				bean_weight: work.beanWeight,
 				water_ratio: work.ratioWater,
-				water_weight: work.waterWeight,
+				water_weight: work.waterWeight,	
 				grand_size: work.grandSize,
 				temperature: work.temperature,
 				work_time: work.totalSeconds,
@@ -71,6 +71,7 @@ function storeWork(work) {
 				started_at: work.date,
 			})
 	  	})
+	  	// .then((response)=>console.log(response))
 	  	.then((response)=>response.json())
 	    .then((responseData)=>{
 	    	console.log('success')

@@ -8,6 +8,7 @@ import TabNavigator from './js/components/TabNavigator'
 import bleService from './js/services/bleServiceFaker.js'
 import GetStartContainer from './js/components/getStart/GetStart.js'
 import * as webAction from './js/actions/webAction.js'
+import * as weChat from './js/actions/weChat.js'
 
 export default class App extends React.Component {
 
@@ -26,6 +27,9 @@ export default class App extends React.Component {
         console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
         webAction.init(this.state.store)
+        if(this.state.store.getState().weChat.refreshToken != null) {
+          weChat.getAndUpdateUserInfo(this.state.store)
+        }
       }
     ).then(
       // creation callback (after async compatibility)

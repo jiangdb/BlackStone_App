@@ -43,7 +43,7 @@ class Mine extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.bleInfo.fwVersion != nextProps.bleInfo.fwVersion){
+    if(this.props.bleInfo.fwVersion != nextProps.bleInfo.fwVersion && nextProps.bleInfo.fwVersion != 'undefined'){
       this.setState({newVersion: true})
     } else {
       this.setState({newVersion: false})

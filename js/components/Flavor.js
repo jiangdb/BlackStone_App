@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View,StyleSheet, ScrollView, Alert, Modal,TouchableOpacity, TextInput } from 'react-native';
 import { saveFlavor } from '../actions/coffeeBuilder.js'
+import { saveSelectedFlavor } from '../actions/saveRecord.js'
 
-class FlavorSelect extends React.Component {
+class Flavor extends React.Component {
   static navigationOptions = {
     title: '选择风味',
     tabBarVisible: false,
@@ -13,6 +14,7 @@ class FlavorSelect extends React.Component {
     modalVisible: false,
     newFlavor:'',
     flavorOption: this.props.flavor.flavorOption,
+    selectedFlavor:[],
   };
 
   _addFlavor = (text) => {
@@ -48,7 +50,15 @@ class FlavorSelect extends React.Component {
   };
 
   _saveFlavor = () => {
+    let selectedFlavorObject = this.state.flavorOption.filter((flavor) => flavor.selected);
+    selectedFlavorObject.map((flavor) => {
+      this.state.selectedFlavor.push(flavor.name)
+    });
+
     this.props.onSaveFlavor(this.state.flavorOption);
+    this.props.onSaveSelectedFlavor({
+      flavor: this.state.selectedFlavor
+    });
     this.props.navigation.goBack();
   }
 
@@ -221,7 +231,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    flavor: state.flavorSelect
+    flavor: state.flavor
   }
 }
 
@@ -229,13 +239,16 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveFlavor: flavor => {
       dispatch(saveFlavor(flavor))
+    },
+    onSaveSelectedFlavor: flavor => {
+      dispatch(saveSelectedFlavor(flavor))
     }
   }
 }
 
-const FlavorSelectContainer = connect(
+const FlavorContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(FlavorSelect)
+)(Flavor)
 
-export default FlavorSelectContainer
+export default FlavorContainer

@@ -11,15 +11,15 @@ export const weChatLoginSuccess = info => ({
 import fetch from 'cross-fetch';
 import *as wechat from 'react-native-wechat';
 
-export function weChatLoginRequest() {
+const appId = 'wx85d6b9dedc701086';
+const secretId = '692442ff78837aa6e128df87e8184b4f';
+let HOST = "https://bs.ziipoo.com.cn/api/v2"
+let API_USER_UPDATE = "/user/update"
+let API_USER_LOGIN = "/user/login"
 
-	const appId = 'wx85d6b9dedc701086';
-	const secretId = '692442ff78837aa6e128df87e8184b4f';
+function weChatLoginRequest() {
 	let scope = 'snsapi_userinfo';
     let state = 'wechat_sdk_demo';
-
-    let HOST = "https://bs.ziipoo.com.cn/api/v2"
-	let API_USER_LOGIN = "/user/login"
 
     return function (dispatch) {
     	wechat.sendAuthRequest(scope, state)
@@ -37,11 +37,14 @@ export function weChatLoginRequest() {
 		})
 		.then((response)=>response.json())
 	    .then((responseData)=>{
-	    	dispatch(weChatLoginSuccess({openId:responseData.openid}))
-	      	//获取refresh_token
-			let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+responseData.refresh_token;
+	    	dispatch(weChatLoginSuccess({
+	    		refreshToken: responseData.refresh_token,
+	    		openId:responseData.openid
+	    	}))
+	      	//通过refresh_token刷新access_token
+			let refreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+responseData.refresh_token;
 
-			return fetch(getRefreshTokenUrl,{
+			return fetch(refreshTokenUrl,{
 				      method:'GET',
 				      timeout: 2000,
 				      headers:{
@@ -91,5 +94,86 @@ export function weChatLoginRequest() {
 		})
     }
 };
+
+function weChatLogout() {
+	return function (dispatch) {
+		dispatch(weChatLoginSuccess({
+			error: null,
+			userInfo: null,
+			openId: null,
+			refreshToken: null,
+			token: null,
+			expireAt: null,
+			refreshExpireAt: null
+		}))
+	}
+}
+
+function getAndUpdateUserInfo(store) {
+	token = store.getState().weChat.token
+	refresh_token = store.getState().weChat.refreshToken
+
+	// return function (dispatch) {
+		let refreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+refresh_token;
+
+		console.log(refreshTokenUrl)
+
+		return fetch(refreshTokenUrl,{
+			method:'GET',
+			timeout: 2000,
+			headers:{
+				'Content-Type':'application/json; charset=utf-8',
+			},
+	    })
+	    .then((response)=>response.json())
+	    .then((responseData)=>{
+	        //获取user_info
+	        let getUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token='+responseData.access_token+'&openid='+responseData.openid;
+
+	        return fetch(getUserInfoUrl,{
+				method:'GET',
+				timeout: 2000,
+				headers:{
+					'Content-Type':'application/json; charset=utf-8',
+				},
+			})
+	    })
+	    .then((response)=>response.json())
+	    .then((responseData)=>{
+	    	store.dispatch(weChatLoginSuccess({userInfo:responseData}))
+
+	    	//服务器更新user_info
+	    	return fetch(HOST + API_USER_UPDATE,{
+				      method:'PUT',
+				      headers:{
+				        'Content-Type':'application/json',
+				        'Authorization': token
+				      },
+				      body: JSON.stringify({
+					    client: 'weChatApp',
+					    nickname: responseData.nickname,
+					    gender: responseData.sex,
+					    city: responseData.city,
+					    province: responseData.province,
+					    avatar_url: responseData.headimgurl,
+					  })
+				    })
+	    })
+	    .then((response)=>response.json())
+	    .then((responseData)=>{
+	    	console.log(responseData)
+	    	console.log(store.getState().weChat.userInfo)
+	    })
+		.catch(err => {
+			console.log(err.message)
+		})
+	// }
+}
+
+module.exports = {
+	weChatLoginRequest: weChatLoginRequest,
+  	weChatLogout: weChatLogout,
+  	getAndUpdateUserInfo: getAndUpdateUserInfo,
+}
 
 

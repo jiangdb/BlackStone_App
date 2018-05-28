@@ -2,6 +2,7 @@ const initialState = {
   error: null,
   userInfo: null,
   openId: null,
+  refreshToken: null,
   token: null,
   expireAt: null,
   refreshExpireAt: null

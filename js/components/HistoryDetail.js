@@ -116,18 +116,16 @@ class HistoryDetail extends React.Component {
     if(selectedFlavor.length === 0) {
       return ;
     } else {
-      return selectedFlavor.map((flavor) => {return flavor.name}).join(",");
+      return selectedFlavor.join(",");
     }
   };
 
   _getSelectedAccessories = (index) => {
-    let selectedFilter = this.props.history.historyList[index].accessories.filter;
-    let selectedKettle = this.props.history.historyList[index].accessories.kettle;
-    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+    let selectedAccessories = this.props.history.historyList[index].accessories;
+    if(selectedAccessories.length === 0) {
       return
     } else {
-      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return selectedAccessories.join(" ");
+      return selectedAccessories.join(",");
     }
   };
 

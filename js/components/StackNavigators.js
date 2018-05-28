@@ -16,8 +16,8 @@ import WifiSettingContainer from './WifiSetting';
 import HistoryDetailContainer from './HistoryDetail';
 import HistoryContainer from './History';
 import SaveRecordContainer from './SaveRecord';
-import FlavorSelectContainer from './FlavorSelect';
-import AccessoriesSelectContainer from './AccessoriesSelect';
+import FlavorContainer from './Flavor';
+import AccessoriesContainer from './Accessories';
 import FailedContainer from './getStart/Failed';
 import Step1Container from './getStart/Step1';
 import Step2Container from './getStart/Step2';
@@ -30,8 +30,8 @@ const HomeStack = StackNavigator({
   BeanCategory: { screen: BeanCategoryContainer },
   CoffeeBuilder: { screen: CoffeeBuilderContainer },
   SaveRecord: { screen: SaveRecordContainer },
-  FlavorSelect: { screen: FlavorSelectContainer },
-  AccessoriesSelect: { screen: AccessoriesSelectContainer },
+  Flavor: { screen: FlavorContainer },
+  Accessories: { screen: AccessoriesContainer },
   HistoryDetail: { screen: HistoryDetailContainer },
 },{
   navigationOptions: {
