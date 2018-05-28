@@ -16,11 +16,25 @@ let token = null
 let tokenExpireAt = null
 
 function init(store) {
-	token = store.getState().weChat.token
+	let weChatState = store.getState().weChat
+	let now = Math.floor(Date.now() / 1000)
+	token = weChatState.token
+	tokenExpireAt = weChatState.expireAt
+	refreshExpireAt = weChatState.refreshExpireAt
+
+	if(!weChatState.logIn) {
+		return
+    } else if (now < tokenExpireAt) {
+      	weChat.getAndUpdateUserInfo(store)
+    } else if (now < refreshExpireAt) {
+    	updateWebToken(store)
+    } else {
+    	weChat.weChatLogout(store)
+		// console.log('weChatLogout')
+    }
 }
 
 function checkUpgrade(model, version) {
-  	// if (!token) return;
 
 	return function (dispatch) {
 	  	return fetch(HOST + API_OTA + model + '?version=' + version,{
@@ -39,7 +53,7 @@ function checkUpgrade(model, version) {
 	        }))
 	    })
 	    .catch(err => {
-			console.log(err.message)
+			console.log('checkUpgrade:'+err.message)
 		})
 	}
 }
@@ -74,13 +88,35 @@ function storeWork(work) {
 	  	// .then((response)=>console.log(response))
 	  	.then((response)=>response.json())
 	    .then((responseData)=>{
-	    	console.log('success')
-	    	console.log(responseData)
+	    	console.log('storeWork:'+responseData.status)
 	    })
 	    .catch(err => {
-			console.log(err.message)
+			console.log('storeWork:'+err.message)
 		})
 	}
+}
+
+function updateWebToken(store) {
+  	return fetch(HOST + API_TOKEN_REFRESH,{
+	    method: 'GET',
+	    headers: {
+	      'content-type': 'application/json',
+	      'Authorization': token
+	    },
+  	})
+  	.then((response)=>response.json())
+    .then((responseData)=>{
+    	store.dispatch(weChat.weChatStateChange({
+    		token: 'Bearer '+responseData.token,
+    		expireAt: responseData.expireAt,
+    	}))
+		console.log('updateWebToken:'+responseData.status)
+    	
+      	weChat.getAndUpdateUserInfo(store)
+    })
+    .catch(err => {
+		console.log('updateWebToken:'+err.message)
+	})
 }
 
 module.exports = {

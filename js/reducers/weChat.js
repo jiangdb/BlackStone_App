@@ -1,7 +1,7 @@
 const initialState = {
+  logIn: false,
   error: null,
   userInfo: null,
-  openId: null,
   refreshToken: null,
   token: null,
   expireAt: null,
@@ -22,7 +22,7 @@ function weChat(state, action) {
         error: action.error
       })
 
-    case "WECHAT_LOGIN_SUCCESS":
+    case "WECHAT_STATE_CHANGE":
       return Object.assign({}, state, action.info)
 
     default:

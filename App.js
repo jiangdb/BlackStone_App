@@ -27,9 +27,6 @@ export default class App extends React.Component {
         console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
         webAction.init(this.state.store)
-        if(this.state.store.getState().weChat.refreshToken != null) {
-          weChat.getAndUpdateUserInfo(this.state.store)
-        }
       }
     ).then(
       // creation callback (after async compatibility)

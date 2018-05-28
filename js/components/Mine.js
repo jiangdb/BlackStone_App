@@ -30,6 +30,8 @@ class Mine extends React.Component {
 
   componentWillMount() {
     //check if there is a new version of the device
+    if(!this.props.weChat.logIn) return
+      
     let model = this.props.bleInfo.modelNum 
     let version = this.props.bleInfo.fwVersion
     this.props.onCheckUpgrade(model, version)
