@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch';
+import * as bleActions from '../actions/ble.js'
 
 let HOST = "https://bs.ziipoo.com.cn/api/v2"
 let API_VERSION = "v1"
@@ -22,18 +23,20 @@ function checkUpgrade(model, version) {
   	// if (!token) return;
 
 	return function (dispatch) {
-  console.log(HOST + API_OTA + model + '?' + version)
-
 	  	return fetch(HOST + API_OTA + model + '?version=' + version,{
 		    method: 'GET',
-		    header: {
+		    headers: {
 		      'content-type': 'application/json',
 		      'Authorization': token
 		    }
 	  	})
 	  	.then((response)=>response.json())
 	    .then((responseData)=>{
-	    	console.log(responseData)
+	    	dispatch(bleActions.bleOnDeviceInfoChange({
+	    		downloadUrl: responseData.download_url,
+	          	fwVersion: responseData.version,
+	          	description: responseData.description,
+	        }))
 	    })
 	    .catch(err => {
 			console.log(err.message)

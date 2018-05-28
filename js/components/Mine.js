@@ -23,7 +23,7 @@ class Mine extends React.Component {
   };
 
   state = {
-    newVersion: true,
+    newVersion: false,
     navigation: null,
     toastVisible: false 
   };
@@ -40,6 +40,14 @@ class Mine extends React.Component {
       navigation: addNavigationWithDebounce(this.props.navigation)
     })
     wechat.registerApp(appId)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.bleInfo.fwVersion != nextProps.bleInfo.fwVersion){
+      this.setState({newVersion: true})
+    } else {
+      this.setState({newVersion: false})
+    }
   }
 
   _getNewVersionChoiceBar = () => {
