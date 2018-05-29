@@ -9,6 +9,7 @@ import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilde
 import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
+import { weChatLoginRequest } from '../actions/weChat.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -285,6 +286,28 @@ class SaveRecord extends React.Component {
     this.props.onStoreWork(work,currentToken,index); //save to server
     this.props.navigation.replace('HistoryDetail', {
       itemIndex: index
+    })
+  };
+
+  _WXLogin = () => {
+    let scope = 'snsapi_userinfo';
+    let state = 'wechat_sdk_demo';
+
+    //判断微信是否安装
+    wechat.isWXAppInstalled()
+    .then((isInstalled) => {
+      if (isInstalled) {
+        this.props.onWeChatLoginRequest();
+      } else {
+        Platform.OS == 'ios' ?
+        Alert.alert('没有安装微信', '是否安装微信？', [
+          {text: '取消'},
+          {text: '确定', onPress: () => this.installWechat()}
+        ]) :
+        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+          {text: '确定'}
+        ])
+      }
     })
   };
 
@@ -614,7 +637,10 @@ const mapDispatchToProps = dispatch => {
     },
     onSaveSelectedAccessories: (accessories) => {
       dispatch(saveSelectedAccessories(accessories))
-    }
+    },
+    onWeChatLoginRequest: () => {
+      dispatch(weChatLoginRequest())
+    },
   }
 }
 

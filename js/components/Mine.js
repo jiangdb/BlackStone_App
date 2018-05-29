@@ -5,7 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
-import { weChatLoginRequest } from '../actions/weChat.js'
+import { weChatLoginRequest, weChatStateChange } from '../actions/weChat.js'
 import {checkUpgrade} from '../actions/webAction.js'
 
 const appId = 'wx85d6b9dedc701086'
@@ -131,10 +131,20 @@ class Mine extends React.Component {
 
         <ActionSheet
           ref={o => this.ActionSheet = o}
-          options={['微信登录', '取消']}
+          options={[this.props.weChat.logIn? '注销账号' : '微信登录', '取消']}
           cancelButtonIndex={1}
           onPress={(index) => {
-            if(index == 0 ) this._WXLogin()
+            if(index == 0 && !this.props.weChat.logIn ) this._WXLogin()
+            if(index == 0 && this.props.weChat.logIn ) 
+            this.props.onWeChatStateChange({
+              logIn: false,
+              error: null,
+              userInfo: null,
+              refreshToken: null,
+              token: null,
+              expireAt: null,
+              refreshExpireAt: null
+            })
          }}
         />
       </View>
@@ -187,6 +197,9 @@ const mapDispatchToProps = dispatch => {
     },
     onCheckUpgrade: (model, version) => {
       dispatch(checkUpgrade(model, version))
+    },
+    onWeChatStateChange: info => {
+      dispatch(weChatStateChange(info))
     },
   }
 }
