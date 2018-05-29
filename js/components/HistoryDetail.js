@@ -6,6 +6,9 @@ import StarRating from 'react-native-star-rating';
 import { LineChart } from "../libs/rnmpandroidchart";
 import ActionSheet from 'react-native-actionsheet'
 import *as wechat from 'react-native-wechat'
+import *as util from '../utils/util.js'
+
+const appId = 'wx85d6b9dedc701086'
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
@@ -14,6 +17,7 @@ class HistoryDetail extends React.Component {
   };
 
   state = {
+    itemIndex: null,
     description: {},
     data: {},
     xAxis: {},
@@ -25,6 +29,10 @@ class HistoryDetail extends React.Component {
 
   componentWillMount() {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+    this.setState({
+      itemIndex:itemIndex
+    })
+    // console.log(this.state.itemIndex)
     let length = this.props.history.historyList[itemIndex].chartDatas.length
     for( let i = 0; i<length; i++) {
       let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
@@ -109,6 +117,7 @@ class HistoryDetail extends React.Component {
         }
       },
     })
+    wechat.registerApp(appId)
   }
 
   _getSelectedFlavor = (index) => {
@@ -151,14 +160,15 @@ class HistoryDetail extends React.Component {
       }
   };
 
-  async  _shareToSession() {
+  async  _shareToSession(history) {
+    console.log(history)
     try {
       let result = await wechat.shareToSession({
         type: 'news',
         title: 'web page',
         description: 'share web page to session',
         thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
-        webpageUrl: 'https://www.shanghaieye.com.cn/barack-and-michelles-next-act-tv-deal-with-netflix/'
+        webpageUrl: history.shareUrl
       });
       console.log('share image url to time line successful:', result);
     } catch (e) {
@@ -171,14 +181,14 @@ class HistoryDetail extends React.Component {
     }
   }
 
-  async  _shareToTimeline() {
+  async  _shareToTimeline(history) {
     try {
       let result = await wechat.shareToTimeline({
         type: 'news',
         title: 'web page',
         description: 'share web page to time line',
         thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
-        webpageUrl: 'https://www.shanghaieye.com.cn/barack-and-michelles-next-act-tv-deal-with-netflix/'
+        webpageUrl: history.shareUrl
       });
       console.log('share image url to time line successful:', result);
     } catch (e) {
@@ -192,9 +202,8 @@ class HistoryDetail extends React.Component {
   }
 
   render() {
-    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
-
-    let history = this.props.history.historyList[itemIndex];
+    let history = this.props.history.historyList[this.state.itemIndex];
+    console.log(history)
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
@@ -214,9 +223,9 @@ class HistoryDetail extends React.Component {
             </View>
           </View>
           <Divider/>
-          <ChoiceBar title='风味' value={this._getSelectedFlavor(itemIndex)} />
+          <ChoiceBar title='风味' value={this._getSelectedFlavor(this.state.itemIndex)} />
           <Divider/>
-          <ChoiceBar title='设备' value={this._getSelectedAccessories(itemIndex)} />
+          <ChoiceBar title='设备' value={this._getSelectedAccessories(this.state.itemIndex)} />
           <Divider/>
 
           <View style={{height:165.5}}>
@@ -231,7 +240,7 @@ class HistoryDetail extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={history.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={history.totalSeconds} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(history.totalSeconds)} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
@@ -274,8 +283,8 @@ class HistoryDetail extends React.Component {
           options={['发送给朋友', '分享到朋友圈', '取消 ']}
           cancelButtonIndex={2}
           onPress={(index) => {
-            if(index == 0 ) this._shareToSession()
-            if(index == 1 )  this._shareToTimeline()
+            if(index == 0 ) this._shareToSession(history)
+            if(index == 1 )  this._shareToTimeline(history)
          }}
         />
       </ScrollView>

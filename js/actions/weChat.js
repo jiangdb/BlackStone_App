@@ -107,11 +107,11 @@ function weChatLogout(store) {
 		expireAt: null,
 		refreshExpireAt: null
 	}))
+	console.log('weChatLogout')
 }
 
 function getAndUpdateUserInfo(store) {
 	token = store.getState().weChat.token
-	console.log(token)
 	refresh_token = store.getState().weChat.refreshToken
 
 	let refreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+appId+'&grant_type=refresh_token&refresh_token='+refresh_token;
@@ -159,10 +159,10 @@ function getAndUpdateUserInfo(store) {
     })
     .then((response)=>response.json())
     .then((responseData)=>{
-    	console.log(responseData)
+    	console.log('getAndUpdateUserInfo:'+responseData)
     })
 	.catch(err => {
-		console.log('getAndUpdateUserInfo:'+err.message)
+		console.log('getAndUpdateUserInfoErr:'+err.message)
 	})
 }
 

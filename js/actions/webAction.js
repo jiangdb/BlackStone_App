@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
-import * as bleActions from '../actions/ble.js'
+import * as bleActions from './ble.js'
 import * as weChat from './weChat.js'
+import { saveShareUrl } from './saveRecord.js'
 
 let HOST = "https://bs.ziipoo.com.cn/api/v2"
 let API_VERSION = "v1"
@@ -10,7 +11,6 @@ let API_WORK_LIST = "/work"
 let API_WORK_SHOW = "/work/"
 let API_WORK_DELETE = "/work/"
 let API_OTA = "/device/ota/"
-let API_DEVICE_ONLINE = "/device/online"
 
 let token = null
 let tokenExpireAt = null
@@ -30,12 +30,10 @@ function init(store) {
     	updateWebToken(store)
     } else {
     	weChat.weChatLogout(store)
-		// console.log('weChatLogout')
     }
 }
 
 function checkUpgrade(model, version) {
-
 	return function (dispatch) {
 	  	return fetch(HOST + API_OTA + model + '?version=' + version,{
 		    method: 'GET',
@@ -53,45 +51,57 @@ function checkUpgrade(model, version) {
 	        }))
 	    })
 	    .catch(err => {
-			console.log('checkUpgrade:'+err.message)
+			console.log('checkUpgradeErr:'+err.message)
 		})
 	}
 }
 
-function storeWork(work) {
-  // if (!token) return;
+function storeWork(work,currentToken,index) {
+	let formatChartDatas = [];
+	let length = work.chartDatas.length;
+	for( let i = 0; i<length; i++) {
+      	formatChartDatas.push([
+      		i*100,
+      		work.chartDatas[i].extract.toFixed(1),
+      		work.chartDatas[i].total.toFixed(1),
+  		])
+    }
+	let formData = new FormData();
+	formData.append("device", work.device);
+	formData.append("bean_category", work.category);
+	formData.append("bean_weight", work.beanWeight);
+	formData.append("water_ratio", work.ratioWater);
+	formData.append("water_weight", work.waterWeight);
+	formData.append("grand_size", work.grandSize);
+	formData.append("temperature", work.temperature);
+	formData.append("work_time", work.totalSeconds);
+	formData.append("rating", work.starCount);
+	formData.append("flavor", work.flavor.toString());
+	formData.append("accessories", work.accessories.toString());
+	formData.append("feeling", work.comment);
+	formData.append("data", JSON.stringify(formatChartDatas));
+	formData.append("started_at", work.date);
+
 	return function (dispatch) {
-		console.log(work)
 	  	return fetch(HOST + API_WORK_STORE,{
 		    method: 'POST',
 		    headers: {
-		      'content-type': 'application/json',
-		      'Authorization': token
+		      'content-type': 'multipart/form-data',
+		      'Authorization': currentToken
 		    },
-		    body: JSON.stringify({
-				device: work.device,
-      			bean_category: work.category,
-				bean_weight: work.beanWeight,
-				water_ratio: work.ratioWater,
-				water_weight: work.waterWeight,	
-				grand_size: work.grandSize,
-				temperature: work.temperature,
-				work_time: work.totalSeconds,
-				rating: work.starCount,
-				flavor: work.flavor,
-				accessories: work.accessories,
-				feeling:  work.comment,
-				data: work.chartDatas,
-				started_at: work.date,
-			})
+		    body: formData
 	  	})
-	  	// .then((response)=>console.log(response))
 	  	.then((response)=>response.json())
 	    .then((responseData)=>{
-	    	console.log('storeWork:'+responseData.status)
+	    	dispatch(saveShareUrl({
+	    		index: index,
+	    		id:responseData.id,
+	    		shareUrl: responseData.shareUrl
+	    	}))
+	    	console.log(responseData)
 	    })
 	    .catch(err => {
-			console.log('storeWork:'+err.message)
+			console.log('storeWorkErr:'+err.message)
 		})
 	}
 }
@@ -111,11 +121,10 @@ function updateWebToken(store) {
     		expireAt: responseData.expireAt,
     	}))
 		console.log('updateWebToken:'+responseData.status)
-    	
       	weChat.getAndUpdateUserInfo(store)
     })
     .catch(err => {
-		console.log('updateWebToken:'+err.message)
+		console.log('updateWebTokenErr:'+err.message)
 	})
 }
 

@@ -2,15 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
+import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import {storeWork} from '../actions/webAction.js'
 import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
-import { saveSelectedFlavor } from '../actions/saveRecord.js'
-import { saveSelectedAccessories } from '../actions/saveRecord.js'
-import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
+import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
-import { addNavigationWithDebounce } from '../utils/util.js'
+import *as util from '../utils/util.js'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -126,7 +124,7 @@ class SaveRecord extends React.Component {
           labels: ['注水总量', '咖啡萃取量']
         }
       },
-      navigation: addNavigationWithDebounce(this.props.navigation)
+      navigation: util.addNavigationWithDebounce(this.props.navigation)
     })
   }
 
@@ -254,11 +252,16 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
+    if(!this.props.weChat.logIn) {
+      Alert.alert('请登录', [
+        {text: '微信登录', onPress: () => console.log('OK Pressed!')}
+      ])
+      return
+    }
     let date = new Date();
-    let index = this.props.history.historyList.length
     let work = {
       device: this.props.bleInfo.displayName,
-      date: formatTime(date),
+      date: util.formatTime(date),
       starCount: this.state.starCount,
       flavor: this.props.saveRecord.flavor,
       accessories: this.props.saveRecord.accessories,
@@ -269,16 +272,17 @@ class SaveRecord extends React.Component {
       waterWeight: this.props.coffeeSettings.waterWeight,
       temperature: this.props.coffeeSettings.temperature,
       grandSize: this.state.grandSize,
-      // totalSeconds: convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10)),
       totalSeconds: Math.floor(this.props.coffeeBuilder.datas.length / 10),
       chartDatas:this.props.coffeeBuilder.datas,
       actualWaterWeight: this.state.actualWaterWeight,
       actualRatioWater: this.state.actualRatioWater
     }
+    console.log(this.props.history.historyList)
+    let index = this.props.history.historyList.length
+    let currentToken = this.props.weChat.token
 
-    this.props.onSaveRecord(work);
-    this.props.onStoreWork(work);
-
+    this.props.onSaveRecord(work); //save to local
+    this.props.onStoreWork(work,currentToken,index); //save to server
     this.props.navigation.replace('HistoryDetail', {
       itemIndex: index
     })
@@ -357,7 +361,7 @@ class SaveRecord extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
@@ -586,7 +590,8 @@ const mapStateToProps = state => {
     coffeeBuilder: state.coffeeBuilder,
     history: state.history,
     bleInfo: state.bleInfo,
-    saveRecord: state.saveRecord
+    saveRecord: state.saveRecord,
+    weChat: state.weChat
   }
 }
 
@@ -595,8 +600,8 @@ const mapDispatchToProps = dispatch => {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
     },
-    onStoreWork: work => {
-      dispatch(storeWork(work))
+    onStoreWork: (work,currentToken,index) => {
+      dispatch(storeWork(work,currentToken,index))
     },
     onSaveFlavor: flavor => {
       dispatch(saveFlavor(flavor))
