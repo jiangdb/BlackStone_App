@@ -16,127 +16,127 @@ let token = null
 let refreshToken = null
 
 function loginInit(weChatState) {
-	// let weChatState = store.getState().weChat
-	let now = Math.floor(Date.now() / 1000)
-	token = weChatState.token //web token
-	refreshToken = weChatState.refreshToken // wechat refresh token
-	let tokenExpireAt = weChatState.expireAt //web token 
-	let refreshExpireAt = weChatState.refreshExpireAt //web refresh token
+  // let weChatState = store.getState().weChat
+  let now = Math.floor(Date.now() / 1000)
+  token = weChatState.token //web token
+  refreshToken = weChatState.refreshToken // wechat refresh token
+  let tokenExpireAt = weChatState.expireAt //web token 
+  let refreshExpireAt = weChatState.refreshExpireAt //web refresh token
 
-	tokenExpireAt = 1500000000
+  tokenExpireAt = 1500000000
 
-	return function (dispatch) {
-		if(token == null) {
-			return
-	    } else if (now < tokenExpireAt) {
-	    	dispatch(weChat.getAndUpdateUserInfo(token,refreshToken))
-	    } else if (now < refreshExpireAt) {
-	    	dispatch(updateWebToken())
-	    } else {
-	    	dispatch(weChat.weChatLogout())
-	    }
-	}
+  return function(dispatch) {
+    if (token == null) {
+      return
+    } else if (now < tokenExpireAt) {
+      dispatch(weChat.getAndUpdateUserInfo(token, refreshToken))
+    } else if (now < refreshExpireAt) {
+      dispatch(updateWebToken())
+    } else {
+      dispatch(weChat.weChatLogout())
+    }
+  }
 }
 
 function checkUpgrade(model, version) {
-	return function (dispatch) {
-	  	return fetch(HOST + API_OTA + model + '?version=' + version,{
-		    method: 'GET',
-		    headers: {
-		      'content-type': 'application/json',
-		      'Authorization': token
-		    }
-	  	})
-	  	.then((response)=>response.json())
-	    .then((responseData)=>{
-	    	dispatch(bleActions.bleOnDeviceInfoChange({
-	    		downloadUrl: responseData.download_url,
-	          	fwVersion: responseData.version,
-	          	description: responseData.description,
-	        }))
-	    })
-	    .catch(err => {
-			console.log('checkUpgradeErr:'+err.message)
-		})
-	}
+  return function(dispatch) {
+    return fetch(HOST + API_OTA + model + '?version=' + version, {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': token
+        }
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          downloadUrl: responseData.download_url,
+          fwVersion: responseData.version,
+          description: responseData.description,
+        }))
+      })
+      .catch(err => {
+        console.log('checkUpgradeErr:' + err.message)
+      })
+  }
 }
 
-function storeWork(work,currentToken,index) {
-	let formatChartDatas = [];
-	let length = work.chartDatas.length;
-	for( let i = 0; i<length; i++) {
-      	formatChartDatas.push([
-      		i*100,
-      		work.chartDatas[i].extract.toFixed(1),
-      		work.chartDatas[i].total.toFixed(1),
-  		])
-    }
-	let formData = new FormData();
-	formData.append("device", work.device);
-	formData.append("bean_category", work.category);
-	formData.append("bean_weight", work.beanWeight);
-	formData.append("water_ratio", work.ratioWater);
-	formData.append("water_weight", work.waterWeight);
-	formData.append("grand_size", work.grandSize);
-	formData.append("temperature", work.temperature);
-	formData.append("work_time", work.totalSeconds);
-	formData.append("rating", work.starCount);
-	formData.append("flavor", work.flavor.toString());
-	formData.append("accessories", work.accessories.toString());
-	formData.append("feeling", work.comment);
-	formData.append("data", JSON.stringify(formatChartDatas));
-	formData.append("started_at", work.date);
+function storeWork(work, currentToken, index) {
+  let formatChartDatas = [];
+  let length = work.chartDatas.length;
+  for (let i = 0; i < length; i++) {
+    formatChartDatas.push([
+      i * 100,
+      work.chartDatas[i].extract.toFixed(1),
+      work.chartDatas[i].total.toFixed(1),
+    ])
+  }
+  let formData = new FormData();
+  formData.append("device", work.device);
+  formData.append("bean_category", work.category);
+  formData.append("bean_weight", work.beanWeight);
+  formData.append("water_ratio", work.ratioWater);
+  formData.append("water_weight", work.waterWeight);
+  formData.append("grand_size", work.grandSize);
+  formData.append("temperature", work.temperature);
+  formData.append("work_time", work.totalSeconds);
+  formData.append("rating", work.starCount);
+  formData.append("flavor", work.flavor.toString());
+  formData.append("accessories", work.accessories.toString());
+  formData.append("feeling", work.comment);
+  formData.append("data", JSON.stringify(formatChartDatas));
+  formData.append("started_at", work.date);
 
-	return function (dispatch) {
-	  	return fetch(HOST + API_WORK_STORE,{
-		    method: 'POST',
-		    headers: {
-		      'content-type': 'multipart/form-data',
-		      'Authorization': currentToken
-		    },
-		    body: formData
-	  	})
-	  	.then((response)=>response.json())
-	    .then((responseData)=>{
-	    	dispatch(saveShareUrl({
-	    		index: index,
-	    		id:responseData.id,
-	    		shareUrl: responseData.shareUrl
-	    	}))
-	    })
-	    .catch(err => {
-			console.log('storeWorkErr:'+err.message)
-		})
-	}
+  return function(dispatch) {
+    return fetch(HOST + API_WORK_STORE, {
+        method: 'POST',
+        headers: {
+          'content-type': 'multipart/form-data',
+          'Authorization': currentToken
+        },
+        body: formData
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        dispatch(saveShareUrl({
+          index: index,
+          id: responseData.id,
+          shareUrl: responseData.shareUrl
+        }))
+      })
+      .catch(err => {
+        console.log('storeWorkErr:' + err.message)
+      })
+  }
 }
 
 function updateWebToken() {
-	return function (dispatch) {		
-		return fetch(HOST + API_TOKEN_REFRESH,{
-		    method: 'GET',
-		    headers: {
-		      'content-type': 'application/json',
-		      'Authorization': token
-		    },
-	  	})
-	  	.then((response)=>response.json())
-	    .then((responseData)=>{
-	    	token = 'Bearer '+responseData.token
-	    	dispatch(weChat.weChatStateChange({
-	    		token: token,
-	    		expireAt: responseData.expireAt,
-	    	}))
-			dispatch(weChat.getAndUpdateUserInfo(token,refreshToken))
-	    })
-	    .catch(err => {
-			console.log('updateWebTokenErr:'+err.message)
-		})
-	}
-  	
+  return function(dispatch) {
+    return fetch(HOST + API_TOKEN_REFRESH, {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': token
+        },
+      })
+      .then((response) => response.json())
+      .then((responseData) => {
+        token = 'Bearer ' + responseData.token
+        dispatch(weChat.weChatStateChange({
+          token: token,
+          expireAt: responseData.expireAt,
+        }))
+        dispatch(weChat.getAndUpdateUserInfo(token, refreshToken))
+      })
+      .catch(err => {
+        console.log('updateWebTokenErr:' + err.message)
+      })
+  }
+
 }
 
 module.exports = {
-	loginInit: loginInit,
-  	checkUpgrade: checkUpgrade,
-	storeWork: storeWork,
+  loginInit: loginInit,
+  checkUpgrade: checkUpgrade,
+  storeWork: storeWork,
 }
