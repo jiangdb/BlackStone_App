@@ -7,9 +7,7 @@ import { LineChart } from "../libs/rnmpandroidchart";
 import ActionSheet from 'react-native-actionsheet'
 import *as wechat from 'react-native-wechat'
 import *as util from '../utils/util.js'
-import { weChatLoginRequest } from '../actions/weChat.js'
-
-const appId = 'wx85d6b9dedc701086'
+import { weChatLogin } from '../actions/weChat.js'
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
@@ -118,7 +116,6 @@ class HistoryDetail extends React.Component {
         }
       },
     })
-    wechat.registerApp(appId)
   }
 
   _getSelectedFlavor = (index) => {
@@ -201,28 +198,6 @@ class HistoryDetail extends React.Component {
     }
   }
 
-  _WXLogin = () => {
-    let scope = 'snsapi_userinfo';
-    let state = 'wechat_sdk_demo';
-
-    //判断微信是否安装
-    wechat.isWXAppInstalled()
-    .then((isInstalled) => {
-      if (isInstalled) {
-        this.props.onWeChatLoginRequest();
-      } else {
-        Platform.OS == 'ios' ?
-        Alert.alert('没有安装微信', '是否安装微信？', [
-          {text: '取消'},
-          {text: '确定', onPress: () => this.installWechat()}
-        ]) :
-        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
-          {text: '确定'}
-        ])
-      }
-    })
-  };
-
   render() {
     let history = this.props.history.historyList[this.state.itemIndex];
     return (
@@ -294,7 +269,7 @@ class HistoryDetail extends React.Component {
         </View>
 
         <TouchableOpacity onPress={()=> {
-          if(!this.props.weChat.logIn) {
+          if(this.props.weChat.token == null) {
               this.setState({loginModalVisible:true})
               return
           }
@@ -337,7 +312,7 @@ class HistoryDetail extends React.Component {
                 <TouchableOpacity 
                   onPress={ () => {
                     this.setState({loginModalVisible:false})
-                    this._WXLogin()
+                    this.props.onWeChatLogin()
                   }}
                   activeOpacity={1}
                 >
@@ -449,8 +424,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onWeChatLoginRequest: () => {
-      dispatch(weChatLoginRequest())
+    onWeChatLogin: () => {
+      dispatch(weChatLogin())
     },
   }
 }

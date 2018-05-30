@@ -5,7 +5,7 @@ import { ChoiceBar, Divider } from './Templates';
 import { addNavigationWithDebounce } from '../utils/util.js'
 import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
-import { weChatLoginRequest, weChatStateChange } from '../actions/weChat.js'
+import *as weChatAction from '../actions/weChat.js'
 import {checkUpgrade} from '../actions/webAction.js'
 
 const appId = 'wx85d6b9dedc701086'
@@ -77,7 +77,7 @@ class Mine extends React.Component {
     wechat.isWXAppInstalled()
     .then((isInstalled) => {
       if (isInstalled) {
-        this.props.onWeChatLoginRequest();
+        this.props.onweChatAction.weChatLogin();
       } else {
         Platform.OS == 'ios' ?
         Alert.alert('没有安装微信', '是否安装微信？', [
@@ -134,17 +134,8 @@ class Mine extends React.Component {
           options={[this.props.weChat.logIn? '注销账号' : '微信登录', '取消']}
           cancelButtonIndex={1}
           onPress={(index) => {
-            if(index == 0 && !this.props.weChat.logIn ) this._WXLogin()
-            if(index == 0 && this.props.weChat.logIn ) 
-            this.props.onWeChatStateChange({
-              logIn: false,
-              error: null,
-              userInfo: null,
-              refreshToken: null,
-              token: null,
-              expireAt: null,
-              refreshExpireAt: null
-            })
+            if(index == 0 && !this.props.weChat.logIn ) this.props.onWeChatLogin()
+            if(index == 0 && this.props.weChat.logIn ) this.props.onWeChatLogout()
          }}
         />
       </View>
@@ -192,14 +183,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onWeChatLoginRequest: () => {
-      dispatch(weChatLoginRequest())
+    onWeChatLogin: () => {
+      dispatch(weChatAction.weChatLogin())
+    },
+    onWeChatLogout: () => {
+      dispatch(weChatAction.weChatLogout())
     },
     onCheckUpgrade: (model, version) => {
       dispatch(checkUpgrade(model, version))
-    },
-    onWeChatStateChange: info => {
-      dispatch(weChatStateChange(info))
     },
   }
 }

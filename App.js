@@ -24,9 +24,10 @@ export default class App extends React.Component {
       // rehydration callback (after async compatibility and persistStore)
       () => {
         this.setState({ storeRehydrated: true })
-        console.log('init state', this.state.store.getState())
+        // console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
-        webAction.init(this.state.store)
+        let weChatState = this.state.store.getState().weChat
+        this.state.store.dispatch(webAction.loginInit(weChatState))
       }
     ).then(
       // creation callback (after async compatibility)

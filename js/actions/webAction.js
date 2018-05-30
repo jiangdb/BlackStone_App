@@ -13,24 +13,29 @@ let API_WORK_DELETE = "/work/"
 let API_OTA = "/device/ota/"
 
 let token = null
-let tokenExpireAt = null
+let refreshToken = null
 
-function init(store) {
-	let weChatState = store.getState().weChat
+function loginInit(weChatState) {
+	// let weChatState = store.getState().weChat
 	let now = Math.floor(Date.now() / 1000)
 	token = weChatState.token //web token
-	tokenExpireAt = weChatState.expireAt //web token 
-	refreshExpireAt = weChatState.refreshExpireAt //web refresh token
+	refreshToken = weChatState.refreshToken // wechat refresh token
+	let tokenExpireAt = weChatState.expireAt //web token 
+	let refreshExpireAt = weChatState.refreshExpireAt //web refresh token
 
-	if(!weChatState.logIn) {
-		return
-    } else if (now < tokenExpireAt) {
-      	weChat.getAndUpdateUserInfo(store)
-    } else if (now < refreshExpireAt) {
-    	updateWebToken(store)
-    } else {
-    	weChat.weChatLogout(store)
-    }
+	tokenExpireAt = 1500000000
+
+	return function (dispatch) {
+		if(token == null) {
+			return
+	    } else if (now < tokenExpireAt) {
+	    	dispatch(weChat.getAndUpdateUserInfo(token,refreshToken))
+	    } else if (now < refreshExpireAt) {
+	    	dispatch(updateWebToken())
+	    } else {
+	    	dispatch(weChat.weChatLogout())
+	    }
+	}
 }
 
 function checkUpgrade(model, version) {
@@ -105,29 +110,33 @@ function storeWork(work,currentToken,index) {
 	}
 }
 
-function updateWebToken(store) {
-  	return fetch(HOST + API_TOKEN_REFRESH,{
-	    method: 'GET',
-	    headers: {
-	      'content-type': 'application/json',
-	      'Authorization': token
-	    },
-  	})
-  	.then((response)=>response.json())
-    .then((responseData)=>{
-    	store.dispatch(weChat.weChatStateChange({
-    		token: 'Bearer '+responseData.token,
-    		expireAt: responseData.expireAt,
-    	}))
-      	weChat.getAndUpdateUserInfo(store)
-    })
-    .catch(err => {
-		console.log('updateWebTokenErr:'+err.message)
-	})
+function updateWebToken() {
+	return function (dispatch) {		
+		return fetch(HOST + API_TOKEN_REFRESH,{
+		    method: 'GET',
+		    headers: {
+		      'content-type': 'application/json',
+		      'Authorization': token
+		    },
+	  	})
+	  	.then((response)=>response.json())
+	    .then((responseData)=>{
+	    	token = 'Bearer '+responseData.token
+	    	dispatch(weChat.weChatStateChange({
+	    		token: token,
+	    		expireAt: responseData.expireAt,
+	    	}))
+			dispatch(weChat.getAndUpdateUserInfo(token,refreshToken))
+	    })
+	    .catch(err => {
+			console.log('updateWebTokenErr:'+err.message)
+		})
+	}
+  	
 }
 
 module.exports = {
-	init: init,
+	loginInit: loginInit,
   	checkUpgrade: checkUpgrade,
 	storeWork: storeWork,
 }

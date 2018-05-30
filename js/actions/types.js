@@ -26,3 +26,4 @@ export type Action =
   | { type: "SAVE_SELECTED_FLAVOR", flavor: Object }
   | { type: "SAVE_SELECTED_ACCESSORIES", accessories: Object }
   | { type: "SAVE_SHARE_URL", url: Object }
+  | { type: "WECHAT_LOGOUT"}

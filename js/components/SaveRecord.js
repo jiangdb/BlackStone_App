@@ -9,10 +9,9 @@ import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilde
 import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
-import { weChatLoginRequest } from '../actions/weChat.js'
+// import *as weChatAction from '../actions/weChat.js'
+import { weChatLogin } from '../actions/weChat.js'
 import *as wechat from 'react-native-wechat'
-
-const appId = 'wx85d6b9dedc701086'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -131,7 +130,6 @@ class SaveRecord extends React.Component {
       },
       navigation: util.addNavigationWithDebounce(this.props.navigation)
     })
-    wechat.registerApp(appId)
   }
 
   componentWillUnmount() {
@@ -258,7 +256,7 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
-    if(!this.props.weChat.logIn) {
+    if(this.props.weChat.token == null) {
       this.setState({loginModalVisible:true})
     } else {
       let date = new Date();
@@ -290,28 +288,6 @@ class SaveRecord extends React.Component {
         itemIndex: index
       })
     }    
-  };
-
-  _WXLogin = () => {
-    let scope = 'snsapi_userinfo';
-    let state = 'wechat_sdk_demo';
-
-    //判断微信是否安装
-    wechat.isWXAppInstalled()
-    .then((isInstalled) => {
-      if (isInstalled) {
-        this.props.onWeChatLoginRequest();
-      } else {
-        Platform.OS == 'ios' ?
-        Alert.alert('没有安装微信', '是否安装微信？', [
-          {text: '取消'},
-          {text: '确定', onPress: () => this.installWechat()}
-        ]) :
-        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
-          {text: '确定'}
-        ])
-      }
-    })
   };
 
   render() {
@@ -496,7 +472,7 @@ class SaveRecord extends React.Component {
                 <TouchableOpacity 
                   onPress={ () => {
                     this.setState({loginModalVisible:false})
-                    this._WXLogin()
+                    this.props.onWeChatLogin()
                   }}
                   activeOpacity={1}
                 >
@@ -676,9 +652,9 @@ const mapDispatchToProps = dispatch => {
     onSaveSelectedAccessories: (accessories) => {
       dispatch(saveSelectedAccessories(accessories))
     },
-    onWeChatLoginRequest: () => {
-      dispatch(weChatLoginRequest())
-    },
+    onWeChatLogin: () => {
+      dispatch(weChatLogin())
+    }
   }
 }
 
