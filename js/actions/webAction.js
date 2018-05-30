@@ -98,7 +98,6 @@ function storeWork(work,currentToken,index) {
 	    		id:responseData.id,
 	    		shareUrl: responseData.shareUrl
 	    	}))
-	    	console.log(responseData)
 	    })
 	    .catch(err => {
 			console.log('storeWorkErr:'+err.message)
@@ -120,7 +119,6 @@ function updateWebToken(store) {
     		token: 'Bearer '+responseData.token,
     		expireAt: responseData.expireAt,
     	}))
-		console.log('updateWebToken:'+responseData.status)
       	weChat.getAndUpdateUserInfo(store)
     })
     .catch(err => {

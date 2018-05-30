@@ -107,7 +107,7 @@ function weChatLogout(store) {
 		expireAt: null,
 		refreshExpireAt: null
 	}))
-	console.log('weChatLogout')
+	// console.log('weChatLogout')
 }
 
 function getAndUpdateUserInfo(store) {
@@ -159,7 +159,7 @@ function getAndUpdateUserInfo(store) {
     })
     .then((response)=>response.json())
     .then((responseData)=>{
-    	console.log('getAndUpdateUserInfo:'+responseData)
+    	console.log('getAndUpdateUserInfo:'+responseData.status)
     })
 	.catch(err => {
 		console.log('getAndUpdateUserInfoErr:'+err.message)

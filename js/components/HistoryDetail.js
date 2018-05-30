@@ -34,7 +34,6 @@ class HistoryDetail extends React.Component {
     this.setState({
       itemIndex:itemIndex
     })
-    // console.log(this.state.itemIndex)
     let length = this.props.history.historyList[itemIndex].chartDatas.length
     for( let i = 0; i<length; i++) {
       let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
@@ -171,7 +170,7 @@ class HistoryDetail extends React.Component {
         thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
         webpageUrl: history.shareUrl
       });
-      console.log('share image url to time line successful:', result);
+      // console.log('share image url to time line successful:', result);
     } catch (e) {
       // console.log('error:'+e)
       if (e instanceof wechat.WechatError) {
@@ -191,7 +190,7 @@ class HistoryDetail extends React.Component {
         thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
         webpageUrl: history.shareUrl
       });
-      console.log('share image url to time line successful:', result);
+      // console.log('share image url to time line successful:', result);
     } catch (e) {
       // console.log('error:'+e)
       if (e instanceof wechat.WechatError) {
