@@ -55,7 +55,7 @@ const initialState = {
  
 import type { Action } from "../actions/types";
 
-function flavorSelect(state, action) {
+function flavor(state, action) {
   if (typeof state === 'undefined') {
     return initialState
   }
@@ -63,11 +63,10 @@ function flavorSelect(state, action) {
   switch (action.type) {
     case "SAVE_FLAVOR":
       return Object.assign({}, state, {flavorOption: action.flavor});
-      console.log(state.flavorOption)
 
     default:
       return state;
   }
 }
 
-module.exports = flavorSelect;
+module.exports = flavor;

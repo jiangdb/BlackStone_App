@@ -56,6 +56,20 @@ function history(state, action) {
         historyList: newHistoryList
       });
 
+    case "SAVE_SHARE_URL":
+      let historyList = state.historyList;
+      let historyItem = historyList[action.url.index]
+
+      historyItem = Object.assign({}, historyItem, {
+        id: action.url.id,
+        shareUrl: action.url.shareUrl,
+      });
+      historyList.splice(action.url.index, 1, historyItem);
+
+      return Object.assign({}, state, {
+        historyList: historyList
+      });
+
     default:
       return state;
   }

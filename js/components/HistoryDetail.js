@@ -1,9 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, ScrollView, processColor } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, processColor,TouchableOpacity,Modal } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { LineChart } from "../libs/rnmpandroidchart";
+import ActionSheet from 'react-native-actionsheet'
+import *as wechat from 'react-native-wechat'
+import *as util from '../utils/util.js'
+import { weChatLoginRequest } from '../actions/weChat.js'
+
+const appId = 'wx85d6b9dedc701086'
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
@@ -12,6 +18,7 @@ class HistoryDetail extends React.Component {
   };
 
   state = {
+    itemIndex: null,
     description: {},
     data: {},
     xAxis: {},
@@ -19,10 +26,14 @@ class HistoryDetail extends React.Component {
     legend: {},
     extract: [{x:0,y:0}],
     total: [{x:0,y:0}],
+    loginModalVisible: false
   };
 
   componentWillMount() {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+    this.setState({
+      itemIndex: itemIndex
+    })
     let length = this.props.history.historyList[itemIndex].chartDatas.length
     for( let i = 0; i<length; i++) {
       let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
@@ -107,6 +118,7 @@ class HistoryDetail extends React.Component {
         }
       },
     })
+    wechat.registerApp(appId)
   }
 
   _getSelectedFlavor = (index) => {
@@ -114,18 +126,16 @@ class HistoryDetail extends React.Component {
     if(selectedFlavor.length === 0) {
       return ;
     } else {
-      return selectedFlavor.map((flavor) => {return flavor.name}).join(",");
+      return selectedFlavor.join(",");
     }
   };
 
   _getSelectedAccessories = (index) => {
-    let selectedFilter = this.props.history.historyList[index].accessories.filter;
-    let selectedKettle = this.props.history.historyList[index].accessories.kettle;
-    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+    let selectedAccessories = this.props.history.historyList[index].accessories;
+    if(selectedAccessories.length === 0) {
       return
     } else {
-      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return selectedAccessories.join(" ");
+      return selectedAccessories.join(",");
     }
   };
 
@@ -151,10 +161,70 @@ class HistoryDetail extends React.Component {
       }
   };
 
-  render() {
-    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+  async  _shareToSession(history) {
+    try {
+      let result = await wechat.shareToSession({
+        type: 'news',
+        title: 'web page',
+        description: 'share web page to session',
+        thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+        webpageUrl: history.shareUrl
+      });
+      // console.log('share image url to time line successful:', result);
+    } catch (e) {
+      // console.log('error:'+e)
+      if (e instanceof wechat.WechatError) {
+        console.error(e.stack);
+      } else {
+        throw e;
+      }
+    }
+  }
 
-    let history = this.props.history.historyList[itemIndex];
+  async  _shareToTimeline(history) {
+    try {
+      let result = await wechat.shareToTimeline({
+        type: 'news',
+        title: 'web page',
+        description: 'share web page to time line',
+        thumbImage:'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+        webpageUrl: history.shareUrl
+      });
+      // console.log('share image url to time line successful:', result);
+    } catch (e) {
+      // console.log('error:'+e)
+      if (e instanceof wechat.WechatError) {
+        console.error(e.stack);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  _WXLogin = () => {
+    let scope = 'snsapi_userinfo';
+    let state = 'wechat_sdk_demo';
+
+    //判断微信是否安装
+    wechat.isWXAppInstalled()
+    .then((isInstalled) => {
+      if (isInstalled) {
+        this.props.onWeChatLoginRequest();
+      } else {
+        Platform.OS == 'ios' ?
+        Alert.alert('没有安装微信', '是否安装微信？', [
+          {text: '取消'},
+          {text: '确定', onPress: () => this.installWechat()}
+        ]) :
+        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+          {text: '确定'}
+        ])
+      }
+    })
+  };
+
+  render() {
+    let history = this.props.history.historyList[this.state.itemIndex];
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
@@ -174,9 +244,9 @@ class HistoryDetail extends React.Component {
             </View>
           </View>
           <Divider/>
-          <ChoiceBar title='风味' value={this._getSelectedFlavor(itemIndex)} />
+          <ChoiceBar title='风味' value={this._getSelectedFlavor(this.state.itemIndex)} />
           <Divider/>
-          <ChoiceBar title='设备' value={this._getSelectedAccessories(itemIndex)} />
+          <ChoiceBar title='设备' value={this._getSelectedAccessories(this.state.itemIndex)} />
           <Divider/>
 
           <View style={{height:165.5}}>
@@ -191,7 +261,7 @@ class HistoryDetail extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={history.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={history.totalSeconds} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(history.totalSeconds)} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
@@ -222,6 +292,63 @@ class HistoryDetail extends React.Component {
             touchEnabled={false}
           />
         </View>
+
+        <TouchableOpacity onPress={()=> {
+          if(!this.props.weChat.logIn) {
+              this.setState({loginModalVisible:true})
+              return
+          }
+            this.ActionSheet.show()
+        }} activeOpacity={1}>
+          <View style={history.shareUrl == null ? {display: 'none'} : styles.btnSave}>
+            <Text style={styles.btnSaveText}>分享</Text>
+          </View>
+        </TouchableOpacity>
+
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          options={['发送给朋友', '分享到朋友圈', '取消 ']}
+          cancelButtonIndex={2}
+          onPress={(index) => {
+              if(index == 0 ) this._shareToSession(history)
+              if(index == 1 )  this._shareToTimeline(history)
+         }}
+        />
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.loginModalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}
+        >
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18}}>请先登录</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => {this.setState({loginModalVisible:false})}} activeOpacity={1}>
+                  <View style={[styles.modalBtn,styles.withBorderRight]}>
+                    <Text style={{fontSize: 18}}>取消</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => {
+                    this.setState({loginModalVisible:false})
+                    this._WXLogin()
+                  }}
+                  activeOpacity={1}
+                >
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18, color:'#3CC51F'}}>微信登录</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     );
   }
@@ -267,17 +394,64 @@ const styles = StyleSheet.create({
     marginLeft: 7.5,
     marginRight: 7.5,
     backgroundColor: '#fff'
-  }
+  },
+  btnSave: {
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    height: 55,
+    backgroundColor: '#383838',
+  },
+  btnSaveText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  modalTitle: {
+    display: 'flex',
+    height:50,
+    justifyContent: 'center',
+    alignItems:'center',
+  },
+  modalMask: {
+    flex:1,
+    backgroundColor:'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent:{
+    backgroundColor:'#fff',
+    width:300,
+    borderRadius:1.5,
+  },
+  modalBtn: {
+    display: 'flex',
+    height:50,
+    borderTopWidth:0.5,
+    borderStyle:'solid',
+    borderTopColor: '#E8E8EA',
+    justifyContent: 'center',
+    alignItems:'center',
+    width: 150,
+  },
+  withBorderRight: {
+    borderStyle: 'solid',
+    borderRightWidth: 0.5,
+    borderRightColor: '#E8E8EA',
+  },
 })
 
 const mapStateToProps = state => {
   return {
-    history: state.history
+    history: state.history,
+    weChat: state.weChat
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    onWeChatLoginRequest: () => {
+      dispatch(weChatLoginRequest())
+    },
   }
 }
 

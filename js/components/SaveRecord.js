@@ -1,12 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,BackHandler,Modal, Image, processColor,Navigator } from 'react-native';
-import { ChoiceBar, Divider, SingleDetail } from './Templates';
+import { NavigationActions, StackActions } from 'react-navigation';
 import StarRating from 'react-native-star-rating';
-import { saveRecord } from '../actions/coffeeBuilder.js'
-import { convertSecondToFormatTime, formatTime } from '../utils/util.js'
+import { ChoiceBar, Divider, SingleDetail } from './Templates';
+import {storeWork} from '../actions/webAction.js'
+import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
+import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
-import { addNavigationWithDebounce } from '../utils/util.js'
+import *as util from '../utils/util.js'
+import { weChatLoginRequest } from '../actions/weChat.js'
+import *as wechat from 'react-native-wechat'
+
+const appId = 'wx85d6b9dedc701086'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -17,8 +23,9 @@ class SaveRecord extends React.Component {
   state = {
     starCount: 5,
     comment: '',
-    flavor:[],
-    accessories: null,
+    flavorOption:this.props.flavor.flavorOption,
+    filterOption:this.props.accessories.filterOption,
+    kettleOption:this.props.accessories.kettleOption,
     actualWaterWeight: this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total.toFixed(1),
     actualRatioWater: Math.round(this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total / this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].extract),
     category: this.props.coffeeSettings.category,
@@ -26,6 +33,7 @@ class SaveRecord extends React.Component {
     modalVisible: false,
     modalName: '',
     newOption:'',
+    loginModalVisible: false,
 
     description: {},
     data: {},
@@ -121,8 +129,43 @@ class SaveRecord extends React.Component {
           labels: ['注水总量', '咖啡萃取量']
         }
       },
-      navigation: addNavigationWithDebounce(this.props.navigation)
+      navigation: util.addNavigationWithDebounce(this.props.navigation)
     })
+    wechat.registerApp(appId)
+  }
+
+  componentWillUnmount() {
+    //change saveRecord reducer back to initial state
+    this.props.onSaveSelectedFlavor({flavor:[]});
+    this.props.onSaveSelectedAccessories({accessories:[]});
+
+    //deselected  flavors and accessories in reducer 
+    this.setState({
+      flavorOption: this.state.flavorOption.map((flavor) => {
+        return Object.assign({}, flavor, {
+                  ...flavor,
+                  selected: false
+                })
+      }),
+      filterOption: this.state.filterOption.map((filter) => {
+        return Object.assign({}, filter, {
+                  ...filter,
+                  selected: false,
+                });
+      }),
+      kettleOption: this.state.kettleOption.map((kettle) => {
+        return Object.assign({}, kettle, {
+                ...kettle,
+                selected: false,
+              });
+      })
+    });
+
+    this.props.onSaveFlavor(this.state.flavorOption);
+    this.props.onSaveAccessories({
+      filterOption:this.state.filterOption,
+      kettleOption:this.state.kettleOption
+    });
   }
 
   onBackButtonPressAndroid = () => {
@@ -158,24 +201,18 @@ class SaveRecord extends React.Component {
   };
 
   _getSelectedFlavor = () => {
-    let selectedFlavorObject = this.props.flavor.flavorOption.filter((flavor) => flavor.selected);
-
-    if(selectedFlavorObject.length === 0) {
+    if(this.props.saveRecord.flavor.length === 0) {
       return '请选择';
     } else {
-      return selectedFlavorObject.map((flavor) => {return flavor.name}).join(",");
+      return this.props.saveRecord.flavor.join(',')
     }
   };
 
   _getSelectedAccessories = () => {
-    let selectedFilter = this.props.accessories.filterOption.filter((filter) => filter.selected);
-    let selectedKettle = this.props.accessories.kettleOption.filter((kettle) => kettle.selected);
-
-    if(selectedFilter.length === 0 && selectedKettle.length === 0) {
+    if(this.props.saveRecord.accessories.length === 0) {
       return '请选择';
     } else {
-      let selectedAccessories = [selectedFilter[0].name, selectedKettle[0].name];
-      return selectedAccessories.join(" ");
+      return this.props.saveRecord.accessories.join(',')
     }
   };
 
@@ -221,29 +258,60 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
-    let date = new Date();
-    this.props.onSaveRecord({
-      date: formatTime(date),
-      starCount: this.state.starCount,
-      flavor: this.props.flavor.flavorOption.filter((flavor) => flavor.selected),
-      accessories: {
-        filter: this.props.accessories.filterOption.filter((filter) => filter.selected),
-        kettle: this.props.accessories.kettleOption.filter((kettle) => kettle.selected)
-      },
-      comment: this.state.comment,
-      category: this.state.category,
-      ratioWater: this.props.coffeeSettings.ratioWater,
-      beanWeight: this.props.coffeeSettings.beanWeight,
-      waterWeight: this.props.coffeeSettings.waterWeight,
-      temperature: this.props.coffeeSettings.temperature,
-      grandSize: this.state.grandSize,
-      totalSeconds: convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10)),
-      chartDatas:this.props.coffeeBuilder.datas,
-      actualWaterWeight: this.state.actualWaterWeight,
-      actualRatioWater: this.state.actualRatioWater
-    });
+    if(!this.props.weChat.logIn) {
+      this.setState({loginModalVisible:true})
+    } else {
+      let date = new Date();
+      let work = {
+        device: this.props.bleInfo.displayName,
+        date: util.formatTime(date),
+        starCount: this.state.starCount,
+        flavor: this.props.saveRecord.flavor,
+        accessories: this.props.saveRecord.accessories,
+        comment: this.state.comment,
+        category: this.state.category,
+        ratioWater: this.props.coffeeSettings.ratioWater,
+        beanWeight: this.props.coffeeSettings.beanWeight,
+        waterWeight: this.props.coffeeSettings.waterWeight,
+        temperature: this.props.coffeeSettings.temperature,
+        grandSize: this.state.grandSize,
+        totalSeconds: Math.floor(this.props.coffeeBuilder.datas.length / 10),
+        chartDatas:this.props.coffeeBuilder.datas,
+        actualWaterWeight: this.state.actualWaterWeight,
+        actualRatioWater: this.state.actualRatioWater,
+        shareUrl: null
+      }
+      let index = this.props.history.historyList.length
+      let currentToken = this.props.weChat.token
 
-    this.props.navigation.goBack();
+      this.props.onSaveRecord(work); //save to local
+      this.props.onStoreWork(work,currentToken,index); //save to server
+      this.props.navigation.replace('HistoryDetail', {
+        itemIndex: index
+      })
+    }    
+  };
+
+  _WXLogin = () => {
+    let scope = 'snsapi_userinfo';
+    let state = 'wechat_sdk_demo';
+
+    //判断微信是否安装
+    wechat.isWXAppInstalled()
+    .then((isInstalled) => {
+      if (isInstalled) {
+        this.props.onWeChatLoginRequest();
+      } else {
+        Platform.OS == 'ios' ?
+        Alert.alert('没有安装微信', '是否安装微信？', [
+          {text: '取消'},
+          {text: '确定', onPress: () => this.installWechat()}
+        ]) :
+        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+          {text: '确定'}
+        ])
+      }
+    })
   };
 
   render() {
@@ -273,14 +341,14 @@ class SaveRecord extends React.Component {
             title='风味'
             value={this._getSelectedFlavor()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('FlavorSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Flavor')}
           />
           <Divider/>
           <ChoiceBar
             title='设备'
             value={this._getSelectedAccessories()}
             icon='more'
-            onPress={() => this.state.navigation.navigateWithDebounce('AccessoriesSelect')}
+            onPress={() => this.state.navigation.navigateWithDebounce('Accessories')}
           />
           <Divider/>
           <View style={{height:165.5,backgroundColor: '#fff'}}>
@@ -319,7 +387,7 @@ class SaveRecord extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
@@ -399,6 +467,41 @@ class SaveRecord extends React.Component {
                 >
                   <View style={styles.modalBtn}>
                     <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.loginModalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}
+        >
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18}}>请先登录</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => {this.setState({loginModalVisible:false})}} activeOpacity={1}>
+                  <View style={[styles.modalBtn,styles.withBorderRight]}>
+                    <Text style={{fontSize: 18}}>取消</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => {
+                    this.setState({loginModalVisible:false})
+                    this._WXLogin()
+                  }}
+                  activeOpacity={1}
+                >
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18, color:'#3CC51F'}}>微信登录</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -543,10 +646,13 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     coffeeSettings: state.coffeeSettings,
-    flavor: state.flavorSelect,
-    accessories: state.accessoriesSelect,
+    flavor: state.flavor,
+    accessories: state.accessories,
     coffeeBuilder: state.coffeeBuilder,
     history: state.history,
+    bleInfo: state.bleInfo,
+    saveRecord: state.saveRecord,
+    weChat: state.weChat
   }
 }
 
@@ -554,7 +660,25 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
-    }
+    },
+    onStoreWork: (work,currentToken,index) => {
+      dispatch(storeWork(work,currentToken,index))
+    },
+    onSaveFlavor: flavor => {
+      dispatch(saveFlavor(flavor))
+    },
+    onSaveAccessories: (accessories) => {
+      dispatch(saveAccessories(accessories))
+    },
+    onSaveSelectedFlavor: flavor => {
+      dispatch(saveSelectedFlavor(flavor))
+    },
+    onSaveSelectedAccessories: (accessories) => {
+      dispatch(saveSelectedAccessories(accessories))
+    },
+    onWeChatLoginRequest: () => {
+      dispatch(weChatLoginRequest())
+    },
   }
 }
 
