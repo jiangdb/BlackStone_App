@@ -18,9 +18,9 @@ let tokenExpireAt = null
 function init(store) {
 	let weChatState = store.getState().weChat
 	let now = Math.floor(Date.now() / 1000)
-	token = weChatState.token
-	tokenExpireAt = weChatState.expireAt
-	refreshExpireAt = weChatState.refreshExpireAt
+	token = weChatState.token //web token
+	tokenExpireAt = weChatState.expireAt //web token 
+	refreshExpireAt = weChatState.refreshExpireAt //web refresh token
 
 	if(!weChatState.logIn) {
 		return

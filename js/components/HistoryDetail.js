@@ -32,7 +32,7 @@ class HistoryDetail extends React.Component {
   componentWillMount() {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
     this.setState({
-      itemIndex:itemIndex
+      itemIndex: itemIndex
     })
     let length = this.props.history.historyList[itemIndex].chartDatas.length
     for( let i = 0; i<length; i++) {
