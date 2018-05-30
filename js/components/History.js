@@ -38,8 +38,6 @@ class History extends React.Component {
       animation: false,
       hideOnPress: true,
     });
-
-    console.log(this.props.history.historyList)
   };
 
   _renderItem = (item) => {

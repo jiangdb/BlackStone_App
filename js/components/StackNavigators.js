@@ -32,6 +32,7 @@ const HomeStack = StackNavigator({
   SaveRecord: { screen: SaveRecordContainer },
   Flavor: { screen: FlavorContainer },
   Accessories: { screen: AccessoriesContainer },
+  HistoryDetail: { screen: HistoryDetailContainer },
 },{
   navigationOptions: {
     headerStyle: {
