@@ -10,6 +10,9 @@ import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecor
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
 import { weChatLoginRequest } from '../actions/weChat.js'
+import *as wechat from 'react-native-wechat'
+
+const appId = 'wx85d6b9dedc701086'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -30,6 +33,7 @@ class SaveRecord extends React.Component {
     modalVisible: false,
     modalName: '',
     newOption:'',
+    loginModalVisible: false,
 
     description: {},
     data: {},
@@ -127,6 +131,7 @@ class SaveRecord extends React.Component {
       },
       navigation: util.addNavigationWithDebounce(this.props.navigation)
     })
+    wechat.registerApp(appId)
   }
 
   componentWillUnmount() {
@@ -254,39 +259,37 @@ class SaveRecord extends React.Component {
 
   _onSaveRecord = () => {
     if(!this.props.weChat.logIn) {
-      Alert.alert('请登录', [
-        {text: '微信登录', onPress: () => console.log('OK Pressed!')}
-      ])
-      return
-    }
-    let date = new Date();
-    let work = {
-      device: this.props.bleInfo.displayName,
-      date: util.formatTime(date),
-      starCount: this.state.starCount,
-      flavor: this.props.saveRecord.flavor,
-      accessories: this.props.saveRecord.accessories,
-      comment: this.state.comment,
-      category: this.state.category,
-      ratioWater: this.props.coffeeSettings.ratioWater,
-      beanWeight: this.props.coffeeSettings.beanWeight,
-      waterWeight: this.props.coffeeSettings.waterWeight,
-      temperature: this.props.coffeeSettings.temperature,
-      grandSize: this.state.grandSize,
-      totalSeconds: Math.floor(this.props.coffeeBuilder.datas.length / 10),
-      chartDatas:this.props.coffeeBuilder.datas,
-      actualWaterWeight: this.state.actualWaterWeight,
-      actualRatioWater: this.state.actualRatioWater
-    }
-    console.log(this.props.history.historyList)
-    let index = this.props.history.historyList.length
-    let currentToken = this.props.weChat.token
+      this.setState({loginModalVisible:true})
+    } else {
+      let date = new Date();
+      let work = {
+        device: this.props.bleInfo.displayName,
+        date: util.formatTime(date),
+        starCount: this.state.starCount,
+        flavor: this.props.saveRecord.flavor,
+        accessories: this.props.saveRecord.accessories,
+        comment: this.state.comment,
+        category: this.state.category,
+        ratioWater: this.props.coffeeSettings.ratioWater,
+        beanWeight: this.props.coffeeSettings.beanWeight,
+        waterWeight: this.props.coffeeSettings.waterWeight,
+        temperature: this.props.coffeeSettings.temperature,
+        grandSize: this.state.grandSize,
+        totalSeconds: Math.floor(this.props.coffeeBuilder.datas.length / 10),
+        chartDatas:this.props.coffeeBuilder.datas,
+        actualWaterWeight: this.state.actualWaterWeight,
+        actualRatioWater: this.state.actualRatioWater,
+        shareUrl: null
+      }
+      let index = this.props.history.historyList.length
+      let currentToken = this.props.weChat.token
 
-    this.props.onSaveRecord(work); //save to local
-    this.props.onStoreWork(work,currentToken,index); //save to server
-    this.props.navigation.replace('HistoryDetail', {
-      itemIndex: index
-    })
+      this.props.onSaveRecord(work); //save to local
+      this.props.onStoreWork(work,currentToken,index); //save to server
+      this.props.navigation.replace('HistoryDetail', {
+        itemIndex: index
+      })
+    }    
   };
 
   _WXLogin = () => {
@@ -464,6 +467,41 @@ class SaveRecord extends React.Component {
                 >
                   <View style={styles.modalBtn}>
                     <Text style={{fontSize: 18, color:'#3CC51F'}}>确认</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.loginModalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}
+        >
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18}}>请先登录</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => {this.setState({loginModalVisible:false})}} activeOpacity={1}>
+                  <View style={[styles.modalBtn,styles.withBorderRight]}>
+                    <Text style={{fontSize: 18}}>取消</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => {
+                    this.setState({loginModalVisible:false})
+                    this._WXLogin()
+                  }}
+                  activeOpacity={1}
+                >
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18, color:'#3CC51F'}}>微信登录</Text>
                   </View>
                 </TouchableOpacity>
               </View>

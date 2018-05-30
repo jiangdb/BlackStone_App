@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, ScrollView, processColor,TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, processColor,TouchableOpacity,Modal } from 'react-native';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
 import StarRating from 'react-native-star-rating';
 import { LineChart } from "../libs/rnmpandroidchart";
 import ActionSheet from 'react-native-actionsheet'
 import *as wechat from 'react-native-wechat'
 import *as util from '../utils/util.js'
+import { weChatLoginRequest } from '../actions/weChat.js'
 
 const appId = 'wx85d6b9dedc701086'
 
@@ -25,6 +26,7 @@ class HistoryDetail extends React.Component {
     legend: {},
     extract: [{x:0,y:0}],
     total: [{x:0,y:0}],
+    loginModalVisible: false
   };
 
   componentWillMount() {
@@ -161,7 +163,6 @@ class HistoryDetail extends React.Component {
   };
 
   async  _shareToSession(history) {
-    console.log(history)
     try {
       let result = await wechat.shareToSession({
         type: 'news',
@@ -201,9 +202,30 @@ class HistoryDetail extends React.Component {
     }
   }
 
+  _WXLogin = () => {
+    let scope = 'snsapi_userinfo';
+    let state = 'wechat_sdk_demo';
+
+    //判断微信是否安装
+    wechat.isWXAppInstalled()
+    .then((isInstalled) => {
+      if (isInstalled) {
+        this.props.onWeChatLoginRequest();
+      } else {
+        Platform.OS == 'ios' ?
+        Alert.alert('没有安装微信', '是否安装微信？', [
+          {text: '取消'},
+          {text: '确定', onPress: () => this.installWechat()}
+        ]) :
+        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+          {text: '确定'}
+        ])
+      }
+    })
+  };
+
   render() {
     let history = this.props.history.historyList[this.state.itemIndex];
-    console.log(history)
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,backgroundColor: '#fff'}}>
@@ -272,8 +294,14 @@ class HistoryDetail extends React.Component {
           />
         </View>
 
-        <TouchableOpacity onPress={()=> this.ActionSheet.show()} activeOpacity={1}>
-          <View style={styles.btnSave}>
+        <TouchableOpacity onPress={()=> {
+          if(!this.props.weChat.logIn) {
+              this.setState({loginModalVisible:true})
+              return
+          }
+            this.ActionSheet.show()
+        }} activeOpacity={1}>
+          <View style={history.shareUrl == null ? {display: 'none'} : styles.btnSave}>
             <Text style={styles.btnSaveText}>分享</Text>
           </View>
         </TouchableOpacity>
@@ -283,10 +311,45 @@ class HistoryDetail extends React.Component {
           options={['发送给朋友', '分享到朋友圈', '取消 ']}
           cancelButtonIndex={2}
           onPress={(index) => {
-            if(index == 0 ) this._shareToSession(history)
-            if(index == 1 )  this._shareToTimeline(history)
+              if(index == 0 ) this._shareToSession(history)
+              if(index == 1 )  this._shareToTimeline(history)
          }}
         />
+        <Modal
+          animationType="fade"
+          transparent={true}
+          presentationStyle='overFullScreen'
+          visible={this.state.loginModalVisible}
+          onRequestClose={() => {
+            alert('Modal has been closed.');
+          }}
+        >
+          <View style={styles.modalMask}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalTitle}>
+                <Text style={{fontSize: 18}}>请先登录</Text>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity onPress={() => {this.setState({loginModalVisible:false})}} activeOpacity={1}>
+                  <View style={[styles.modalBtn,styles.withBorderRight]}>
+                    <Text style={{fontSize: 18}}>取消</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={ () => {
+                    this.setState({loginModalVisible:false})
+                    this._WXLogin()
+                  }}
+                  activeOpacity={1}
+                >
+                  <View style={styles.modalBtn}>
+                    <Text style={{fontSize: 18, color:'#3CC51F'}}>微信登录</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     );
   }
@@ -344,16 +407,52 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
   },
+  modalTitle: {
+    display: 'flex',
+    height:50,
+    justifyContent: 'center',
+    alignItems:'center',
+  },
+  modalMask: {
+    flex:1,
+    backgroundColor:'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent:{
+    backgroundColor:'#fff',
+    width:300,
+    borderRadius:1.5,
+  },
+  modalBtn: {
+    display: 'flex',
+    height:50,
+    borderTopWidth:0.5,
+    borderStyle:'solid',
+    borderTopColor: '#E8E8EA',
+    justifyContent: 'center',
+    alignItems:'center',
+    width: 150,
+  },
+  withBorderRight: {
+    borderStyle: 'solid',
+    borderRightWidth: 0.5,
+    borderRightColor: '#E8E8EA',
+  },
 })
 
 const mapStateToProps = state => {
   return {
-    history: state.history
+    history: state.history,
+    weChat: state.weChat
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    onWeChatLoginRequest: () => {
+      dispatch(weChatLoginRequest())
+    },
   }
 }
 
