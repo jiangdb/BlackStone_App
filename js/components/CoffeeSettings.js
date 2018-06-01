@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slid
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
-import bleService from '../services/bleServiceFaker.js'
+import bleService from '../services/bleService.js'
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {

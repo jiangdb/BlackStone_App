@@ -52,7 +52,7 @@ class CoffeeBuilder extends React.Component {
       }
     );
     let weight = bleService.readWeight();
-    if (weight.exptract !== null) {
+    if (weight.extract != null) {
       this.setState({
         scaleNumber: 2,
       })
@@ -131,6 +131,8 @@ class CoffeeBuilder extends React.Component {
         });
       }
     },1000);
+    bleService.timerReset()
+    bleService.setZero()
   };
 
   _stopBuilding = () => {

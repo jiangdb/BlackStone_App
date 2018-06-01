@@ -1,7 +1,7 @@
 export type Action =
   | { type: "BLE_DEVICE_READY"}
   | { type: "BLE_DEVICE_FORGET", device:Object }
-  | { type: "BLE_DEVICE_SAVE", device:Object }
+  | { type: "BLE_DEVICE_SAVE", deviceId:Object }
   | { type: "BLE_FIND_DEVICE", device: Object }
   | { type: "BLE_ON_BT_STATE_CHANGE", state: string }
   | { type: "BLE_ON_CONNECTION_STATE_CHANGE", state: string, device: Object }

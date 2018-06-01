@@ -1,5 +1,5 @@
 const initialState = {
-  device: null,
+  deviceId: null,
 }
  
 import type { Action } from "../actions/types";
@@ -17,10 +17,7 @@ function bleDevice(state, action) {
 
     case "BLE_DEVICE_SAVE":
       return {
-        device: {
-          ...state.device,
-          ...action.device
-        }
+        deviceId: action.deviceId
       }
 
     default:

@@ -72,7 +72,7 @@ class Step3 extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
             if(this.state.selectedDeviceId == null) return
-              bleService.deviceConnect(this.state.selectedDevice)
+              bleService.deviceConnect(this.state.selectedDevice.id)
           }} activeOpacity={1}>
             <View style={this.state.selectedDeviceId == null ? styles.btnDisabled : styles.btn}>
               <Text style={this.state.selectedDeviceId == null ? styles.btnTextDisabled : styles.btnText}>连接</Text>

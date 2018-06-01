@@ -2,7 +2,7 @@
  * ble service
  */
 
-import { BleManager } from 'react-native-ble-plx';
+import { BleManager, BleErrorCode } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
 import * as bleActions from '../actions/ble.js'
 import util from '../utils/util.js'
@@ -77,8 +77,10 @@ let dispatch = null
   },
  */
 let connectedDevice = null
-let stateSubscription = null
+let bleStateSubscription = null
+let reconnectTimer = null
 let weightNotifyInterval = null
+let weightControlNotify = null
 let weightMeasureMonitor = null
 let weightMeasurement = {
   extract: 0,
@@ -89,19 +91,49 @@ function init(store) {
   bleManager = new BleManager()
   appStore = store
   dispatch = store.dispatch
-  stateSubscription = bleManager.onStateChange((state) => {
+  bleStateSubscription = bleManager.onStateChange((state) => {
     console.log('ble state: ' + state)
     dispatch(bleActions.bleOnBtStateChange(state))
+    if (state == 'PoweredOn') {
+      let savedDevice = appStore.getState().bleDevice.deviceId;
+      if (savedDevice ) {
+        //wait for reducer get ble state change first
+        setTimeout( ()=>{
+          deviceConnect(savedDevice);
+        }, 500)
+      }
+    }
   }, true)
 }
 
 function deInit() {
-  stateSubscription.remove()
+  //turn reconnect timeout
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer)
+    reconnectTimer = null
+  }
+
+  //turn off scale notify
+  if (weightMeasureMonitor) {
+    weightMeasureMonitor.remove()
+    weightMeasureMonitor = null
+  }
+
+  if (weightControlNotify) {
+    weightControlNotify.remove()
+    weightControlNotify = null
+  }
+
+  bleStateSubscription.remove()
   bleManager.destroy()
+  bleManager = null
 }
 
 function deviceScanStart() {
+  if (appStore.getState().bleStatus.btState != 'PoweredOn' || !bleManager)
+    return;
   console.log('start scan')
+
   dispatch(bleActions.bleStartScan())
   bleManager.startDeviceScan([UUIDS.SERVICE_WEIGHT], {allowDuplicates: false}, (error, device) => {
     if (error) {
@@ -123,12 +155,31 @@ function deviceScanStop() {
   dispatch(bleActions.bleStopScan())
 }
 
-function deviceConnect(device) {
-  console.log('start connect: ' + device.id)
-  dispatch(bleActions.bleOnConnectionStateChange('connecting', device))
+function deviceReConnect() {
+  //reconnect device after 20 seconds
+  console.log('try reconnect device after 20 seconds')
+  let savedDevice = appStore.getState().bleDevice.deviceId;
+  if (savedDevice ) {
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer)
+    }
+    reconnectTimer = setTimeout( ()=>{
+      deviceConnect(savedDevice);
+    }, 20000)
+  }
+}
+
+function deviceConnect(deviceId) {
+  if (appStore.getState().bleStatus.btState != 'PoweredOn' || !bleManager)
+    return;
+
+  console.log('start connect: ' + deviceId)
+  dispatch(bleActions.bleOnConnectionStateChange('connecting', deviceId))
   let deviceInfo = {}
   connectedDevice = {}
-  device.connect()
+
+  //device.connect()
+  bleManager.connectToDevice(deviceId)
     .then((device) => {
       console.log('connected')
       //we get connected
@@ -142,6 +193,9 @@ function deviceConnect(device) {
         dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
         connectedDevice = null
         onDisconnected.remove()
+
+        //reconnect device after 20 seconds
+        deviceReConnect()
       })
       //console.log('discover services and characteristics')
       //discover services and characteristics
@@ -226,11 +280,12 @@ function deviceConnect(device) {
           deviceInfo.wifiSSID = val.toString('utf8',11)
 
           //enable notify
-          let weightControlNotify = characteristic.monitor((error,characteristic) => {
-            if (error && (error.errorCode == 201)) {
+          weightControlNotify = characteristic.monitor((error,characteristic) => {
+            if (error && (error.errorCode == BleErrorCode.DeviceDisconnected)) {
               weightControlNotify.remove();
               return;
             }
+            if (!characteristic) return;
             let val = new Buffer(characteristic.value, 'base64')
             if (val[0] != 2) return
             if (val[1] == SCALE_CONTROL_NOTIFY.WIFI_STATUS) {
@@ -252,6 +307,7 @@ function deviceConnect(device) {
           return deviceControl(SCALE_CONTROL.ALARM_ENABLE, false)
         }).then((characteristic)=>{
           dispatch(bleActions.bleOnDeviceInfoChange(deviceInfo))
+          dispatch(bleActions.bleDeviceSave(connectedDevice.id))
           dispatch(bleActions.bleDeviceReady())
         })
         .catch((error) => {
@@ -262,8 +318,11 @@ function deviceConnect(device) {
     })
     .catch((error) => {
        // Handle errors
-      console.log('error')
+      console.log('connect device error')
       console.log(error);
+      if (error.errorCode == BleErrorCode.DeviceDisconnected) {
+        deviceReConnect()
+      }
       dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
       connectedDevice = null
     });
@@ -385,12 +444,14 @@ function deviceControl(opt) {
 }
 
 function weightNotify( error, characteristic ) {
-  //console.log('weight measurement notify:')
-  if (error && (error.errorCode == 201)) {
-    weightMeasureMonitor.remove()
-    weightMeasureMonitor = null
+  if (error && (error.errorCode == BleErrorCode.DeviceDisconnected)) {
+    if (weightMeasureMonitor) {
+      weightMeasureMonitor.remove()
+      weightMeasureMonitor = null
+    }
     return;
   }
+  if (!characteristic) return;
   let val = new Buffer(characteristic.value, 'base64')
   //console.log('flag: ' + val[0])
   //console.log("total: " + val.readInt32LE(1));
@@ -455,7 +516,7 @@ function enableWeightNotify(enable) {
  * if extract is null, means scale is in single scale mode
  */
 function readWeight() {
-  return weight
+  return weightMeasurement
 }
 
 /**

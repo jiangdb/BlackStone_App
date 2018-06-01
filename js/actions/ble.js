@@ -1,8 +1,8 @@
 const bleDeviceReady = () => ({ type: "BLE_DEVICE_READY" })
 const bleDeviceForget = () => ({ type: "BLE_DEVICE_FORGET" })
-const bleDeviceSave = device => ({
+const bleDeviceSave = deviceId => ({
   type: "BLE_DEVICE_SAVE",
-  device
+  deviceId
 })
 const bleFindDevice = device => ({
   type: "BLE_FIND_DEVICE",
