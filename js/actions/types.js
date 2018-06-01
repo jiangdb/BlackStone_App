@@ -27,3 +27,4 @@ export type Action =
   | { type: "SAVE_SELECTED_ACCESSORIES", accessories: Object }
   | { type: "SAVE_SHARE_URL", url: Object }
   | { type: "WECHAT_LOGOUT"}
+  | { type: "WEB_SERVER_STATE_CHANGE", info: Object }

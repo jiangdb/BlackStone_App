@@ -13,7 +13,7 @@ function webServer(state, action) {
  
   switch (action.type) {
     case "WEB_SERVER_STATE_CHANGE":
-      return Object.assign({}, state, action.state)
+      return Object.assign({}, state, action.info)
 
     case "WECHAT_LOGOUT":
       return Object.assign({}, state, initialState)

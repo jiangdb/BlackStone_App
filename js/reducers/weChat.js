@@ -1,20 +1,15 @@
 const initialState = {
-  logIn: false,
-  error: null,
   userInfo: null,
-  refreshToken: null,
-  token: null,
   expireAt: null,
-  refreshExpireAt: null
-}
- 
+  accessToken: null,
+  refreshToken: null,
+} 
 import type { Action } from "../actions/types";
 
 function weChat(state, action) {
   if (typeof state === 'undefined') {
     return initialState
-  }
- 
+  } 
   switch (action.type) {
 
     case "WECHAT_LOGIN_FAIL":

@@ -18,7 +18,8 @@ const persistConfig = {
     'flavor',
     'getStart',
     'history',
-    'weChat'
+    'weChat',
+    'webServer'
   ]
 }
 

@@ -7,8 +7,7 @@ import reducer from './js/reducers/index'
 import TabNavigator from './js/components/TabNavigator'
 import bleService from './js/services/bleServiceFaker.js'
 import GetStartContainer from './js/components/getStart/GetStart.js'
-import * as webAction from './js/actions/webAction.js'
-import * as weChat from './js/actions/weChat.js'
+import { webInit } from './js/actions/webAction.js'
 
 export default class App extends React.Component {
 
@@ -26,8 +25,9 @@ export default class App extends React.Component {
         this.setState({ storeRehydrated: true })
         // console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
-        let weChatState = this.state.store.getState().weChat
-        this.state.store.dispatch(webAction.loginInit(weChatState))
+        let webServerState = this.state.store.getState().webServer
+        console.log(webServerState)
+        // this.state.store.dispatch(webInit(webServerState))
       }
     ).then(
       // creation callback (after async compatibility)

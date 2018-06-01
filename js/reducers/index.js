@@ -17,4 +17,5 @@ export default combineReducers({
     getStart: require('./getStart.js'),
     deviceSetting: require('./deviceSetting.js'),
     weChat: require('./weChat.js'),
+    webServer: require('./webServer.js'),
 })

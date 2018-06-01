@@ -4,12 +4,11 @@ import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,Bac
 import { NavigationActions, StackActions } from 'react-navigation';
 import StarRating from 'react-native-star-rating';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
-import {storeWork} from '../actions/webAction.js'
+import { storeWork } from '../actions/webAction.js'
 import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
 import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
-// import *as weChatAction from '../actions/weChat.js'
 import { weChatLogin } from '../actions/weChat.js'
 import *as wechat from 'react-native-wechat'
 
