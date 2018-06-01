@@ -7,7 +7,8 @@ import { LineChart } from "../libs/rnmpandroidchart";
 import ActionSheet from 'react-native-actionsheet'
 import *as wechat from 'react-native-wechat'
 import *as util from '../utils/util.js'
-import { weChatLogin } from '../actions/weChat.js'
+import { weChatLogin } from '../actions/loginActions.js'
+import { weChatShareToSession, weChatShareToTimeline } from '../actions/weChat.js'
 
 class HistoryDetail extends React.Component {
   static navigationOptions = {
@@ -120,7 +121,7 @@ class HistoryDetail extends React.Component {
 
   _getSelectedFlavor = (index) => {
     let selectedFlavor = this.props.history.historyList[index].flavor;
-    if(selectedFlavor.length === 0) {
+    if(selectedFlavor.length == 0) {
       return ;
     } else {
       return selectedFlavor.join(",");
@@ -269,13 +270,13 @@ class HistoryDetail extends React.Component {
         </View>
 
         <TouchableOpacity onPress={()=> {
-          if(this.props.weChat.token == null) {
+          if(this.props.webServer.token == null) {
               this.setState({loginModalVisible:true})
               return
           }
             this.ActionSheet.show()
         }} activeOpacity={1}>
-          <View style={history.shareUrl == null ? {display: 'none'} : styles.btnSave}>
+          <View style={styles.btnSave}>
             <Text style={styles.btnSaveText}>分享</Text>
           </View>
         </TouchableOpacity>
@@ -285,8 +286,8 @@ class HistoryDetail extends React.Component {
           options={['发送给朋友', '分享到朋友圈', '取消 ']}
           cancelButtonIndex={2}
           onPress={(index) => {
-              if(index == 0 ) this._shareToSession(history)
-              if(index == 1 )  this._shareToTimeline(history)
+              if(index == 0 ) this.props.onShareToSession(history, this.state.itemIndex)
+              if(index == 1 )  this.props.onShareToTimeline(history, this.state.itemIndex)
          }}
         />
         <Modal
@@ -418,7 +419,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     history: state.history,
-    weChat: state.weChat
+    weChat: state.weChat,
+    webServer: state.webServer
   }
 }
 
@@ -426,6 +428,12 @@ const mapDispatchToProps = dispatch => {
   return {
     onWeChatLogin: () => {
       dispatch(weChatLogin())
+    },
+    onShareToSession: (work, index) => {
+      dispatch(weChatShareToSession(work, index))
+    },
+    onShareToTimeline: (work, index) => {
+      dispatch(weChatShareToTimeline(work, index))
     },
   }
 }

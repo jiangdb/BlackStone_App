@@ -7,7 +7,7 @@ import *as wechat from 'react-native-wechat'
 import ActionSheet from 'react-native-actionsheet'
 import { weChatLogout, getAndUpdateUserInfo } from '../actions/weChat.js'
 import { weChatLogin } from '../actions/loginActions.js'
-import { checkUpgrade } from '../actions/webAction.js'
+import { webServerCheckUpgrade } from '../actions/webAction.js'
 
 class Mine extends React.Component {
   static navigationOptions = {
@@ -27,8 +27,13 @@ class Mine extends React.Component {
   };
 
   componentWillMount() {
-      
-    
+    let model = this.props.bleInfo.modelNum 
+    let version = this.props.bleInfo.fwVersion
+    let token = this.props.webServer.token
+
+    //check if there is a new version of the device
+    if(token == null || version == null) return
+    this.props.onCheckUpgrade(model, version)
   };
 
   componentDidMount() {
@@ -37,17 +42,9 @@ class Mine extends React.Component {
     })
     // this.props.onWeChatLogout()
 
-    let model = this.props.bleInfo.modelNum 
-    let version = this.props.bleInfo.fwVersion
-    let token = this.props.webServer.token
-
-    //check if there is a new version of the device
-    if(token == null || version == null) return
-    this.props.onCheckUpgrade(model, version, token)
-
     //update userInfo when loading mine.js
-    if(token == null) return
-    this.props.onGetAndUpdateUserInfo()
+    // if(this.props.webServer.token == null) return
+    // this.props.onGetAndUpdateUserInfo()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -174,12 +171,12 @@ const mapDispatchToProps = dispatch => {
     onWeChatLogout: () => {
       dispatch(weChatLogout())
     },
-    onCheckUpgrade: (model, version,token) => {
-      dispatch(checkUpgrade(model, version,token))
+    onCheckUpgrade: (model, version) => {
+      dispatch(webServerCheckUpgrade(model, version))
     },
-    onGetAndUpdateUserInfo: () => {
-      dispatch(getAndUpdateUserInfo())
-    },
+    // onGetAndUpdateUserInfo: () => {
+    //   dispatch(getAndUpdateUserInfo())
+    // },
   }
 }
 

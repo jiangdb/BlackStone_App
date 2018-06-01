@@ -4,12 +4,12 @@ import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,Bac
 import { NavigationActions, StackActions } from 'react-navigation';
 import StarRating from 'react-native-star-rating';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
-import { storeWork } from '../actions/webAction.js'
+import { webServerStoreWork } from '../actions/webAction.js'
 import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
 import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
-import { weChatLogin } from '../actions/weChat.js'
+import { weChatLogin } from '../actions/loginActions.js'
 import *as wechat from 'react-native-wechat'
 
 class SaveRecord extends React.Component {
@@ -255,9 +255,9 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
-    if(this.props.weChat.token == null) {
-      this.setState({loginModalVisible:true})
-    } else {
+    // if(this.props.webServer.token == null) {
+    //   this.setState({loginModalVisible:true})
+    // } else {
       let date = new Date();
       let work = {
         device: this.props.bleInfo.displayName,
@@ -279,18 +279,16 @@ class SaveRecord extends React.Component {
         shareUrl: null
       }
       let index = this.props.history.historyList.length
-      let currentToken = this.props.weChat.token
 
       this.props.onSaveRecord(work); //save to local
-      this.props.onStoreWork(work,currentToken,index); //save to server
+      // this.props.onStoreWork(work,index); //save to server
       this.props.navigation.replace('HistoryDetail', {
         itemIndex: index
       })
-    }    
+    // }    
   };
 
   render() {
-
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,}}>
@@ -627,7 +625,8 @@ const mapStateToProps = state => {
     history: state.history,
     bleInfo: state.bleInfo,
     saveRecord: state.saveRecord,
-    weChat: state.weChat
+    weChat: state.weChat,
+    webServer: state.webServer
   }
 }
 
@@ -636,8 +635,8 @@ const mapDispatchToProps = dispatch => {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
     },
-    onStoreWork: (work,currentToken,index) => {
-      dispatch(storeWork(work,currentToken,index))
+    onStoreWork: (work,index) => {
+      dispatch(webServerStoreWork(work,index))
     },
     onSaveFlavor: flavor => {
       dispatch(saveFlavor(flavor))

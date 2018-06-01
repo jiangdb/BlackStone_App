@@ -12,13 +12,44 @@ export const weChatLogout = () => ({
   type: 'WECHAT_LOGOUT'
 });
 
-import { validateToken, getUserInfo } from '../services/wechatService.js'
-import { updateUserInfo } from '../services/webService.js'
+import { shareToSession, shareToTimeline } from '../services/wechatService.js'
+import { validateWebToken, storeWork, checkUpgrade } from '../services/webService.js'
 
-export function getAndUpdateUserInfo() {
+
+// export function getAndUpdateUserInfo() {
+//   return function(dispatch) {
+//     validateToken(dispatch, getUserInfo(dispatch))
+//       .then((responseData) => updateUserInfo(dispatch, responseData))
+//       .catch(err => console.log('getAndUpdateUserInfoErr:' + err.message))
+//   }
+// }
+
+export function weChatShareToSession(work, index) {
+  let shareUrl = work.shareUrl
   return function(dispatch) {
-    validateToken(dispatch, getUserInfo(dispatch))
-      .then((responseData) => updateUserInfo(dispatch, responseData))
-      .catch(err => console.log('getAndUpdateUserInfoErr:' + err.message))
+    if (shareUrl == null) {
+      validateWebToken(dispatch, storeWork, work, index)
+        .then(res => shareToSession(res))
+        .catch(err => {
+          console.log('weChatShareToSessionErr:' + err.message)
+        })
+    } else {
+      shareToSession(shareUrl)
+    }
+  }
+}
+
+export function weChatShareToTimeline(work, index) {
+  let shareUrl = work.shareUrl
+  return function(dispatch) {
+    if (shareUrl == null) {
+      validateWebToken(dispatch, storeWork, work, index)
+        .then(res => shareToTimeline(res))
+        .catch(err => {
+          console.log('weChatShareToSessionErr:' + err.message)
+        })
+    } else {
+      shareToSession(shareUrl)
+    }
   }
 }

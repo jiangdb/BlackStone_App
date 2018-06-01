@@ -22,6 +22,8 @@ function weChat(state, action) {
 
     case "WECHAT_LOGOUT":
       return Object.assign({}, state, initialState)
+    console.log(state)
+
 
     default:
       return state;

@@ -6,7 +6,7 @@ export function weChatLogin() {
     weChatLoginRequest(dispatch)
       .then((openId) => webServerLogin(dispatch, openId))
       .then(() => getUserInfo(dispatch))
-      // .then((userInfo) => updateUserInfo(dispatch, userInfo))
+      .then((userInfo) => updateUserInfo(dispatch, userInfo))
       .catch(err => console.log('weChatLoginErr:' + err.message))
   }
 }

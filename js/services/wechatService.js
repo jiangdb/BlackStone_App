@@ -3,6 +3,7 @@ import * as wechat from 'react-native-wechat';
 import Storage from 'react-native-storage';
 import { Alert, AsyncStorage } from 'react-native';
 import { weChatStateChange } from '../actions/weChat.js'
+import { saveShareUrl } from '../actions/saveRecord.js'
 
 const appId = 'wx85d6b9dedc701086';
 const secretId = '692442ff78837aa6e128df87e8184b4f';
@@ -146,8 +147,35 @@ export function validateToken(dispatch, callback) {
     })
     .then(state => {
       let now = Math.floor(Date.now() / 1000)
-      // now = 1537838798
       if (now > state.expireqAt) { refreshAccessToken(dispatch) }
       return callback
+    })
+}
+
+export function shareToSession(shareUrl) {
+  wechat.registerApp(appId)
+  return wechat.shareToSession({
+      type: 'news',
+      title: 'web page',
+      description: 'share web page to session',
+      thumbImage: 'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+      webpageUrl: shareUrl
+    })
+    .catch(err => {
+      console.log('shareToSessionErr:' + err.message)
+    })
+}
+
+export function shareToTimeline(shareUrl) {
+  wechat.registerApp(appId)
+  return wechat.shareToTimeline({
+      type: 'news',
+      title: 'web page',
+      description: 'share web page to time line',
+      thumbImage: 'http://thirdwx.qlogo.cn/mmopen/vi_32/UAsGAa5kruXicNFukE9dYuricROuumKR00HuFvVGSb4CUd03U21m50icOOCLVicAjaXb4yJYIXyUGMBG8OzbtwGmuQ/132',
+      webpageUrl: shareUrl
+    })
+    .catch(err => {
+      console.log('shareToTimelineErr:' + err.message)
     })
 }

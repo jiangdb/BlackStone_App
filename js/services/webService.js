@@ -1,9 +1,10 @@
 import fetch from 'cross-fetch';
 import Storage from 'react-native-storage';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import * as bleActions from '../actions/ble.js'
 import { webServerStateChange } from '../actions/webAction.js'
 import { saveShareUrl } from '../actions/saveRecord.js'
+import { weChatStateChange, weChatLogout } from '../actions/weChat.js'
 
 let HOST = "https://bs.ziipoo.com.cn/api/v2"
 let API_VERSION = "v1"
@@ -49,37 +50,183 @@ export function webServerLogin(dispatch, openId) {
       }))
       console.log('webServerLogin:' + responseData.status)
     })
-  .catch(err => {
-    console.log('webServerLoginErr:' + err.message)
-  })
+    .catch(err => {
+      console.log('webServerLoginErr:' + err.message)
+    })
 }
 
 export function updateUserInfo(dispatch, userInfo) {
   return storage.load({
       key: 'webServerState',
     })
-  .then(state => {
-    return fetch(HOST + API_USER_UPDATE, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': state.token
-      },
-      body: JSON.stringify({
-        client: 'weChatApp',
-        nickname: userInfo.nickname,
-        gender: userInfo.sex,
-        city: userInfo.city,
-        province: userInfo.province,
-        avatar_url: userInfo.headimgurl,
-      })
+    .then(state => {
+      return fetch(HOST + API_USER_UPDATE, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': state.token
+          },
+          body: JSON.stringify({
+            client: 'weChatApp',
+            nickname: userInfo.nickname,
+            gender: userInfo.sex,
+            city: userInfo.city,
+            province: userInfo.province,
+            avatar_url: userInfo.headimgurl,
+          })
+        })
+        .then((response) => response.json())
+        .then((responseData) => {
+          console.log('updateUserInfo:' + responseData.status)
+        })
+        .catch(err => {
+          console.log('updateUserInfoErr:' + err.message)
+        })
     })
-    .then((response) => response.json())
-    .then((responseData) => {
-      console.log('updateUserInfo:' + responseData.status)
+}
+
+export function checkUpgrade(dispatch, model, version) {
+  return storage.load({
+      key: 'webServerState',
     })
-    .catch(err => {
-        console.log('updateUserInfoErr:' + err.message)
-      })
-  })
+    .then(state => {
+      return fetch(HOST + API_OTA + model + '?version=' + version, {
+          method: 'GET',
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': state.token
+          }
+        })
+        .then((response) => response.json())
+        .then((responseData) => {
+          dispatch(bleActions.bleOnDeviceInfoChange({
+            downloadUrl: responseData.download_url,
+            fwVersion: responseData.version,
+            description: responseData.description,
+          }))
+          console.log('checkUpgrade:' + responseData.status)
+        })
+        .catch(err => {
+          console.log('checkUpgradeErr:' + err.message)
+        })
+    })
+}
+
+export function storeWork(dispatch, work, index) {
+
+  let formatChartDatas = [];
+  let length = work.chartDatas.length;
+  for (let i = 0; i < length; i++) {
+    formatChartDatas.push([
+      i * 100,
+      work.chartDatas[i].extract.toFixed(1),
+      work.chartDatas[i].total.toFixed(1),
+    ])
+  }
+  let formData = new FormData();
+  formData.append("device", work.device);
+  formData.append("bean_category", work.category);
+  formData.append("bean_weight", work.beanWeight);
+  formData.append("water_ratio", work.ratioWater);
+  formData.append("water_weight", work.waterWeight);
+  formData.append("grand_size", work.grandSize);
+  formData.append("temperature", work.temperature);
+  formData.append("work_time", work.totalSeconds);
+  formData.append("rating", work.starCount);
+  formData.append("flavor", work.flavor.toString());
+  formData.append("accessories", work.accessories.toString());
+  formData.append("feeling", work.comment);
+  formData.append("data", JSON.stringify(formatChartDatas));
+  formData.append("started_at", work.date);
+
+  return storage.load({
+      key: 'webServerState',
+    })
+    .then(state => {
+      return fetch(HOST + API_WORK_STORE, {
+          method: 'POST',
+          headers: {
+            'content-type': 'multipart/form-data',
+            'Authorization': state.token
+          },
+          body: formData
+        })
+        .then((response) => response.json())
+        .then((responseData) => {
+          dispatch(saveShareUrl({
+            index: index,
+            id: responseData.id,
+            shareUrl: responseData.shareUrl
+          }))
+          return Promise.resolve(responseData.shareUrl)
+          console.log('storeWork:' + responseData.status)
+        })
+        .catch(err => {
+          console.log('storeWorkErr:' + err.message)
+        })
+    })
+}
+
+export function updateWebToken(dispatch) {
+  return storage.load({
+      key: 'webServerState',
+    })
+    .then(state => {
+      return fetch(HOST + API_TOKEN_REFRESH, {
+          method: 'GET',
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': state.token
+          },
+        })
+        .then((response) => response.json())
+        .then((responseData) => {
+          storage.load({
+              key: 'webServerState',
+            })
+            .then(state => {
+              storage.save({
+                key: 'webServerState',
+                data: {
+                  token: 'Bearer ' + responseData.token,
+                  expireAt: responseData.expireAt,
+                  refreshExpireAt: state.refreshExpireAt
+                }
+              })
+            })
+
+          dispatch(weChatStateChange({
+            token: 'Bearer ' + responseData.token,
+            expireAt: responseData.expireAt,
+          }))
+          console.log('updateWebToken:' + responseData.status)
+        })
+        .catch(err => {
+          console.log('updateWebTokenErr:' + err.message)
+        })
+    })
+}
+
+export function validateWebToken(dispatch, callback, param1, param2) {
+  return storage.load({
+      key: 'webServerState',
+    })
+    .then(state => {
+      let now = Math.floor(Date.now() / 1000)
+
+      if (now < state.expireAt) {
+        return callback(dispatch, param1, param2)
+      } else if (now < state.refreshExpireAt) {
+        updateWebToken(dispatch)
+        return callback(dispatch, param1, param2)
+      } else {
+        dispatch(weChatLogout())
+        if (callback == storeWork) {
+          Alert.alert('未登录', '请先登录再进行分享', [
+            { text: '确定' }
+          ])
+        }
+        return Promise.reject('reject')
+      }
+    })
 }

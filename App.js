@@ -7,7 +7,7 @@ import reducer from './js/reducers/index'
 import TabNavigator from './js/components/TabNavigator'
 import bleService from './js/services/bleServiceFaker.js'
 import GetStartContainer from './js/components/getStart/GetStart.js'
-import { webInit } from './js/actions/webAction.js'
+import { weChatLogout } from './js/actions/weChat.js'
 
 export default class App extends React.Component {
 
@@ -25,9 +25,13 @@ export default class App extends React.Component {
         this.setState({ storeRehydrated: true })
         // console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
-        let webServerState = this.state.store.getState().webServer
-        console.log(webServerState)
-        // this.state.store.dispatch(webInit(webServerState))
+
+        let now = Math.floor(Date.now() / 1000)
+        let refreshExpireAt = this.state.store.getState().webServer.refreshExpireAt
+        let token = this.state.store.getState().webServer.token
+        if (token !== null && now > refreshExpireAt) {
+          this.state.store.dispatch(weChatLogout())
+        }
       }
     ).then(
       // creation callback (after async compatibility)
