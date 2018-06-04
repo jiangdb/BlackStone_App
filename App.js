@@ -7,8 +7,7 @@ import reducer from './js/reducers/index'
 import bleService from './js/services/bleService.js'
 import TabNavigator from './js/components/TabNavigator'
 import GetStartContainer from './js/components/getStart/GetStart.js'
-import * as webAction from './js/actions/webAction.js'
-import * as weChat from './js/actions/weChat.js'
+import { weChatLogout } from './js/actions/weChat.js'
 
 export default class App extends React.Component {
 
@@ -24,9 +23,15 @@ export default class App extends React.Component {
       // rehydration callback (after async compatibility and persistStore)
       () => {
         this.setState({ storeRehydrated: true })
-        console.log('init state', this.state.store.getState())
+        // console.log('init state', this.state.store.getState())
         bleService.init(this.state.store);
-        webAction.init(this.state.store)
+
+        let now = Math.floor(Date.now() / 1000)
+        let refreshExpireAt = this.state.store.getState().webServer.refreshExpireAt
+        let token = this.state.store.getState().webServer.token
+        if (token !== null && now > refreshExpireAt) {
+          this.state.store.dispatch(weChatLogout())
+        }
       }
     ).then(
       // creation callback (after async compatibility)

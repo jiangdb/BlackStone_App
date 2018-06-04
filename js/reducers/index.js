@@ -12,9 +12,9 @@ export default combineReducers({
     flavor: require('./flavor.js'),
     accessories: require('./accessories.js'),
     saveRecord: require('./saveRecord.js'),
-    weightChart: require('./weightChart.js'),
     history: require('./history.js'),
     getStart: require('./getStart.js'),
     deviceSetting: require('./deviceSetting.js'),
     weChat: require('./weChat.js'),
+    webServer: require('./webServer.js'),
 })
