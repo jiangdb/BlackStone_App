@@ -4,15 +4,13 @@ import { Text, View,StyleSheet, TextInput, ScrollView,TouchableOpacity,Alert,Bac
 import { NavigationActions, StackActions } from 'react-navigation';
 import StarRating from 'react-native-star-rating';
 import { ChoiceBar, Divider, SingleDetail } from './Templates';
-import {storeWork} from '../actions/webAction.js'
+import { webServerStoreWork } from '../actions/webAction.js'
 import { saveRecord, saveFlavor, saveAccessories } from '../actions/coffeeBuilder.js'
 import { saveSelectedFlavor,saveSelectedAccessories } from '../actions/saveRecord.js'
 import { LineChart } from "../libs/rnmpandroidchart";
 import *as util from '../utils/util.js'
-import { weChatLoginRequest } from '../actions/weChat.js'
+import { weChatLogin } from '../actions/loginActions.js'
 import *as wechat from 'react-native-wechat'
-
-const appId = 'wx85d6b9dedc701086'
 
 class SaveRecord extends React.Component {
   static navigationOptions = {
@@ -131,7 +129,6 @@ class SaveRecord extends React.Component {
       },
       navigation: util.addNavigationWithDebounce(this.props.navigation)
     })
-    wechat.registerApp(appId)
   }
 
   componentWillUnmount() {
@@ -258,9 +255,9 @@ class SaveRecord extends React.Component {
   };
 
   _onSaveRecord = () => {
-    if(!this.props.weChat.logIn) {
-      this.setState({loginModalVisible:true})
-    } else {
+    // if(this.props.webServer.token == null) {
+    //   this.setState({loginModalVisible:true})
+    // } else {
       let date = new Date();
       let work = {
         device: this.props.bleInfo.displayName,
@@ -282,40 +279,16 @@ class SaveRecord extends React.Component {
         shareUrl: null
       }
       let index = this.props.history.historyList.length
-      let currentToken = this.props.weChat.token
 
       this.props.onSaveRecord(work); //save to local
-      this.props.onStoreWork(work,currentToken,index); //save to server
+      // this.props.onStoreWork(work,index); //save to server
       this.props.navigation.replace('HistoryDetail', {
         itemIndex: index
       })
-    }    
-  };
-
-  _WXLogin = () => {
-    let scope = 'snsapi_userinfo';
-    let state = 'wechat_sdk_demo';
-
-    //判断微信是否安装
-    wechat.isWXAppInstalled()
-    .then((isInstalled) => {
-      if (isInstalled) {
-        this.props.onWeChatLoginRequest();
-      } else {
-        Platform.OS == 'ios' ?
-        Alert.alert('没有安装微信', '是否安装微信？', [
-          {text: '取消'},
-          {text: '确定', onPress: () => this.installWechat()}
-        ]) :
-        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
-          {text: '确定'}
-        ])
-      }
-    })
+    // }    
   };
 
   render() {
-
     return (
       <ScrollView contentContainer={{ flexDirection: 'column'}}>
         <View style={{ flexDirection: 'column', marginTop: 8.5,}}>
@@ -496,7 +469,7 @@ class SaveRecord extends React.Component {
                 <TouchableOpacity 
                   onPress={ () => {
                     this.setState({loginModalVisible:false})
-                    this._WXLogin()
+                    this.props.onWeChatLogin()
                   }}
                   activeOpacity={1}
                 >
@@ -652,7 +625,8 @@ const mapStateToProps = state => {
     history: state.history,
     bleInfo: state.bleInfo,
     saveRecord: state.saveRecord,
-    weChat: state.weChat
+    weChat: state.weChat,
+    webServer: state.webServer
   }
 }
 
@@ -661,8 +635,8 @@ const mapDispatchToProps = dispatch => {
     onSaveRecord: record => {
       dispatch(saveRecord(record))
     },
-    onStoreWork: (work,currentToken,index) => {
-      dispatch(storeWork(work,currentToken,index))
+    onStoreWork: (work,index) => {
+      dispatch(webServerStoreWork(work,index))
     },
     onSaveFlavor: flavor => {
       dispatch(saveFlavor(flavor))
@@ -676,9 +650,9 @@ const mapDispatchToProps = dispatch => {
     onSaveSelectedAccessories: (accessories) => {
       dispatch(saveSelectedAccessories(accessories))
     },
-    onWeChatLoginRequest: () => {
-      dispatch(weChatLoginRequest())
-    },
+    onWeChatLogin: () => {
+      dispatch(weChatLogin())
+    }
   }
 }
 
