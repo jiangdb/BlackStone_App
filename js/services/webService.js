@@ -117,10 +117,12 @@ export function storeWork(dispatch, work, index) {
   let formatChartDatas = [];
   let length = work.chartDatas.length;
   for (let i = 0; i < length; i++) {
+    let extract = work.chartDatas[i].extract
+    let total = work.chartDatas[i].total
     formatChartDatas.push([
       i * 100,
-      work.chartDatas[i].extract.toFixed(1),
-      work.chartDatas[i].total.toFixed(1),
+      extract == null ? null : work.chartDatas[i].extract.toFixed(1),
+      total == null ? null : work.chartDatas[i].total.toFixed(1),
     ])
   }
   let formData = new FormData();
@@ -144,66 +146,63 @@ export function storeWork(dispatch, work, index) {
     })
     .then(state => {
       return fetch(HOST + API_WORK_STORE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'multipart/form-data',
-            'Authorization': state.token
-          },
-          body: formData
-        })
-        .then((response) => response.json())
-        .then((responseData) => {
-          dispatch(saveShareUrl({
-            index: index,
-            id: responseData.id,
-            shareUrl: responseData.shareUrl
-          }))
-          return Promise.resolve(responseData.shareUrl)
-          console.log('storeWork:' + responseData.status)
-        })
-        .catch(err => {
-          console.log('storeWorkErr:' + err.message)
-        })
+        method: 'POST',
+        headers: {
+          'content-type': 'multipart/form-data',
+          'Authorization': state.token
+        },
+        body: formData
+      })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      dispatch(saveShareUrl({
+        index: index,
+        id: responseData.id,
+        shareUrl: responseData.shareUrl
+      }))
+      console.log('storeWork:' + responseData.status)
+      return Promise.resolve(responseData.shareUrl)
+    })
+    .catch(err => {
+      console.log('storeWorkErr:' + err.message)
     })
 }
 
-export function updateWebToken(dispatch) {
+export function updateWebToken(dispatch, callback, param1, param2) {
+  let refreshExpireAt = null
   return storage.load({
       key: 'webServerState',
     })
     .then(state => {
+      refreshExpireAt = state.refreshExpireAt
       return fetch(HOST + API_TOKEN_REFRESH, {
-          method: 'GET',
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': state.token
-          },
-        })
-        .then((response) => response.json())
-        .then((responseData) => {
-          storage.load({
-              key: 'webServerState',
-            })
-            .then(state => {
-              storage.save({
-                key: 'webServerState',
-                data: {
-                  token: 'Bearer ' + responseData.token,
-                  expireAt: responseData.expireAt,
-                  refreshExpireAt: state.refreshExpireAt
-                }
-              })
-            })
-
-          dispatch(weChatStateChange({
-            token: 'Bearer ' + responseData.token,
-            expireAt: responseData.expireAt,
-          }))
-          console.log('updateWebToken:' + responseData.status)
-        })
-        .catch(err => {
-          console.log('updateWebTokenErr:' + err.message)
-        })
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': state.token
+        },
+      })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      storage.save({
+        key: 'webServerState',
+        data: {
+          token: 'Bearer ' + responseData.token,
+          expireAt: responseData.expireAt,
+          refreshExpireAt: refreshExpireAt
+        }
+      })
+      dispatch(weChatStateChange({
+        token: 'Bearer ' + responseData.token,
+        expireAt: responseData.expireAt,
+      }))
+      console.log('updateWebToken:' + responseData.status)
+      return callback(dispatch, param1, param2)
+    })
+    .catch(err => {
+      console.log('updateWebTokenErr:' + err.message)
     })
 }
 
@@ -217,8 +216,7 @@ export function validateWebToken(dispatch, callback, param1, param2) {
       if (now < state.expireAt) {
         return callback(dispatch, param1, param2)
       } else if (now < state.refreshExpireAt) {
-        updateWebToken(dispatch)
-        return callback(dispatch, param1, param2)
+        return updateWebToken(dispatch, callback, param1, param2)
       } else {
         dispatch(weChatLogout())
         if (callback == storeWork) {

@@ -49,7 +49,7 @@ export function weChatShareToTimeline(work, index) {
           console.log('weChatShareToSessionErr:' + err.message)
         })
     } else {
-      shareToSession(shareUrl)
+      shareToTimeline(shareUrl)
     }
   }
 }
