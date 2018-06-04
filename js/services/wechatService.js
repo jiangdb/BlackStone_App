@@ -5,8 +5,8 @@ import { Alert, AsyncStorage } from 'react-native';
 import { weChatStateChange } from '../actions/weChat.js'
 import { saveShareUrl } from '../actions/saveRecord.js'
 
-const appId = 'wx85d6b9dedc701086';
-const secretId = '692442ff78837aa6e128df87e8184b4f';
+const appId = 'wx0d8e7be20d93a1af';
+const secretId = '9fc24f0f0b2fa323762763cb23bf10b7';
 let HOST = "https://bs.ziipoo.com.cn/api/v2"
 let API_USER_UPDATE = "/user/update"
 let API_USER_LOGIN = "/user/login"
