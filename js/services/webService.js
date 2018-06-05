@@ -61,27 +61,27 @@ export function updateUserInfo(dispatch, userInfo) {
     })
     .then(state => {
       return fetch(HOST + API_USER_UPDATE, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': state.token
-          },
-          body: JSON.stringify({
-            client: 'weChatApp',
-            nickname: userInfo.nickname,
-            gender: userInfo.sex,
-            city: userInfo.city,
-            province: userInfo.province,
-            avatar_url: userInfo.headimgurl,
-          })
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': state.token
+        },
+        body: JSON.stringify({
+          client: 'weChatApp',
+          nickname: userInfo.nickname,
+          gender: userInfo.sex,
+          city: userInfo.city,
+          province: userInfo.province,
+          avatar_url: userInfo.headimgurl,
         })
-        .then((response) => response.json())
-        .then((responseData) => {
-          console.log('updateUserInfo:' + responseData.status)
-        })
-        .catch(err => {
-          console.log('updateUserInfoErr:' + err.message)
-        })
+      })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log('updateUserInfo:' + responseData.status)
+    })
+    .catch(err => {
+      console.log('updateUserInfoErr:' + err.message)
     })
 }
 
@@ -91,24 +91,30 @@ export function checkUpgrade(dispatch, model, version) {
     })
     .then(state => {
       return fetch(HOST + API_OTA + model + '?version=' + version, {
-          method: 'GET',
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': state.token
-          }
-        })
-        .then((response) => response.json())
-        .then((responseData) => {
-          dispatch(bleActions.bleOnDeviceInfoChange({
-            downloadUrl: responseData.download_url,
-            fwVersion: responseData.version,
-            description: responseData.description,
-          }))
-          console.log('checkUpgrade:' + responseData.status)
-        })
-        .catch(err => {
-          console.log('checkUpgradeErr:' + err.message)
-        })
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': state.token
+        }
+      })
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      if(responseData.status == 'success') {
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          downloadUrl: responseData.download_url,
+          newVersion: responseData.version,
+          description: responseData.description,
+        }))
+      } else {
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          newVersion: null
+        }))
+      }
+      console.log('checkUpgrade:' + responseData.status)
+    })
+    .catch(err => {
+      console.log('checkUpgradeErr:' + err.message)
     })
 }
 

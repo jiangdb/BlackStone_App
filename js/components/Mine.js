@@ -20,20 +20,16 @@ class Mine extends React.Component {
     }
   };
 
-  state = {
-    newVersion: false,
-    navigation: null,
-    toastVisible: false 
-  };
+  constructor(props) {
+    super(props);
+    this.didFocusSubscription = null
+    this.state = {
+      navigation: null,
+      toastVisible: false
+    }
+  }
 
   componentWillMount() {
-    let model = this.props.bleInfo.modelNum 
-    let version = this.props.bleInfo.fwVersion
-    let token = this.props.webServer.token
-
-    //check if there is a new version of the device
-    if(token == null || version == null) return
-    this.props.onCheckUpgrade(model, version)
   };
 
   componentDidMount() {
@@ -45,18 +41,32 @@ class Mine extends React.Component {
     //update userInfo when loading mine.js
     // if(this.props.webServer.token == null) return
     // this.props.onGetAndUpdateUserInfo()
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if(this.props.bleInfo.fwVersion !== nextProps.bleInfo.fwVersion && nextProps.bleInfo.fwVersion !== 'undefined'){
-      this.setState({newVersion: true})
-    } else {
-      this.setState({newVersion: false})
+    if ( !this.didFocusSubscription ) {
+      this.didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+          if (this.props.bleStatus.deviceReady) {
+            let model = this.props.bleInfo.modelNum 
+            let version = this.props.bleInfo.fwVersion
+            //check if there is a new version of the device
+            if(version == null) return
+            this.props.onCheckUpgrade(model, version)
+          }
+        }
+      );
     }
   }
 
+  componentWillUnmount() {
+    this.didFocusSubscription.remove()
+  }
+
+  componentWillReceiveProps(nextProps) {
+  }
+
   _getNewVersionChoiceBar = () => {
-    if(this.state.newVersion) {
+    if(this.props.bleInfo.newVersion && this.props.bleStatus.deviceReady) {
       return (
         <View style={{flexDirection: 'column'}}>
         <ChoiceBar

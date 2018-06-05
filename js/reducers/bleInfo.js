@@ -7,7 +7,9 @@ const initialState = {
   description: null,
   batteryLevel: null,
   wifiStatus: null,
-  wifiSSID: null
+  wifiSSID: null,
+  downloadUrl: null,
+  newVersion: null
 }
  
 import type { Action } from "../actions/types";
