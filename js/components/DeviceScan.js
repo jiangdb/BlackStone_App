@@ -69,12 +69,12 @@ class DeviceScan extends React.Component {
   };
 
   //function user turn off the switch
-  _onSwitchOff = (device) => {
+  _onSwitchOff = () => {
     this.setState({
       switchValue: false,
       loading: true
     });
-    bleService.deviceDisconnect(device);
+    bleService.deviceDisconnect(this.props.bleStatus.device);
     this.props.forgetDevice();
   };
 
