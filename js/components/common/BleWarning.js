@@ -5,17 +5,22 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class BleMessage extends Component {
   render() {
-    if(!this.props.bleStatus.btState == 'PoweredOn') {
+    if(this.props.bleStatus.btState !== 'PoweredOn') {
       return (
         <View style={styles.messageContainer}>
           <Ionicons name="ios-alert" size={23} color='tomato'/>
           <Text style={styles.message}>当前蓝牙不可用，请检查你的蓝牙设置</Text>
-          {/*-- icon and content depends on whether it is 'warn' or 'info' --*/}
         </View>
       );
-    } else {
-      return null;
+    } else if (this.props.bleStatus.connectionState !== 'connected') {
+      return (
+        <View style={styles.messageContainer}>
+          <Ionicons name="ios-alert" size={23} color='tomato'/>
+          <Text style={styles.message}>设备未连接，请检查你的设备</Text>
+        </View>
+      );
     }
+    return null;
   }
 }
 

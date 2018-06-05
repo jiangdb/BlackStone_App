@@ -56,9 +56,9 @@ class DeviceSetting extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, flexDirection: 'column', marginTop: 12}}>
+      <View style={{ flex: 1, flexDirection: 'column'}}>
         <BleMessageContainer/>
-        <View style={{flexDirection: 'column', marginBottom: 12}}>
+        <View style={{flexDirection: 'column', marginBottom: 12, marginTop: 12}}>
           <ChoiceBar
             title='名称'
             value={this.props.bleStatus.deviceReady? this.props.bleInfo.displayName: '蓝牙未连接'}
