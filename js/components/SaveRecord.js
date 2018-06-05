@@ -32,6 +32,7 @@ class SaveRecord extends React.Component {
     modalName: '',
     newOption:'',
     loginModalVisible: false,
+    scaleNumber: 2,
 
     description: {},
     data: {},
@@ -47,10 +48,14 @@ class SaveRecord extends React.Component {
     let length = this.props.coffeeBuilder.datas.length
     for( let i = 0; i<length; i++) {
       let data = this.props.coffeeBuilder.datas[ i ]
-      this.state.extract.push({
-        x: i/10,
-        y: data.extract
-      })
+      if(data.extract !== null) {
+        this.state.extract.push({
+          x: i/10,
+          y: data.extract
+        })
+      } else {
+        this.setState({scaleNumber: 1})
+      }
       this.state.total.push({
         x: i/10,
         y: data.total
@@ -123,8 +128,8 @@ class SaveRecord extends React.Component {
         xEntrySpace: 50,
         formToTextSpace: 7,
         custom: {
-          colors: [processColor('#53B2F0'), processColor('#DFB86F')],
-          labels: ['注水总量', '咖啡萃取量']
+          colors: this.state.scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
+          labels: this.state.scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
         }
       },
       navigation: util.addNavigationWithDebounce(this.props.navigation)
