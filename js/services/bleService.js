@@ -191,6 +191,19 @@ function deviceConnect(deviceId) {
       let onDisconnected = device.onDisconnected((error,device) => {
         console.log(device.id + ' disconnected')
         dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+        dispatch(bleActions.bleOnDeviceInfoChange({
+          displayName: null,
+          manufacturerName: null,
+          modelNum: null,
+          serialNum: null,
+          fwVersion: null,
+          description: null,
+          batteryLevel: null,
+          wifiStatus: null,
+          wifiSSID: null,
+          downloadUrl: null,
+          newVersion: null
+        }))
         connectedDevice = null
         onDisconnected.remove()
 
