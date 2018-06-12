@@ -64,7 +64,7 @@ class CoffeeSettings extends React.Component {
     
     let waterWeight = beanWeight * this.state.ratioWater
     if(Number.isNaN(waterWeight)) {
-      beanWeight = weight.substr(0,beanWeight.length-1)
+      beanWeight = ''
       waterWeight = beanWeight * this.state.ratioWater
     }
     this.setState({
@@ -79,6 +79,24 @@ class CoffeeSettings extends React.Component {
       ratioWater: ratio,
       waterWeight: beanWeight * ratio
     })
+  };
+
+  _onTemperatureChange = temp => {
+    let temperature = temp
+    if(Number.isNaN(Number.parseInt(temp)) ) {
+      if(temp.length > 0) {
+        temperature = ''
+      } else {
+        temperature = temp
+      }
+    }
+    if(temperature > 100) {
+      this.setState({temperature: 100})
+    } else if(temperature.length > 0) {
+      this.setState({temperature: Number.parseInt(temperature)})
+    } else {
+      this.setState({temperature: temperature})
+    }
   };
 
   _submitBeanWeight = () => {
@@ -228,13 +246,7 @@ class CoffeeSettings extends React.Component {
               <TextInput
                 style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.temperature.toString()}
-                onChangeText={ (text) => {
-                  if(text > 100) {
-                    this.setState({temperature: 100})
-                  } else {
-                    this.setState({temperature: Number.parseInt(text)})
-                  }
-                }}
+                onChangeText={this._onTemperatureChange}
                 onSubmitEditing={this._submitTemperature}
                 onBlur={this._submitTemperature}
                 onFocus={(event: Event) => {}}
