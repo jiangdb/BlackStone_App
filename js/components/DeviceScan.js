@@ -85,9 +85,9 @@ class DeviceScan extends React.Component {
         <BleMessageContainer/>
         <View style={{ flexDirection: 'column', marginTop: 18,backgroundColor: '#fff'}}>
           <ChoiceBar
-            title={this.props.bleStatus.connectionState == 'connected' ? '已连接' : '未连接'}
-            value={this.props.bleStatus.connectionState == 'connected' ? this.props.bleInfo.displayName : ''}
-            icon={this.props.bleStatus.connectionState == 'connected' && this.props.bleInfo.displayName ? 'switch' : ''}
+            title={this.props.bleStatus.deviceReady ? '已连接' : '未连接'}
+            value={this.props.bleStatus.deviceReady ? this.props.bleInfo.displayName : ''}
+            icon={this.props.bleStatus.deviceReady ? 'switch' : ''}
             switchValue={this.state.switchValue}
             toggleSwitch={this._onSwitchOff}
           />

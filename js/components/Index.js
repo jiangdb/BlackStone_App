@@ -82,6 +82,7 @@ class Index extends React.Component {
   }
 
   _onReadWeight = () => {
+    if(!this.props.bleStatus.deviceReady) return
     let weight = bleService.readWeight()
     this.props.onSaveCoffeeSetting({
       beanWeight: weight.total,

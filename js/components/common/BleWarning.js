@@ -12,7 +12,7 @@ class BleMessage extends Component {
           <Text style={styles.message}>当前蓝牙不可用，请检查你的蓝牙设置</Text>
         </View>
       );
-    } else if (this.props.bleStatus.connectionState !== 'connected') {
+    } else if (!this.props.bleStatus.deviceReady) {
       return (
         <View style={styles.messageContainer}>
           <Ionicons name="ios-alert" size={23} color='tomato'/>
