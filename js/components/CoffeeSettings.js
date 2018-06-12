@@ -56,17 +56,19 @@ class CoffeeSettings extends React.Component {
   };
 
   _onBeanWeightChange = weight => {
-    let beanWeight = Number.parseFloat(weight)
-    if (isNaN(beanWeight)) {
-      return this.setState({
-        beanWeight: weight,
-        waterWeight: 0
-      })
+    let i = weight.indexOf(".");
+    let beanWeight = weight
+    if (-1 !== i && (i+2) < (weight.length)) {
+       beanWeight = weight.substr(0,i+2);
     }
     
     let waterWeight = beanWeight * this.state.ratioWater
+    if(Number.isNaN(waterWeight)) {
+      beanWeight = weight.substr(0,beanWeight.length-1)
+      waterWeight = beanWeight * this.state.ratioWater
+    }
     this.setState({
-      beanWeight: Number.isInteger(beanWeight) ? beanWeight.toString() : beanWeight.toFixed(1),
+      beanWeight: beanWeight,
       waterWeight: waterWeight
     })
   };
@@ -77,11 +79,14 @@ class CoffeeSettings extends React.Component {
       ratioWater: ratio,
       waterWeight: beanWeight * ratio
     })
-  }
+  };
 
   _submitBeanWeight = () => {
     if (this.state.beanWeight.length <= 0) {
-      this.setState({beanWeight:this.props.coffeeSettings.beanWeight.toString()});
+      this.setState({
+        beanWeight:this.props.coffeeSettings.beanWeight.toString(),
+        waterWeight: this.props.coffeeSettings.waterWeight
+      });
     }
   };
 
@@ -223,7 +228,13 @@ class CoffeeSettings extends React.Component {
               <TextInput
                 style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}
                 value={this.state.temperature.toString()}
-                onChangeText={ (text) => this.setState({temperature: text})}
+                onChangeText={ (text) => {
+                  if(text > 100) {
+                    this.setState({temperature: 100})
+                  } else {
+                    this.setState({temperature: Number.parseInt(text)})
+                  }
+                }}
                 onSubmitEditing={this._submitTemperature}
                 onBlur={this._submitTemperature}
                 onFocus={(event: Event) => {}}
