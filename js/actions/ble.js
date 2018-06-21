@@ -31,6 +31,8 @@ const bleOnSaveDeviceSetting = settings => ({
 })
 const bleStartScan = () => ({ type: "BLE_START_SCAN" })
 const bleStopScan = () => ({ type: "BLE_STOP_SCAN" })
+const bleEnableAutoConnection = () => ({ type: "BLE_ENABLE_AUTO_CONNECTION" })
+const bleDisableAutoConnection = () => ({ type: "BLE_DISABLE_AUTO_CONNECTION" })
 
 module.exports = {
   bleDeviceReady,
@@ -44,4 +46,6 @@ module.exports = {
   bleStartScan,
   bleStopScan,
   bleOnSaveDeviceSetting,
+  bleEnableAutoConnection,
+  bleDisableAutoConnection
 };

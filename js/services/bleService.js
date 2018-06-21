@@ -159,13 +159,16 @@ function deviceReConnect() {
   //reconnect device after 20 seconds
   console.log('try reconnect device after 20 seconds')
   let savedDevice = appStore.getState().bleDevice.deviceId;
-  if (savedDevice ) {
+  let autoConnection = appStore.getState().bleStatus.autoConnection;
+  if (savedDevice && autoConnection) {
     if (reconnectTimer) {
       clearTimeout(reconnectTimer)
     }
     reconnectTimer = setTimeout( ()=>{
       deviceConnect(savedDevice);
     }, 20000)
+  } else {
+    console.log('cannot reconnect')
   }
 }
 
@@ -652,6 +655,7 @@ function timerReset() {
 module.exports = {
   init: init,
   deInit: deInit,
+  deviceReConnect:deviceReConnect,
   deviceConnect: deviceConnect,
   deviceDisconnect: deviceDisconnect,
   deviceScanStart: deviceScanStart,
