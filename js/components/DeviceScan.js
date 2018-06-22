@@ -4,7 +4,7 @@ import { Text, View, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity} 
 import { ChoiceBar,Divider,Message } from './Templates';
 import bleService from '../services/bleService.js'
 import BleMessageContainer from './common/BleWarning.js'
-import { bleDeviceForget, bleEnableAutoConnection, bleDisableAutoConnection } from '../actions/ble.js'
+import { bleDeviceForget } from '../actions/ble.js'
 import Loader from './common/Loader.js'
 
 class DeviceScan extends React.Component {
@@ -26,15 +26,12 @@ class DeviceScan extends React.Component {
         switchValue: true
       });
     }
-
-    this.props.disableAutoConnection();
     bleService.deviceScanStart();
   };
 
   //lifecycle method
   componentWillUnmount = () => {
     bleService.deviceScanStop();
-    this.props.enableAutoConnection();
     bleService.deviceReConnect();
   };
 
@@ -146,12 +143,6 @@ const mapDispatchToProps = dispatch => {
   return {
     forgetDevice: () => {
       dispatch(bleDeviceForget())
-    },
-    enableAutoConnection: () => {
-      dispatch(bleEnableAutoConnection())
-    },
-    disableAutoConnection: () => {
-      dispatch(bleDisableAutoConnection())
     }
   }
 }

@@ -130,6 +130,8 @@ function deInit() {
 }
 
 function deviceScanStart() {
+  dispatch(bleActions.bleDisableAutoConnection())
+
   if (appStore.getState().bleStatus.btState != 'PoweredOn' || !bleManager)
     return;
   if (appStore.getState().bleStatus.connectionState == 'connecting') {
@@ -160,6 +162,7 @@ function deviceScanStop() {
   console.log('stop scan')
   bleManager.stopDeviceScan()
   dispatch(bleActions.bleStopScan())
+  dispatch(bleActions.bleEnableAutoConnection())
 }
 
 function deviceReConnect() {
