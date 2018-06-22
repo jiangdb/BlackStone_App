@@ -132,6 +132,13 @@ function deInit() {
 function deviceScanStart() {
   if (appStore.getState().bleStatus.btState != 'PoweredOn' || !bleManager)
     return;
+  if (appStore.getState().bleStatus.connectionState == 'connecting') {
+    bleManager.cancelDeviceConnection(appStore.getState().bleDevice.deviceId)
+    .then((device) => {
+      dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+      console.log(device.id + ' stop connecting')
+    })
+  }
   console.log('start scan')
 
   dispatch(bleActions.bleStartScan())
@@ -321,7 +328,7 @@ function deviceConnect(deviceId) {
     })
     .catch((error) => {
        // Handle errors
-      console.log('connect device error')
+      console.log('=========>   connect device error')
       console.log(error);
       if (error.errorCode == BleErrorCode.DeviceDisconnected) {
         deviceReConnect()
