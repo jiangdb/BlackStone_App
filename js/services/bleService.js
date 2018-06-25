@@ -164,6 +164,11 @@ function deviceScanStop() {
   bleManager.stopDeviceScan()
   dispatch(bleActions.bleStopScan())
   autoConnection = true
+  let savedDevice = appStore.getState().bleDevice.deviceId
+  let connectionState = appStore.getState().bleStatus.connectionState
+  if( savedDevice && connectionState != 'connected') {
+    deviceConnect(savedDevice)
+  }
 }
 
 function deviceReConnect() {
