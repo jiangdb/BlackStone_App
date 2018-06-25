@@ -86,6 +86,7 @@ let weightMeasurement = {
   extract: 0,
   total: 0
 }
+let autoConnection = true
 
 function init(store) {
   bleManager = new BleManager()
@@ -130,8 +131,17 @@ function deInit() {
 }
 
 function deviceScanStart() {
+  autoConnection = false
+
   if (appStore.getState().bleStatus.btState != 'PoweredOn' || !bleManager)
     return;
+  if (appStore.getState().bleStatus.connectionState == 'connecting') {
+    bleManager.cancelDeviceConnection(appStore.getState().bleDevice.deviceId)
+    .then((device) => {
+      dispatch(bleActions.bleOnConnectionStateChange('disconnected', null))
+      console.log(device.id + ' stop connecting')
+    })
+  }
   console.log('start scan')
 
   dispatch(bleActions.bleStartScan())
@@ -153,19 +163,27 @@ function deviceScanStop() {
   console.log('stop scan')
   bleManager.stopDeviceScan()
   dispatch(bleActions.bleStopScan())
+  autoConnection = true
+  let savedDevice = appStore.getState().bleDevice.deviceId
+  let connectionState = appStore.getState().bleStatus.connectionState
+  if( savedDevice && connectionState != 'connected') {
+    deviceConnect(savedDevice)
+  }
 }
 
 function deviceReConnect() {
   //reconnect device after 20 seconds
   console.log('try reconnect device after 20 seconds')
   let savedDevice = appStore.getState().bleDevice.deviceId;
-  if (savedDevice ) {
+  if (savedDevice && autoConnection) {
     if (reconnectTimer) {
       clearTimeout(reconnectTimer)
     }
     reconnectTimer = setTimeout( ()=>{
       deviceConnect(savedDevice);
     }, 20000)
+  } else {
+    console.log('cannot reconnect')
   }
 }
 
