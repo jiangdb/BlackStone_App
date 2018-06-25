@@ -26,7 +26,7 @@ class DeviceScan extends React.Component {
         switchValue: true
       });
     }
-    
+
     bleService.deviceScanStart();
   };
 

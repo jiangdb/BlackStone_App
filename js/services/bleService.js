@@ -331,7 +331,7 @@ function deviceConnect(deviceId) {
     })
     .catch((error) => {
        // Handle errors
-      console.log('=========>   connect device error')
+      console.log('connect device error')
       console.log(error);
       if (error.errorCode == BleErrorCode.DeviceDisconnected) {
         deviceReConnect()
