@@ -26,13 +26,13 @@ class DeviceScan extends React.Component {
         switchValue: true
       });
     }
+    
     bleService.deviceScanStart();
   };
 
   //lifecycle method
   componentWillUnmount = () => {
     bleService.deviceScanStop();
-    bleService.deviceReConnect();
   };
 
   componentWillReceiveProps(nextProps) {

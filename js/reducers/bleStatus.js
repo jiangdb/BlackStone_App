@@ -8,7 +8,6 @@ const initialState = {
   connectionState: 'disconnected',
   device: null,
   deviceReady: false,
-  autoConnection: true
 }
  
 import type { Action } from "../actions/types";
@@ -37,18 +36,6 @@ function bleStatus(state, action) {
       return {
         ...state,
         deviceReady: true
-      }
-
-    case "BLE_ENABLE_AUTO_CONNECTION":
-      return {
-        ...state,
-        autoConnection: true
-      }
-
-    case "BLE_DISABLE_AUTO_CONNECTION":
-      return {
-        ...state,
-        autoConnection: false
       }
 
     default:
