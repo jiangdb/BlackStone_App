@@ -10,6 +10,7 @@ import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import java.util.Map;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import android.util.Log;
@@ -22,15 +23,16 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.rncharts.data.DataExtract;
 import com.rncharts.data.LineDataExtract;
 import com.rncharts.listener.RNOnChartValueSelectedListener;
 import com.rncharts.listener.RNOnChartGestureListener;
+import com.rncharts.utils.ConversionUtil;
 
 public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> {
     public static final int COMMAND_ADD_ENTRY = 1;
-    public static final int COMMAND_REMOVE_ENTRY = 2;
-    public static final int COMMAND_REFRESH = 3;
+    public static final int COMMAND_UPDATE_ENTRY = 2;
 
     @Override
     public String getName() {
@@ -55,27 +57,28 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
         Log.d("ReactNativeJS"," View manager getCommandsMap:");
         return MapBuilder.of(
             "addEntry",COMMAND_ADD_ENTRY,
-            "removeEntry",COMMAND_REMOVE_ENTRY,
-            "refresh",COMMAND_REFRESH
+            "updateEntry",COMMAND_UPDATE_ENTRY,
         );
     }
 
     @Override
     public void receiveCommand(LineChart lineChart, int commandType, @Nullable ReadableArray args ) {
+        // ConversionUtil.toList(args);
+
         LineData lineData = lineChart.getData();
-        LineDataSet lineDataSet = lineData.getDataSetByLabel("Total");
+        ILineDataSet lineDataSet = lineData.getDataSetByIndex(args.getInt(0));
 
         switch (commandType) {
             case COMMAND_ADD_ENTRY:
                 Log.d("ReactNativeJS", "receiveCommand: COMMAND_ADD_ENTRY");
-                entry = new Entry(x, y);
-                lineDataSet.addEntry(entry);
+                // lineDataSet.addEntry(new Entry(args.getInt(1), args.getInt(2)));
+                lineData.notifyDataChanged(); // let the data know a dataSet changed
+                lineChart.notifyDataSetChanged(); // let the chart know it's data changed
+                lineChart.invalidate(); // refresh
                 return;
-            case COMMAND_REMOVE_ENTRY:
-                Log.d("ReactNativeJS", "receiveCommand: COMMAND_REMOVE_ENTRY");
+            case COMMAND_UPDATE_ENTRY:
+                lineDataSet.addEntry(new Entry(args.getInt(1), args.getInt(2)));
                 lineDataSet.removeFirst();
-                return;
-            case COMMAND_REFRESH:
                 lineData.notifyDataChanged(); // let the data know a dataSet changed
                 lineChart.notifyDataSetChanged(); // let the chart know it's data changed
                 lineChart.invalidate(); // refresh

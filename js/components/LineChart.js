@@ -27,15 +27,27 @@ class LineChartContainer extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(120), (val, index) => { return {x:index/10, y:0}}),
+            values: Array.from(new Array(100), (val, index) => { return {x:index-100, y:Math.random()*10+10}}),
             label: 'ivisible',
             config: {
-              visible:false,
+              lineWidth: 1,
+              drawValues: false,
+              drawCircles: false,
+              drawFilled: false,
+              color: processColor('#E0B870'),
             }
           },
           {
-            values: [],
-            label: 'Total',
+            values: Array.from(new Array(100), (val, index) => { return {x:index-100, y:Math.random()*10+10}}),
+            label: 'ivisible2',
+            config: {
+              lineWidth: 1,
+              drawValues: false,
+              drawCircles: false,
+              drawFilled: false,
+              color: processColor('#53B2F0'),
+
+            }
           }
         ]
       },
@@ -52,7 +64,7 @@ class LineChartContainer extends React.Component {
         left: {
           enabled: true,
           axisMinimum: 0,
-          axisMaximum: 300,
+          axisMaximum: 30,
           drawAxisLine: true,
           drawLabels: true,
         },
@@ -83,6 +95,14 @@ class LineChartContainer extends React.Component {
   componentWillReceiveProps(nextProps) {
   }
 
+  _updateEntry = (index,x,y) => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(this.refs.chart),
+      UIManager.RNLineChart.Commands.updateEntry,
+      [index,x,y],//[dataSet index,x,y]
+    );
+  }
+
   render() {
     return (
         <View style={{flexDirection: 'column'}}>
@@ -102,20 +122,27 @@ class LineChartContainer extends React.Component {
                 UIManager.dispatchViewManagerCommand(
                   findNodeHandle(this.refs.chart),
                   UIManager.RNLineChart.Commands.addEntry,
-                  [],
+                  [0,1.2,1],//[dataSet index, x, y]
                 );
               }}
               title="add entry"
             />
             <Button
               onPress={()=>{
-                UIManager.dispatchViewManagerCommand(
-                  findNodeHandle(this.refs.chart),
-                  UIManager.RNLineChart.Commands.removeEntry,
-                  [],
-                );
+                let i = 0
+                this.interval=setInterval(() => {
+                  i=i+2
+                  this._updateEntry(0,i,Math.random()*10+10);
+                  this._updateEntry(1,i,Math.random()*10+10);
+                },200);
               }}
-              title="remove entry"
+              title="update entry"
+            />
+            <Button
+              onPress={()=>{
+                this.interval && clearInterval(this.interval);
+              }}
+              title="stop"
             />
         </View>     
     );
