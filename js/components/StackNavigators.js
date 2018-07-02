@@ -23,6 +23,7 @@ import Step1Container from './getStart/Step1';
 import Step2Container from './getStart/Step2';
 import Step3Container from './getStart/Step3';
 import Step4Container from './getStart/Step4';
+import LineChartContainer from './LineChart';
 
 const HomeStack = StackNavigator({
   Home: { screen: IndexContainer },
@@ -33,6 +34,7 @@ const HomeStack = StackNavigator({
   Flavor: { screen: FlavorContainer },
   Accessories: { screen: AccessoriesContainer },
   HistoryDetail: { screen: HistoryDetailContainer },
+  LineChart: { screen: LineChartContainer },
 },{
   navigationOptions: {
     headerStyle: {
