@@ -18,7 +18,6 @@ class WeightChartSingle extends React.Component {
 
   componentDidMount() {
     console.log('WeightChartSingle componentDidMount')
-
     this.setState({
       description: {
         text: 'Timemore',
