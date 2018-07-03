@@ -95,11 +95,12 @@ class LineChartContainer extends React.Component {
   componentWillReceiveProps(nextProps) {
   }
 
-  _updateEntry = (index,x,y) => {
+  _updateEntry = (index,value) => {
+      console.log('update entry: ' + index + ' ' + value)
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.refs.chart),
       UIManager.RNLineChart.Commands.updateEntry,
-      [index,x,y],//[dataSet index,x,y]
+      [index,value],//[dataSet index,x,y]
     );
   }
 
@@ -132,8 +133,8 @@ class LineChartContainer extends React.Component {
                 let i = 0
                 this.interval=setInterval(() => {
                   i=i+2
-                  this._updateEntry(0,i,Math.random()*10+10);
-                  this._updateEntry(1,i,Math.random()*10+10);
+                  this._updateEntry(0,{x:i,y:Math.random()*10+10});
+                  this._updateEntry(1,{x:i,y:Math.random()*10+10});
                 },200);
               }}
               title="update entry"

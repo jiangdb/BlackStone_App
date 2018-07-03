@@ -5,6 +5,9 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ViewGroupManager;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.bridge.ReadableArray;
@@ -61,6 +64,25 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
         );
     }
 
+    Entry createEntry(ReadableArray values, int index) {
+        float x = index;
+
+        Entry entry;
+        if (ReadableType.Map.equals(values.getType(index))) {
+            ReadableMap map = values.getMap(index);
+            if (map.hasKey("x")) {
+                x = (float) map.getDouble("x");
+            }
+            entry = new Entry(x, (float) map.getDouble("y"), ConversionUtil.toMap(map));
+        } else if (ReadableType.Number.equals(values.getType(index))) {
+            entry = new Entry(x, (float) values.getDouble(index));
+        } else {
+            throw new IllegalArgumentException("Unexpected entry type: " + values.getType(index));
+        }
+
+        return entry;
+    }
+
     @Override
     public void receiveCommand(LineChart lineChart, int commandType, @Nullable ReadableArray args ) {
         // ConversionUtil.toList(args);
@@ -77,7 +99,7 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
                 lineChart.invalidate(); // refresh
                 return;
             case COMMAND_UPDATE_ENTRY:
-                lineDataSet.addEntry(new Entry(args.getInt(1), (float) args.getDouble(2)));
+                lineDataSet.addEntry(createEntry(args, 1));
                 lineDataSet.removeFirst();
                 lineData.notifyDataChanged(); // let the data know a dataSet changed
                 lineChart.notifyDataSetChanged(); // let the chart know it's data changed
