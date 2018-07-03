@@ -28,14 +28,14 @@ class WeightChartSingle extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(120), (val, index) => {console.log(index); return {x:index/5, y:0}}),
+            values: Array.from(new Array(61), (val, index) => { return {x:index/5, y:0}}),
             label: 'ivisible',
             config: {
               visible:false,
             }
           },
           {
-            values: [],
+            values: [{x:0,y:0}],
             label: 'Total',
             config: {
               lineWidth: 1,
@@ -89,82 +89,21 @@ class WeightChartSingle extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // if (nextProps.coffeeBuilder.datas.length > this.props.coffeeBuilder.datas.length) {
-    //   let count = nextProps.coffeeBuilder.datas.length
-    //   let data = nextProps.coffeeBuilder.datas[ count -1 ]
-    //   let preData = nextProps.coffeeBuilder.datas[ count -2 ]
-      // if(count >= 120) {
-      //   this._updateEntry(0,{x:count/5,y:0})
-      //   this._updateEntry(1,{x:count/5,y:data.total})        
-      //   this._refreshChart()
-
-      // } else {
-      //   this._addEntry(1,{x:count/5,y:data.total})
-      //     this._refreshChart()
-
-      // }
-      // if(count == 120) {
-      //   this._removeDataset(0)
-      // }
-      // if(count % 2 == 0) {
-      //   if(count >=120) {
-      //     this._updateEntry(0,{x:(count-1)/5,y:0})
-      //     this._updateEntry(1,{x:(count-1)/5,y:preData.total}) 
-      //     this._updateEntry(0,{x:count/5,y:0})
-      //     this._updateEntry(1,{x:count/5,y:data.total}) 
-      //     this._refreshChart()
-      //   } else {
-      //     this._addEntry(1,{x:(count-1)/5,y:preData.total})
-      //     this._addEntry(1,{x:count/5,y:data.total})
-      //     this._refreshChart()
-      //   }
-      // }
-      // let total = [
-      //   ...this.state.data.dataSets[1].values,
-      //   {
-      //     x: count/10,
-      //     y: data.total
-      //   }
-      // ]
-      // let ivisible = this.state.data.dataSets[0].values
-
-      // if (count >= 120) {
-      //   total.shift()
-      //   ivisible = [
-      //     ...ivisible,
-      //     {
-      //       x: count/10,
-      //       y: 0
-      //     }
-      //   ]
-      //   ivisible.shift()
-      // }
-
-      // this.setState({
-      //   data: {
-      //     dataSets: [
-      //       {
-      //         values: ivisible,
-      //         label: 'ivisible',
-      //         config: {
-      //           visible:false,
-      //         }
-      //       },
-      //       {
-      //         values: total,
-      //         label: 'Total',
-      //         config: {
-      //           lineWidth: 1,
-      //           drawValues: false,
-      //           drawCircles: false,
-      //           color: processColor('#53B2F0'),
-      //           drawFilled: false,
-      //         }
-      //       },
-      //     ]
-      //   }
-      // })
-    // }
+    if (nextProps.coffeeBuilder.datas.length > this.props.coffeeBuilder.datas.length) {
+      let count = nextProps.coffeeBuilder.datas.length
+      let data = nextProps.coffeeBuilder.datas[ count -1 ]
+      let preData = nextProps.coffeeBuilder.datas[ count -2 ]
+      if(count > 61) {
+        this._updateEntry(0,{x:count/5,y:data.total})        
+        this._refreshChart()
+      } else {
+        this._addEntry(1,{x:count/5,y:data.total})
+        this._refreshChart()
+        if(count == 61) {
+          this._removeDataset(0)
+        }
+      }
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {

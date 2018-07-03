@@ -136,10 +136,6 @@ class Index extends React.Component {
           </View>
         </TouchableOpacity>
         <BuildingButtonContainer onPressButton={() => this.state.navigation.navigateWithDebounce('CoffeeBuilder')}/>
-        <Button 
-          onPress={() => this.state.navigation.navigateWithDebounce('LineChart')}
-          title="Press"
-          />
       </ScrollView>
     );
   }
