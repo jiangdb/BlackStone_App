@@ -77,7 +77,7 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
                 lineChart.invalidate(); // refresh
                 return;
             case COMMAND_UPDATE_ENTRY:
-                lineDataSet.addEntry(new Entry(args.getInt(1), args.getInt(2)));
+                lineDataSet.addEntry(new Entry(args.getInt(1), (float) args.getDouble(2)));
                 lineDataSet.removeFirst();
                 lineData.notifyDataChanged(); // let the data know a dataSet changed
                 lineChart.notifyDataSetChanged(); // let the chart know it's data changed
