@@ -27,7 +27,7 @@ class LineChartContainer extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(100), (val, index) => { return {x:index-100, y:Math.random()*10+10}}),
+            values: Array.from(new Array(100), (val, index) => { return {x:index/10, y:Math.random()}}),
             label: 'ivisible',
             config: {
               lineWidth: 1,
@@ -38,7 +38,7 @@ class LineChartContainer extends React.Component {
             }
           },
           {
-            values: Array.from(new Array(100), (val, index) => { return {x:index-100, y:Math.random()*10+10}}),
+            values: Array.from(new Array(100), (val, index) => { return {x:index/10, y:Math.random()}}),
             label: 'ivisible2',
             config: {
               lineWidth: 1,
@@ -64,7 +64,7 @@ class LineChartContainer extends React.Component {
         left: {
           enabled: true,
           axisMinimum: 0,
-          axisMaximum: 30,
+          axisMaximum: 1,
           drawAxisLine: true,
           drawLabels: true,
         },
@@ -130,11 +130,11 @@ class LineChartContainer extends React.Component {
             />
             <Button
               onPress={()=>{
-                let i = 0
+                let i = 10
                 this.interval=setInterval(() => {
-                  i=i+2
-                  this._updateEntry(0,{x:i,y:Math.random()*10+10});
-                  this._updateEntry(1,{x:i,y:Math.random()*10+10});
+                  i=i+0.1
+                  this._updateEntry(0,{x:i,y:Math.random()});
+                  this._updateEntry(1,{x:i,y:Math.random()});
                 },200);
               }}
               title="update entry"

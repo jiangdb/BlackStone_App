@@ -36,6 +36,8 @@ import com.rncharts.utils.ConversionUtil;
 public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> {
     public static final int COMMAND_ADD_ENTRY = 1;
     public static final int COMMAND_UPDATE_ENTRY = 2;
+    public static final int COMMAND_REFRESH = 3;
+    public static final int COMMAND_REMOVE_DATASET = 4;
 
     @Override
     public String getName() {
@@ -61,6 +63,8 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
         return MapBuilder.of(
             "addEntry",COMMAND_ADD_ENTRY,
             "updateEntry",COMMAND_UPDATE_ENTRY,
+            "refresh",COMMAND_REFRESH,
+            "removeDataset",COMMAND_REMOVE_DATASET
         );
     }
 
@@ -85,23 +89,26 @@ public class LineChartManager extends BarLineChartBaseManager<LineChart, Entry> 
 
     @Override
     public void receiveCommand(LineChart lineChart, int commandType, @Nullable ReadableArray args ) {
-        // ConversionUtil.toList(args);
 
         LineData lineData = lineChart.getData();
-        ILineDataSet lineDataSet = lineData.getDataSetByIndex(args.getInt(0));
 
         switch (commandType) {
             case COMMAND_ADD_ENTRY:
-                Log.d("ReactNativeJS", "receiveCommand: COMMAND_ADD_ENTRY");
-                // lineDataSet.addEntry(new Entry(args.getInt(1), args.getInt(2)));
+                lineData.addEntry(createEntry(args, 1),args.getInt(0));
+                return;
+            case COMMAND_UPDATE_ENTRY:
+                lineData.addEntry(createEntry(args, 1),args.getInt(0));
+                lineData.removeEntry(0,args.getInt(0));
+                return;
+            case COMMAND_REFRESH:
+                Log.d("ReactNativeJS", "receiveCommand: COMMAND_REFRESH");
+
                 lineData.notifyDataChanged(); // let the data know a dataSet changed
                 lineChart.notifyDataSetChanged(); // let the chart know it's data changed
                 lineChart.invalidate(); // refresh
                 return;
-            case COMMAND_UPDATE_ENTRY:
-                lineDataSet.addEntry(createEntry(args, 1));
-                lineDataSet.removeFirst();
-                lineData.notifyDataChanged(); // let the data know a dataSet changed
+            case COMMAND_REMOVE_DATASET:
+                lineData.removeDataSet(args.getInt(0));
                 lineChart.notifyDataSetChanged(); // let the chart know it's data changed
                 lineChart.invalidate(); // refresh
                 return;

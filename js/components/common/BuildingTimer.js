@@ -13,7 +13,7 @@ class BuildingTimer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let totalSeconds = Math.floor(nextProps.coffeeBuilder.datas.length / 10)
+    let totalSeconds = Math.floor(nextProps.coffeeBuilder.datas.length / 5)
     if (totalSeconds != this.state.totalSeconds) {
       this.setState({
         totalSeconds: totalSeconds
