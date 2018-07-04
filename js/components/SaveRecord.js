@@ -40,8 +40,6 @@ class SaveRecord extends React.Component {
     xAxis: {},
     yAxis: {},
     legend: {},
-    extract: [{x:0,y:0}],
-    total: [{x:0,y:0}],
     navigation: null,
   };
 
@@ -51,26 +49,11 @@ class SaveRecord extends React.Component {
     let beanWeight = this.props.coffeeSettings.beanWeight
     let actualRatioWater = lastData.extract == null ? Math.round(lastData.total/beanWeight) : Math.round(lastData.extract/beanWeight)
 
-    for( let i = 0; i<length; i++) {
-      let data = this.props.coffeeBuilder.datas[ i ]
-      if(data.extract !== null) {
-        this.state.extract.push({
-          x: data.time,
-          y: data.extract
-        })
-      } else {
-        this.setState({scaleNumber: 1})
-      }
-      this.state.total.push({
-        x: data.time,
-        y: data.total
-      })
-    }
-
     this.setState({
       actualWaterWeight: lastData.total.toFixed(1),
       actualRatioWater: actualRatioWater,
-      actualTime: Math.floor(lastData.time)
+      actualTime: Math.floor(lastData.time),
+      scaleNumber: lastData.extract == null ? 1 : 2
     })
   };
 
@@ -86,7 +69,7 @@ class SaveRecord extends React.Component {
       data: {
         dataSets: [
           {
-            values: this.state.extract,
+            values: this.state.scaleNumber == 2 ? this.props.coffeeBuilder.chartExtract : [{x:0,y:0}],
             label: 'Extract',
             config: {
               lineWidth: 1,
@@ -97,7 +80,7 @@ class SaveRecord extends React.Component {
             }
           },
           {
-            values: this.state.total,
+            values: this.props.coffeeBuilder.chartTotal,
             label: 'Total',
             config: {
               lineWidth: 1,
@@ -289,7 +272,8 @@ class SaveRecord extends React.Component {
         temperature: this.props.coffeeSettings.temperature,
         grandSize: this.state.grandSize,
         totalSeconds: this.state.actualTime,
-        chartDatas:this.props.coffeeBuilder.datas,
+        chartExtract: this.props.coffeeBuilder.chartExtract,
+        chartTotal: this.props.coffeeBuilder.chartTotal,
         actualWaterWeight: this.state.actualWaterWeight,
         actualRatioWater: this.state.actualRatioWater,
         shareUrl: null

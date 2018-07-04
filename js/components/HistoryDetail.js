@@ -24,32 +24,17 @@ class HistoryDetail extends React.Component {
     xAxis: {},
     yAxis: {},
     legend: {},
-    extract: [{x:0,y:0}],
-    total: [{x:0,y:0}],
     loginModalVisible: false
   };
 
   componentWillMount() {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+    let extractData = this.props.history.historyList[itemIndex].chartExtract
+    console.log()
     this.setState({
-      itemIndex: itemIndex
+      itemIndex: itemIndex,
+      scaleNumber: extractData[extractData.length - 1].y == null ? 1 : 2
     })
-    let length = this.props.history.historyList[itemIndex].chartDatas.length
-    for( let i = 0; i<length; i++) {
-      let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
-      if(data.extract !== null) {
-        this.state.extract.push({
-          x: data.time,
-          y: data.extract
-        })
-      } else {
-        this.setState({scaleNumber:1})
-      }
-      this.state.total.push({
-        x: data.time,
-        y: data.total
-      })
-    }
   };
 
   componentDidMount() {
@@ -64,7 +49,7 @@ class HistoryDetail extends React.Component {
       data: {
         dataSets: [
           {
-            values: this.state.extract,
+            values: this.state.scaleNumber == 2 ? this.props.history.historyList[this.state.itemIndex].chartExtract : [{x:0,y:0}],
             label: 'Extract',
             config: {
               lineWidth: 1,
@@ -75,7 +60,7 @@ class HistoryDetail extends React.Component {
             }
           },
           {
-            values: this.state.total,
+            values: this.props.history.historyList[this.state.itemIndex].chartTotal,
             label: 'Total',
             config: {
               lineWidth: 1,

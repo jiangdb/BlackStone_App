@@ -121,14 +121,14 @@ export function checkUpgrade(dispatch, model, version) {
 export function storeWork(dispatch, work, index) {
 
   let formatChartDatas = [];
-  let length = work.chartDatas.length;
+  let length = work.chartTotal.length;
   for (let i = 0; i < length; i++) {
-    let extract = work.chartDatas[i].extract
-    let total = work.chartDatas[i].total
+    let extract = work.chartExtract[i].y
+    let total = work.chartTotal[i].y
     formatChartDatas.push([
-      work.chartDatas[i].time * 1000,
-      extract == null ? null : work.chartDatas[i].extract.toFixed(1),
-      total == null ? null : work.chartDatas[i].total.toFixed(1),
+      work.chartTotal[i].x * 1000,
+      extract == null ? null : extract.toFixed(1),
+      total == null ? null : total.toFixed(1),
     ])
   }
   let formData = new FormData();
