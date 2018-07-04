@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, processColor,LayoutAnimation,findNodeHandle,UIManager } from 'react-native';
 import { LineChart } from "../../libs/rnmpandroidchart";
 
+let lineCount = 2
+
 class WeightChartSingle extends React.Component {
   constructor() {
     super();
@@ -27,7 +29,7 @@ class WeightChartSingle extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(61), (val, index) => { return {x:index/5, y:0}}),
+            values: Array.from(new Array(121), (val, index) => { return {x:index/10, y:0}}),
             label: 'ivisible',
             config: {
               visible:false,
@@ -92,15 +94,16 @@ class WeightChartSingle extends React.Component {
       let count = nextProps.coffeeBuilder.datas.length
       let data = nextProps.coffeeBuilder.datas[ count -1 ]
       let preData = nextProps.coffeeBuilder.datas[ count -2 ]
-      if(count > 61) {
-        this._updateEntry(0,{x:count/5,y:data.total})        
+      if(data.time > 12) {
+        if(lineCount == 2) {
+          this._removeDataset(0)
+          lineCount = lineCount - 1
+        }
+        this._updateEntry(0,{x:data.time,y:data.total})        
         this._refreshChart()
       } else {
-        this._addEntry(1,{x:count/5,y:data.total})
+        this._addEntry(1,{x:data.time,y:data.total})
         this._refreshChart()
-        if(count == 61) {
-          this._removeDataset(0)
-        }
       }
     }
   }
