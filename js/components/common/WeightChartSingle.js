@@ -21,7 +21,7 @@ class WeightChartSingle extends React.Component {
     this.setState({
       description: {
         text: 'Timemore',
-        textColor: processColor('red'),
+        textColor: processColor('#e4e4e4'),
         textSize: 30,
       },
       data: {

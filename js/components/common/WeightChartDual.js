@@ -20,7 +20,7 @@ class WeightChartDual extends React.Component {
     this.setState({
       description: {
         text: 'Timemore',
-        textColor: processColor('red'),
+        textColor: processColor('#e4e4e4'),
         textSize: 30,
         //positionX: 500,
         //positionY: 200
