@@ -83,12 +83,12 @@ class CoffeeBuilder extends React.Component {
       if (this.props.coffeeBuilder.mode == "pending") {
         if ( nextProps.bleWeightNotify.total > 0.5 ) {
           this.props.onModeChange('working')
-          let now = Date.now()
+          let now = nextProps.bleWeightNotify.date
           this.setState({
             startTime: now
           })
           this.props.onDataChange({
-            time: (nextProps.bleWeightNotify.date - now)/1000,
+            time: 0,
             extract: nextProps.bleWeightNotify.extract,
             total: nextProps.bleWeightNotify.total
           })

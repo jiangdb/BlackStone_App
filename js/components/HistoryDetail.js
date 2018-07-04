@@ -39,14 +39,14 @@ class HistoryDetail extends React.Component {
       let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
       if(data.extract !== null) {
         this.state.extract.push({
-          x: i/10,
+          x: data.time,
           y: data.extract
         })
       } else {
         this.setState({scaleNumber:1})
       }
       this.state.total.push({
-        x: i/10,
+        x: data.time,
         y: data.total
       })
     }
@@ -56,7 +56,7 @@ class HistoryDetail extends React.Component {
     this.setState({
       description: {
         text: 'Timemore',
-        textColor: processColor('red'),
+        textColor: processColor('#e4e4e4'),
         textSize: 30,
         //positionX: 500,
         //positionY: 200
@@ -247,7 +247,7 @@ class HistoryDetail extends React.Component {
 
           <View style={styles.detailRow}>
             <SingleDetail name='研磨度' value={history.grandSize} img={require('../../images/icon_grandsize.png')}/>
-            <SingleDetail name='水温' value={history.temperature} img={require('../../images/icon_temp.png')}/>
+            <SingleDetail name='水温' value={history.temperature+'℃'} img={require('../../images/icon_temp.png')}/>
           </View>
 
           <View style={styles.detailRow}>

@@ -24,8 +24,9 @@ class SaveRecord extends React.Component {
     flavorOption:this.props.flavor.flavorOption,
     filterOption:this.props.accessories.filterOption,
     kettleOption:this.props.accessories.kettleOption,
-    actualWaterWeight: this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total.toFixed(1),
-    actualRatioWater: Math.round(this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].total / this.props.coffeeBuilder.datas[this.props.coffeeBuilder.datas.length - 1].extract),
+    actualWaterWeight: null,
+    actualRatioWater: null,
+    actualTime: null,
     category: this.props.coffeeSettings.category,
     grandSize: this.props.coffeeSettings.grandSize,
     modalVisible: false,
@@ -46,28 +47,38 @@ class SaveRecord extends React.Component {
 
   componentWillMount() {
     let length = this.props.coffeeBuilder.datas.length
+    let lastData = this.props.coffeeBuilder.datas[length - 1]
+    let beanWeight = this.props.coffeeSettings.beanWeight
+    let actualRatioWater = lastData.extract == null ? Math.round(lastData.total/beanWeight) : Math.round(lastData.extract/beanWeight)
+
     for( let i = 0; i<length; i++) {
       let data = this.props.coffeeBuilder.datas[ i ]
       if(data.extract !== null) {
         this.state.extract.push({
-          x: i/10,
+          x: data.time,
           y: data.extract
         })
       } else {
         this.setState({scaleNumber: 1})
       }
       this.state.total.push({
-        x: i/10,
+        x: data.time,
         y: data.total
       })
     }
+
+    this.setState({
+      actualWaterWeight: lastData.total.toFixed(1),
+      actualRatioWater: actualRatioWater,
+      actualTime: Math.floor(lastData.time)
+    })
   };
 
   componentDidMount() {
     this.setState({
       description: {
         text: 'Timemore',
-        textColor: processColor('red'),
+        textColor: processColor('#e4e4e4'),
         textSize: 30,
         //positionX: 500,
         //positionY: 200
@@ -277,7 +288,7 @@ class SaveRecord extends React.Component {
         waterWeight: this.props.coffeeSettings.waterWeight,
         temperature: this.props.coffeeSettings.temperature,
         grandSize: this.state.grandSize,
-        totalSeconds: Math.floor(this.props.coffeeBuilder.datas.length / 10),
+        totalSeconds: this.state.actualTime,
         chartDatas:this.props.coffeeBuilder.datas,
         actualWaterWeight: this.state.actualWaterWeight,
         actualRatioWater: this.state.actualRatioWater,
@@ -365,7 +376,7 @@ class SaveRecord extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(this.props.coffeeBuilder.datas.length / 10))} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(this.state.actualTime)} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
@@ -383,7 +394,7 @@ class SaveRecord extends React.Component {
 
           <View style={styles.detailRow}>
             <SingleDetail name='预设注水量' value={this.props.coffeeSettings.waterWeight+'g'} img={require('../../images/icon_proportion.png')}/>
-            <SingleDetail name='实际注水量' value={this.state.actualWaterWeight} img={require('../../images/icon_waterweight.png')}/>
+            <SingleDetail name='实际注水量' value={this.state.actualWaterWeight+'g'} img={require('../../images/icon_waterweight.png')}/>
           </View>
 
           <View style={styles.detailRow}>
