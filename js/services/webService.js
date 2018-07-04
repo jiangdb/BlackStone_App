@@ -126,7 +126,7 @@ export function storeWork(dispatch, work, index) {
     let extract = work.chartDatas[i].extract
     let total = work.chartDatas[i].total
     formatChartDatas.push([
-      i * 100,
+      work.chartDatas[i].time * 1000,
       extract == null ? null : work.chartDatas[i].extract.toFixed(1),
       total == null ? null : work.chartDatas[i].total.toFixed(1),
     ])

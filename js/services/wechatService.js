@@ -65,6 +65,7 @@ export function weChatLoginRequest(dispatch) {
         Alert.alert('没有安装微信', '请先安装微信客户端再进行登录', [
           { text: '确定' }
         ])
+        return Promise.reject(new Error('WXApp is not Installed'));
       }
     })
 }

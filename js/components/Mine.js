@@ -85,12 +85,11 @@ class Mine extends React.Component {
   render() {
     return (
       <View style={{ flexDirection: 'column'}}>
-        <View style={styles.userContainer}>
-          <TouchableOpacity onPress={()=> this.ActionSheet.show()}>
-            <Image style={styles.userHeader} source={this.props.weChat.userInfo == null || this.props.webServer.token == null ? require('../../images/user-header.png') : {uri:this.props.weChat.userInfo.headimgurl}} />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={()=> this.ActionSheet.show()} style={styles.userContainer}>
+          <Image style={styles.userHeader} source={this.props.weChat.userInfo == null || this.props.webServer.token == null ? require('../../images/user-header.png') : {uri:this.props.weChat.userInfo.headimgurl}} />
           <Text style={styles.userName}>{this.props.weChat.userInfo == null || this.props.webServer.token ==null ? ' 登录' : this.props.weChat.userInfo.nickname}</Text>
-        </View>
+        </TouchableOpacity>
+          
         <View style={{ marginBottom: 12}}>
           <ChoiceBar
             title='连接设备'
