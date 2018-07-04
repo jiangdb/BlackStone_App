@@ -92,6 +92,7 @@ class CoffeeBuilder extends React.Component {
             extract: nextProps.bleWeightNotify.extract,
             total: nextProps.bleWeightNotify.total
           })
+          bleService.timerStart()
         }
       } else if (this.props.coffeeBuilder.mode == "working") {
         this.props.onDataChange({
@@ -102,6 +103,7 @@ class CoffeeBuilder extends React.Component {
         if ( nextProps.bleWeightNotify.total <= 0 ) {
           this.props.onModeChange('done');
           this.props.autoFinish()
+          bleService.timerReset()
         }
       }
     }
@@ -150,6 +152,7 @@ class CoffeeBuilder extends React.Component {
 
   _stopBuilding = () => {
     this.props.onModeChange('done');
+    bleService.timerReset()
   };
 
   _getBuilderComponent = () => {
