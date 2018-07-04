@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { StyleSheet, Text, View, processColor,LayoutAnimation,findNodeHandle,UIManager } from 'react-native';
 import { LineChart } from "../../libs/rnmpandroidchart";
 
+let lineCount = 3
+
 class WeightChartDual extends React.Component {
   constructor() {
     super();
@@ -20,7 +22,7 @@ class WeightChartDual extends React.Component {
     this.setState({
       description: {
         text: 'Timemore',
-        textColor: processColor('red'),
+        textColor: processColor('#e4e4e4'),
         textSize: 30,
         //positionX: 500,
         //positionY: 200
@@ -28,7 +30,7 @@ class WeightChartDual extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(61), (val, index) => { return {x:index/5, y:0}}),
+            values: Array.from(new Array(121), (val, index) => { return {x:index/10, y:0}}),
             label: 'ivisible',
             config: {
               visible:false,
@@ -103,17 +105,18 @@ class WeightChartDual extends React.Component {
     if (nextProps.coffeeBuilder.datas.length > this.props.coffeeBuilder.datas.length) {
       let count = nextProps.coffeeBuilder.datas.length
       let data = nextProps.coffeeBuilder.datas[ count -1 ]
-      if(count > 61) {
-        this._updateEntry(0,{x:count/5,y:Math.random()*10+20})        
-        this._updateEntry(1,{x:count/5,y:data.total})        
+      if(data.time > 12) {
+        if(lineCount == 3) {
+          this._removeDataset(0)
+          lineCount = lineCount - 1
+        }
+        this._updateEntry(0,{x:data.time,y:data.extract})        
+        this._updateEntry(1,{x:data.time,y:data.total})        
         this._refreshChart()
       } else {
-        this._addEntry(1,{x:count/5,y:Math.random()*10+ 20})
-        this._addEntry(2,{x:count/5,y:data.total})
+        this._addEntry(1,{x:data.time,y:data.extract})
+        this._addEntry(2,{x:data.time,y:data.total})
         this._refreshChart()
-        if(count == 61) {
-          this._removeDataset(0)
-        }
       }
     }
   }

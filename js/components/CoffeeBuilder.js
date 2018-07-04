@@ -24,6 +24,7 @@ class CoffeeBuilder extends React.Component {
       scaleNumber: 1,
       toastVisible: false,
       timerCount: 3,
+      startTime: null,
     };
     this.willBlurSubscription = null
     this.didFocusSubscription = null
@@ -78,15 +79,27 @@ class CoffeeBuilder extends React.Component {
     }
 
     //check weight to update mode and queue data
-    if (this.props.bleWeightNotify.index != nextProps.bleWeightNotify.index) {
+    if (this.props.bleWeightNotify.date != nextProps.bleWeightNotify.date) {
       if (this.props.coffeeBuilder.mode == "pending") {
         if ( nextProps.bleWeightNotify.total > 0.5 ) {
           this.props.onModeChange('working')
-          this.props.onDataChange(nextProps.bleWeightNotify)
+          let now = nextProps.bleWeightNotify.date
+          this.setState({
+            startTime: now
+          })
+          this.props.onDataChange({
+            time: 0,
+            extract: nextProps.bleWeightNotify.extract,
+            total: nextProps.bleWeightNotify.total
+          })
           bleService.timerStart()
         }
       } else if (this.props.coffeeBuilder.mode == "working") {
-        this.props.onDataChange(nextProps.bleWeightNotify)
+        this.props.onDataChange({
+          time: (nextProps.bleWeightNotify.date - this.state.startTime)/1000,
+          extract: nextProps.bleWeightNotify.extract,
+          total: nextProps.bleWeightNotify.total
+        })
         if ( nextProps.bleWeightNotify.total <= 0 ) {
           this.props.onModeChange('done');
           this.props.autoFinish()

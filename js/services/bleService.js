@@ -524,7 +524,7 @@ function enableWeightNotify(enable) {
     if (!weightNotifyInterval) {
       weightNotifyInterval = setInterval( ()=> {
         dispatch(bleActions.bleOnWeightChange(weightMeasurement))
-      }, 200)
+      }, 100)
     }
   } else {
     //turn off scale notify
