@@ -33,7 +33,6 @@ class SaveRecord extends React.Component {
     modalName: '',
     newOption:'',
     loginModalVisible: false,
-    scaleNumber: 2,
 
     description: {},
     data: {},
@@ -43,22 +42,44 @@ class SaveRecord extends React.Component {
     navigation: null,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     let length = this.props.coffeeBuilder.datas.length
     let lastData = this.props.coffeeBuilder.datas[length - 1]
     let beanWeight = this.props.coffeeSettings.beanWeight
     let actualRatioWater = lastData.extract == null ? Math.round(lastData.total/beanWeight) : Math.round(lastData.extract/beanWeight)
+    let scaleNumber = lastData.extract == null ? 1 : 2
+    let dataSets = [
+      {
+        values: Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.total} }),
+        label: 'Total',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#53B2F0'),
+          drawFilled: false,
+        }
+      }
+    ];
+    if (scaleNumber == 2) {
+      dataSets.push({
+        values: Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.extract} }),
+        label: 'Extract',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#E0B870'),
+          drawFilled: false,
+        }
+      }) 
+    }
 
     this.setState({
       actualWaterWeight: lastData.total.toFixed(1),
       actualRatioWater: actualRatioWater,
-      actualTime: Math.floor(lastData.time),
-      scaleNumber: lastData.extract == null ? 1 : 2
-    })
-  };
+      actualTime: Math.floor(lastData.duration/1000),
 
-  componentDidMount() {
-    this.setState({
       description: {
         text: 'Timemore',
         textColor: processColor('#e4e4e4'),
@@ -67,30 +88,7 @@ class SaveRecord extends React.Component {
         //positionY: 200
       },
       data: {
-        dataSets: [
-          {
-            values: this.state.scaleNumber == 2 ? this.props.coffeeBuilder.chartExtract : [{x:0,y:0}],
-            label: 'Extract',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#E0B870'),
-              drawFilled: false,
-            }
-          },
-          {
-            values: this.props.coffeeBuilder.chartTotal,
-            label: 'Total',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#53B2F0'),
-              drawFilled: false,
-            }
-          },
-        ]
+        dataSets: dataSets
       },
       xAxis: {
         enabled: true,
@@ -122,8 +120,8 @@ class SaveRecord extends React.Component {
         xEntrySpace: 50,
         formToTextSpace: 7,
         custom: {
-          colors: this.state.scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
-          labels: this.state.scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
+          colors: scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
+          labels: scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
         }
       },
       navigation: util.addNavigationWithDebounce(this.props.navigation)
@@ -267,15 +265,14 @@ class SaveRecord extends React.Component {
         comment: this.state.comment,
         category: this.state.category,
         ratioWater: this.props.coffeeSettings.ratioWater,
+        actualRatioWater: this.state.actualRatioWater,
         beanWeight: this.props.coffeeSettings.beanWeight,
         waterWeight: this.props.coffeeSettings.waterWeight,
+        actualWaterWeight: this.state.actualWaterWeight,
         temperature: this.props.coffeeSettings.temperature,
         grandSize: this.state.grandSize,
         totalSeconds: this.state.actualTime,
-        chartExtract: this.props.coffeeBuilder.chartExtract,
-        chartTotal: this.props.coffeeBuilder.chartTotal,
-        actualWaterWeight: this.state.actualWaterWeight,
-        actualRatioWater: this.state.actualRatioWater,
+        datas: this.props.coffeeBuilder.datas,
         shareUrl: null
       }
       let index = this.props.history.historyList.length

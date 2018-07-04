@@ -79,16 +79,13 @@ class CoffeeBuilder extends React.Component {
     }
 
     //check weight to update mode and queue data
-    if (this.props.bleWeightNotify.date != nextProps.bleWeightNotify.date) {
+    if (this.props.bleWeightNotify.timestamp != nextProps.bleWeightNotify.timestamp) {
       if (this.props.coffeeBuilder.mode == "pending") {
         if ( nextProps.bleWeightNotify.total > 0.5 ) {
           this.props.onModeChange('working')
-          let now = nextProps.bleWeightNotify.date
-          this.setState({
-            startTime: now
-          })
+          this.state.startTime = nextProps.bleWeightNotify.timestamp
           this.props.onDataChange({
-            time: 0,
+            duration: 0,
             extract: nextProps.bleWeightNotify.extract,
             total: nextProps.bleWeightNotify.total
           })
@@ -96,7 +93,7 @@ class CoffeeBuilder extends React.Component {
         }
       } else if (this.props.coffeeBuilder.mode == "working") {
         this.props.onDataChange({
-          time: (nextProps.bleWeightNotify.date - this.state.startTime)/1000,
+          duration: nextProps.bleWeightNotify.timestamp - this.state.startTime,
           extract: nextProps.bleWeightNotify.extract,
           total: nextProps.bleWeightNotify.total
         })

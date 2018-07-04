@@ -17,8 +17,8 @@ class HistoryDetail extends React.Component {
   };
 
   state = {
-    scaleNumber: 2,
-    itemIndex: null,
+      //itemIndex: null,
+    itemIndex: JSON.stringify(this.props.navigation.getParam('itemIndex', 0)),
     description: {},
     data: {},
     xAxis: {},
@@ -28,17 +28,41 @@ class HistoryDetail extends React.Component {
   };
 
   componentWillMount() {
-    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
-    let extractData = this.props.history.historyList[itemIndex].chartExtract
-    console.log()
-    this.setState({
-      itemIndex: itemIndex,
-      scaleNumber: extractData[extractData.length - 1].y == null ? 1 : 2
-    })
   };
 
   componentDidMount() {
+    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+    let datas = this.props.history.historyList[itemIndex].datas
+    let scaleNumber = datas[datas.length - 1].extract == null ? 1 : 2
+    let dataSets = [
+      {
+        values: Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.total} }),
+        label: 'Total',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#53B2F0'),
+          drawFilled: false,
+        }
+      }
+    ];
+    if (scaleNumber == 2) {
+      dataSets.push({
+        values: Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.extract} }),
+        label: 'Extract',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#E0B870'),
+          drawFilled: false,
+        }
+      }) 
+    }
+
     this.setState({
+        //itemIndex: itemIndex,
       description: {
         text: 'Timemore',
         textColor: processColor('#e4e4e4'),
@@ -47,30 +71,7 @@ class HistoryDetail extends React.Component {
         //positionY: 200
       },
       data: {
-        dataSets: [
-          {
-            values: this.state.scaleNumber == 2 ? this.props.history.historyList[this.state.itemIndex].chartExtract : [{x:0,y:0}],
-            label: 'Extract',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#E0B870'),
-              drawFilled: false,
-            }
-          },
-          {
-            values: this.props.history.historyList[this.state.itemIndex].chartTotal,
-            label: 'Total',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#53B2F0'),
-              drawFilled: false,
-            }
-          },
-        ]
+        dataSets: dataSets
       },
       xAxis: {
         enabled: true,
@@ -102,8 +103,8 @@ class HistoryDetail extends React.Component {
         xEntrySpace: 50,
         formToTextSpace: 7,
         custom: {
-          colors: this.state.scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
-          labels: this.state.scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
+          colors: scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
+          labels: scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
         }
       },
     })

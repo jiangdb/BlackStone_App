@@ -36,7 +36,7 @@ class WeightChartSingle extends React.Component {
             }
           },
           {
-            values: [{x:0,y:0}],
+            values: [],
             label: 'Total',
             config: {
               lineWidth: 1,
@@ -93,18 +93,16 @@ class WeightChartSingle extends React.Component {
     if (nextProps.coffeeBuilder.datas.length > this.props.coffeeBuilder.datas.length) {
       let count = nextProps.coffeeBuilder.datas.length
       let data = nextProps.coffeeBuilder.datas[ count -1 ]
-      let preData = nextProps.coffeeBuilder.datas[ count -2 ]
-      if(data.time > 12) {
+      if(data.duration >= 12000) {
         if(lineCount == 2) {
           this._removeDataset(0)
           lineCount = lineCount - 1
         }
-        this._updateEntry(0,{x:data.time,y:data.total})        
-        this._refreshChart()
+        this._updateEntry(0, {x:data.duration/1000,y:data.total})        
       } else {
-        this._addEntry(1,{x:data.time,y:data.total})
-        this._refreshChart()
+        this._addEntry(1,{x:data.duration/1000,y:data.total})
       }
+      this._refreshChart()
     }
   }
 
@@ -158,7 +156,6 @@ class WeightChartSingle extends React.Component {
           yAxis={this.state.yAxis}
           drawGridBackground={false}
           touchEnabled={false}
-          ref='chart'
         />
     );
   }

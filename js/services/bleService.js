@@ -83,7 +83,8 @@ let weightNotifyInterval = null
 let weightControlNotify = null
 let weightMeasureMonitor = null
 let weightMeasurement = {
-  extract: 0,
+  timestamp: 0,
+  extract: null,
   total: 0
 }
 let autoConnection = true
@@ -496,6 +497,7 @@ function weightNotify( error, characteristic ) {
     if (extract > 2000) extract = 2000
   }
   weightMeasurement = {
+    timestamp: Date.now(),
     extract: extract,
     total: total
   }
@@ -524,7 +526,7 @@ function enableWeightNotify(enable) {
     if (!weightNotifyInterval) {
       weightNotifyInterval = setInterval( ()=> {
         dispatch(bleActions.bleOnWeightChange(weightMeasurement))
-      }, 100)
+      }, 200)
     }
   } else {
     //turn off scale notify
