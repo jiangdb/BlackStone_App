@@ -48,9 +48,16 @@ class SaveRecord extends React.Component {
     let beanWeight = this.props.coffeeSettings.beanWeight
     let actualRatioWater = lastData.extract == null ? Math.round(lastData.total/beanWeight) : Math.round(lastData.extract/beanWeight)
     let scaleNumber = lastData.extract == null ? 1 : 2
+    let valueTotal = Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.total} })
+    let valueExtract = Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.extract} })
+    if (length > 100) {
+      let div = Math.floor(length/100)
+      valueTotal = valueTotal.filter( (e,index) => {return index % div == 0 })
+      valueExtract = valueExtract.filter( (e,index) => {return index % div == 0 })
+    }
     let dataSets = [
       {
-        values: Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.total} }),
+        values: valueTotal,
         label: 'Total',
         config: {
           lineWidth: 1,
@@ -63,7 +70,7 @@ class SaveRecord extends React.Component {
     ];
     if (scaleNumber == 2) {
       dataSets.push({
-        values: Array.from(this.props.coffeeBuilder.datas, (val, index) => { return {x:val.duration/1000, y:val.extract} }),
+        values: valueExtract,
         label: 'Extract',
         config: {
           lineWidth: 1,

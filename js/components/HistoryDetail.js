@@ -34,9 +34,16 @@ class HistoryDetail extends React.Component {
     const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
     let datas = this.props.history.historyList[itemIndex].datas
     let scaleNumber = datas[datas.length - 1].extract == null ? 1 : 2
+    let valueTotal = Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.total} })
+    let valueExtract = Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.extract} })
+    if (datas.length > 100) {
+      let div = Math.floor(datas.length/100)
+      valueTotal = valueTotal.filter( (e,index) => {return index % div == 0 })
+      valueExtract = valueExtract.filter( (e,index) => {return index % div == 0 })
+    }
     let dataSets = [
       {
-        values: Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.total} }),
+        values: valueTotal,
         label: 'Total',
         config: {
           lineWidth: 1,
@@ -49,7 +56,7 @@ class HistoryDetail extends React.Component {
     ];
     if (scaleNumber == 2) {
       dataSets.push({
-        values: Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.extract} }),
+        values: valueExtract,
         label: 'Extract',
         config: {
           lineWidth: 1,
