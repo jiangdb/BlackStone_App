@@ -17,43 +17,59 @@ class HistoryDetail extends React.Component {
   };
 
   state = {
-    scaleNumber: 2,
-    itemIndex: null,
+      //itemIndex: null,
+    itemIndex: JSON.stringify(this.props.navigation.getParam('itemIndex', 0)),
     description: {},
     data: {},
     xAxis: {},
     yAxis: {},
     legend: {},
-    extract: [{x:0,y:0}],
-    total: [{x:0,y:0}],
     loginModalVisible: false
   };
 
   componentWillMount() {
-    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
-    this.setState({
-      itemIndex: itemIndex
-    })
-    let length = this.props.history.historyList[itemIndex].chartDatas.length
-    for( let i = 0; i<length; i++) {
-      let data = this.props.history.historyList[itemIndex].chartDatas[ i ]
-      if(data.extract !== null) {
-        this.state.extract.push({
-          x: data.time,
-          y: data.extract
-        })
-      } else {
-        this.setState({scaleNumber:1})
-      }
-      this.state.total.push({
-        x: data.time,
-        y: data.total
-      })
-    }
   };
 
   componentDidMount() {
+    const itemIndex = JSON.stringify(this.props.navigation.getParam('itemIndex', 0));
+    let datas = this.props.history.historyList[itemIndex].datas
+    let scaleNumber = datas[datas.length - 1].extract == null ? 1 : 2
+    let valueTotal = Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.total} })
+    let valueExtract = Array.from(datas, (val, index) => { return {x:val.duration/1000, y:val.extract} })
+    if (datas.length > 100) {
+      let div = Math.floor(datas.length/100)
+      valueTotal = valueTotal.filter( (e,index) => {return index % div == 0 })
+      valueExtract = valueExtract.filter( (e,index) => {return index % div == 0 })
+    }
+    let dataSets = [
+      {
+        values: valueTotal,
+        label: 'Total',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#53B2F0'),
+          drawFilled: false,
+        }
+      }
+    ];
+    if (scaleNumber == 2) {
+      dataSets.push({
+        values: valueExtract,
+        label: 'Extract',
+        config: {
+          lineWidth: 1,
+          drawValues: false,
+          drawCircles: false,
+          color: processColor('#E0B870'),
+          drawFilled: false,
+        }
+      }) 
+    }
+
     this.setState({
+        //itemIndex: itemIndex,
       description: {
         text: 'Timemore',
         textColor: processColor('#e4e4e4'),
@@ -62,30 +78,7 @@ class HistoryDetail extends React.Component {
         //positionY: 200
       },
       data: {
-        dataSets: [
-          {
-            values: this.state.extract,
-            label: 'Extract',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#E0B870'),
-              drawFilled: false,
-            }
-          },
-          {
-            values: this.state.total,
-            label: 'Total',
-            config: {
-              lineWidth: 1,
-              drawValues: false,
-              drawCircles: false,
-              color: processColor('#53B2F0'),
-              drawFilled: false,
-            }
-          },
-        ]
+        dataSets: dataSets
       },
       xAxis: {
         enabled: true,
@@ -117,8 +110,8 @@ class HistoryDetail extends React.Component {
         xEntrySpace: 50,
         formToTextSpace: 7,
         custom: {
-          colors: this.state.scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
-          labels: this.state.scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
+          colors: scaleNumber == 1 ? [processColor('#53B2F0')] : [processColor('#53B2F0'), processColor('#DFB86F')],
+          labels: scaleNumber == 1 ? ['注水总量'] : ['注水总量', '咖啡萃取量']
         }
       },
     })
@@ -242,7 +235,7 @@ class HistoryDetail extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={history.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={util.convertSecondToFormatTime(history.totalSeconds)} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(history.totalSeconds/1000))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>

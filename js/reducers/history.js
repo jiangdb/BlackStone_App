@@ -15,20 +15,21 @@ const initialState = {
   //   comment: 'comment',
   //   category: '曼特宁1',
   //   ratioWater: 12,
+  //   actualRatioWater: 2
   //   beanWeight: 20,
   //   waterWeight: 240,
+  //   actualWaterWeight: '96.5',
   //   temperature: 92,
   //   grandSize: 3.5,
   //   totalSeconds: '00:02',
-  //   chartDatas:
-  //     [ { index: 311,
+  //   datas:
+  //     [ { duration: 311,
   //        extract: 0.49928175904788075,
   //        total: 35.93061056607403 },
-  //       { index: 312,
+  //       { duration: 312,
   //        extract: 1.1912865923251956,
   //        total: 39.88195368885063 } ],
-  //   actualWaterWeight: '96.5',
-  //   actualRatioWater: 2
+  //   shareUrl: 'http://example.com/share/1'
   // }
 }
  

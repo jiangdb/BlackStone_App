@@ -1,5 +1,5 @@
 const initialState = {
-  date: 0,
+  timestamp: 0,
   extract: 0,
   total: 0,
 }
@@ -14,7 +14,6 @@ function bleWeightNotify(state, action) {
   switch (action.type) {
     case "BLE_ON_WEIGHT_CHANGE":
       return {
-        date: Date.now(),
         ...action.weight
       }
 

@@ -30,7 +30,7 @@ class WeightChartDual extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(121), (val, index) => { return {x:index/10, y:0}}),
+            values: [{x:12.1,y:0}],
             label: 'ivisible',
             config: {
               visible:false,
@@ -105,19 +105,18 @@ class WeightChartDual extends React.Component {
     if (nextProps.coffeeBuilder.datas.length > this.props.coffeeBuilder.datas.length) {
       let count = nextProps.coffeeBuilder.datas.length
       let data = nextProps.coffeeBuilder.datas[ count -1 ]
-      if(data.time > 12) {
+      if(data.duration >= 12000) {
         if(lineCount == 3) {
           this._removeDataset(0)
           lineCount = lineCount - 1
         }
-        this._updateEntry(0,{x:data.time,y:data.extract})        
-        this._updateEntry(1,{x:data.time,y:data.total})        
-        this._refreshChart()
+        this._updateEntry(0, {x:data.duration/1000, y:data.extract})        
+        this._updateEntry(1, {x:data.duration/1000, y:data.total})        
       } else {
-        this._addEntry(1,{x:data.time,y:data.extract})
-        this._addEntry(2,{x:data.time,y:data.total})
-        this._refreshChart()
+        this._addEntry(1,{x:data.duration/1000,y:data.extract})
+        this._addEntry(2,{x:data.duration/1000,y:data.total})
       }
+      this._refreshChart()
     }
   }
 
