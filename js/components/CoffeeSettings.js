@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView, Picker} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, TextInput, Image, Alert, Slider, ScrollView,KeyboardAvoidingView } from 'react-native';
 import { Divider } from './Templates';
 import { saveCoffeeSettings } from '../actions/coffeeSettings.js'
 import { addNavigationWithDebounce } from '../utils/util.js'
 import bleService from '../services/bleService.js'
+import Picker from 'react-native-picker';
 
 class CoffeeSettings extends React.Component {
   static navigationOptions = {
@@ -28,10 +29,6 @@ class CoffeeSettings extends React.Component {
         '40', '41', '42', '43', '44', '45', '46', '47', '48', '49',
         '50', '51', '52', '53', '54', '55', '56', '57', '58', '59',
       ],
-    pickerData:[
-      [1, 2, 3, 4],
-      [5, 6, 7, 8],
-    ],
     navigation: null,
   };
 
@@ -53,6 +50,30 @@ class CoffeeSettings extends React.Component {
       grandSize: this.state.grandSize,
     });
     this.props.navigation.goBack();
+  };
+
+  _showPicker = () => {
+    let seconds = this.state.timeArray
+    let minutes = this.state.timeArray
+    let pickerData = [minutes, seconds];
+    Picker.init({
+        pickerData,
+        selectedValue: [this.state.timeMintue,this.state.timeSecond],
+        pickerConfirmBtnText: '确认',
+        pickerCancelBtnText: '取消',
+        pickerTitleText: '',
+        pickerConfirmBtnColor: [60, 197, 31, 1],
+        pickerCancelBtnColor: [153, 153, 153, 1],
+        pickerBg: [255, 255, 255, 1],
+        pickerToolBarBg: [255, 255, 255, 1],
+        onPickerConfirm: pickedValue => {
+          this.setState({
+            timeMintue: pickedValue[0],
+            timeSecond: pickedValue[1],
+          })
+        }
+    });
+    Picker.show();
   };
 
   _onBeanWeightChange = weight => {
@@ -202,42 +223,15 @@ class CoffeeSettings extends React.Component {
 
             <View style={styles.settingContainer}>
               <Text style={styles.settingTitle}>时间设置（分：秒）</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={styles.picker}
-                  mode='dialog'
-                  selectedValue={this.state.timeMintue}
-                  onValueChange={(value) => this.setState({timeMintue: value})}>
-                  { this.state.timeArray.map((item)=>(
-                    <Picker.Item key={item} label={item} value={item} />
-                   )) }
-                </Picker>
-                <Picker
-                  style={styles.picker}
-                  mode='dialog'
-                  selectedValue={this.state.timeSecond}
-                  onValueChange={(value) => this.setState({timeSecond: value})}>
-                  { this.state.timeArray.map((item)=>(
-                    <Picker.Item key={item} label={item} value={item} />
-                   )) }
-                </Picker>
-                {/*
-                  Picker.init({
-                    pickerData: pickerData,
-                    selectedValue: [2,6],
-                    onPickerConfirm: data => {
-                        console.log(data);
-                    },
-                    onPickerCancel: data => {
-                        console.log(data);
-                    },
-                    onPickerSelect: data => {
-                        console.log(data);
-                    }
-                  });
-                  Picker.show();
-                */}
-              </View>
+              <TouchableOpacity
+                underlayColor='#f2f2f2'
+                onPress={() => this._showPicker()}
+                activeOpacity={1}
+              >
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                  <Text style={[styles.settingInput,{fontFamily:'DINAlternate-Bold'}]}>{this.state.timeMintue+':'+this.state.timeSecond}</Text>
+                </View>
+              </TouchableOpacity>
               <Divider/>
             </View>
 
@@ -349,16 +343,6 @@ const styles = StyleSheet.create({
     color:'#232323',
     width: 250,
     padding: 0,
-  },
-  pickerContainer:{
-    flexDirection: 'row',
-    marginTop:4.5,
-    marginBottom:2,
-    marginLeft:21,
-  },
-  picker: {
-    height:34,
-    width: 160,
   },
   icon: {
     marginLeft:7,
