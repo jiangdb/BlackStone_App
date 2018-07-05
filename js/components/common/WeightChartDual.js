@@ -30,7 +30,7 @@ class WeightChartDual extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(61), (val, index) => { return {x:index/5, y:0}}),
+            values: [{x:12.1,y:0}],
             label: 'ivisible',
             config: {
               visible:false,

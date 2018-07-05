@@ -29,14 +29,14 @@ class WeightChartSingle extends React.Component {
       data: {
         dataSets: [
           {
-            values: Array.from(new Array(121), (val, index) => { return {x:index/10, y:0}}),
+            values: [{x:12.1,y:0}],
             label: 'ivisible',
             config: {
               visible:false,
             }
           },
           {
-            values: [],
+            values: [{x:0,y:0}],
             label: 'Total',
             config: {
               lineWidth: 1,
