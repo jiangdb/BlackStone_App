@@ -120,7 +120,8 @@ export function checkUpgrade(dispatch, model, version) {
 
 export function storeWork(dispatch, work, index) {
 
-  let formatChartDatas = [];
+  let formatChartDatas = Array.from(work.datas, (val, index) => { return [val.duration, val.extract, val.total] }),
+  /*
   let length = work.chartTotal.length;
   for (let i = 0; i < length; i++) {
     let extract = work.chartExtract[i].y
@@ -131,6 +132,7 @@ export function storeWork(dispatch, work, index) {
       total == null ? null : total.toFixed(1),
     ])
   }
+  */
   let formData = new FormData();
   formData.append("device", work.device);
   formData.append("bean_category", work.category);
