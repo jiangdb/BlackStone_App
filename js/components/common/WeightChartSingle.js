@@ -156,6 +156,7 @@ class WeightChartSingle extends React.Component {
           yAxis={this.state.yAxis}
           drawGridBackground={false}
           touchEnabled={false}
+          ref='chart'
         />
     );
   }

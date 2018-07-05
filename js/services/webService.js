@@ -120,7 +120,7 @@ export function checkUpgrade(dispatch, model, version) {
 
 export function storeWork(dispatch, work, index) {
 
-  let formatChartDatas = Array.from(work.datas, (val, index) => { return [val.duration, val.extract, val.total] }),
+  let formatChartDatas = Array.from(work.datas, (val, index) => { return [val.duration, val.extract, val.total] })
   /*
   let length = work.chartTotal.length;
   for (let i = 0; i < length; i++) {

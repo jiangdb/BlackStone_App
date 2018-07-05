@@ -78,7 +78,7 @@ class SaveRecord extends React.Component {
     this.setState({
       actualWaterWeight: lastData.total.toFixed(1),
       actualRatioWater: actualRatioWater,
-      actualTime: Math.floor(lastData.duration/1000),
+      actualTime: lastData.duration,
 
       description: {
         text: 'Timemore',
@@ -357,7 +357,7 @@ class SaveRecord extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={this.props.coffeeSettings.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={util.convertSecondToFormatTime(this.state.actualTime)} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(this.state.actualTime/1000))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>

@@ -228,7 +228,7 @@ class HistoryDetail extends React.Component {
           </View>
           <View style={styles.detailRow}>
             <SingleDetail name='粉重' value={history.beanWeight+'g'} img={require('../../images/icon_beanweight.png')}/>
-            <SingleDetail name='时间' value={util.convertSecondToFormatTime(history.totalSeconds)} img={require('../../images/icon_time.png')}/>
+            <SingleDetail name='时间' value={util.convertSecondToFormatTime(Math.floor(history.totalSeconds/1000))} img={require('../../images/icon_time.png')}/>
           </View>
 
           <View style={styles.detailRow}>
