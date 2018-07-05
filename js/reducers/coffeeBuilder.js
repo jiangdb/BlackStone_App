@@ -4,7 +4,11 @@
 const initialState = {
   mode: 'idle',
   datas: [],
+  accessories: [],
+  flavors: [],
   totalSeconds: 0,
+    //chartTotal: [],
+    //chartExtract: []
 }
  
 import type { Action } from "../actions/types";
@@ -22,6 +26,8 @@ function coffeeBuilder(state, action) {
           ...state,
           mode: action.mode,
           datas: [],
+          accessories: [],
+          flavors: [],
         };
       }
 
@@ -35,12 +41,30 @@ function coffeeBuilder(state, action) {
       return {
         ...state,
         datas: state.datas.slice(0, -10),
+          //chartTotal: state.chartTotal.slice(0, -10),
+          //chartExtract: state.chartExtract.slice(0, -10),
       };
 
     case "COFFEE_BUILDER_QUEUE_DATA":
       return {
         ...state,
         datas: [ ...state.datas, action.data],
+          /*
+        chartTotal: [
+          ...state.chartTotal,
+          {
+            x: action.data.time,
+            y: action.data.total
+          }
+        ],
+        chartExtract: [
+          ...state.chartExtract,
+          {
+            x: action.data.time,
+            y: action.data.extract
+          }
+        ]
+        */
       };
 
     case "SAVE_TIMER":
