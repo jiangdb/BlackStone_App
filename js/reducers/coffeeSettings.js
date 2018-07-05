@@ -5,8 +5,8 @@ const initialState = {
     waterWeight: 240,
     temperature: 92,
     grandSize: 3.5,
-    timeMintue:'30',
-    timeSecond:'22',
+    timeMintue:'02',
+    timeSecond:'30',
 }
  
 import type { Action } from "../actions/types";
